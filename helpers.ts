@@ -28,3 +28,17 @@ export function getCookie(cname: string) {
     }
     return "";
 }
+
+export function hashCode(data: object) {
+    const dataString = JSON.stringify(data);
+    let hash = 0;
+    let i, chr;
+    if (dataString.length === 0) return hash;
+    for (i = 0; i < dataString.length; i++) {
+        chr = dataString.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+}
+
