@@ -21,7 +21,7 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
 ): Promise<{ errors: string[], data: ResponseType<P, M> | null}> => {
     const pathParams = params[0]?.path;
     const queryParams = params[0]?.query;
-    const formattedUrl = generateUrl(url, pathParams, queryParams); 
+    const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
     const response =  await fetch(
         formattedUrl, {
             method: String(method),
