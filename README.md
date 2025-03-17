@@ -1,2 +1,2 @@
 # Next.js Utilities
-Reusable functions and components for next.js based projects
+Reusable functions and components for personal next.js based projects
