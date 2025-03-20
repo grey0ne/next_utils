@@ -29,7 +29,7 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
                 "Content-Type": "application/json",
                 "X-CSRFToken": getCookie('csrftoken')
             },
-            body: body && body.length > 0 ? JSON.stringify(body) : undefined
+            body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
         }
     );
     if (response.ok) {
