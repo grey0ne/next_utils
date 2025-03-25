@@ -25,6 +25,7 @@ export const untypedApiRequest = async (
     body: object,
     params: { path?: {[key: string]: string | number}, query?: {[key: string]: any} } 
 ): Promise<ResponseData> => {
+    // This function is used to make requests with dynamic urls without complex type magic
     const pathParams = params.path || {};
     const queryParams = params.query;
     const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
