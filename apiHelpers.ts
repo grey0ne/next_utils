@@ -21,6 +21,12 @@ export type ResponseType<P extends Path, M extends PathMethod<P>> = paths[P][M] 
     ? paths[P][M]['responses'][200]['content']['application/json']
     : undefined;
 
+export type Error400Type<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
+    responses: { 400: { content: {[x: string]: any } } };
+}
+    ? paths[P][M]['responses'][400]['content']['application/json']
+    : undefined;
+
 export type PaginatedResponseType<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
     responses: { 200: { content: {[x: string]: any } } };
 }

@@ -18,7 +18,7 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     method: M,
     body: RequestBody<P, M> extends undefined ? object : RequestBody<P, M>,
     ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
-): Promise<{ errors: string[], data: ResponseType<P, M> | null}> => {
+): Promise<{ status: number, errors: any[], data: ResponseType<P, M> | null}> => {
     const pathParams = params[0]?.path;
     const queryParams = params[0]?.query;
     const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
@@ -32,12 +32,19 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
             body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
         }
     );
+    const responseData = { status: response.status, errors: [] as any[], data: null };
     if (response.ok) {
         const result = await response.json()
-        return { errors: [], data: result };
+        responseData.data = result;
     } else {
-        return { errors: [`Response status ${response.status}`], data: null }
+        if ([404, 400, 401, 403].includes(response.status)) {
+            const errorData = await response.json();
+            responseData.errors.push(errorData);
+        } else {
+            responseData.errors.push('Something went wrong');
+        }
     }
+    return responseData;
 }
 
 export function useApi <P extends Path, M extends PathMethod<P>>(
