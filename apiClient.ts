@@ -13,25 +13,26 @@ export async function fetcher (url: string): Promise<any> {
     return fetch(url).then(res => res.json());
 }
 
-export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
-    url: P,
-    method: M,
-    body: RequestBody<P, M> extends undefined ? object : RequestBody<P, M>,
-    ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
-): Promise<{ status: number, errors: any[], data: ResponseType<P, M> | null}> => {
-    const pathParams = params[0]?.path;
-    const queryParams = params[0]?.query;
+type ResponseData = {
+    status: number,
+    errors: any[],
+    data: any | null
+}
+
+export const untypedApiRequest = async (
+    url: string,
+    method: string,
+    body: object,
+    params: { path?: {[key: string]: string | number}, query?: {[key: string]: any} } 
+): Promise<ResponseData> => {
+    const pathParams = params.path || {};
+    const queryParams = params.query;
     const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
-    const response =  await fetch(
-        formattedUrl, {
-            method: String(method),
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCookie('csrftoken')
-            },
-            body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
-        }
-    );
+    return await performRequest(formattedUrl, method, body);
+}
+
+
+async function processResponse(response: any): Promise<ResponseData> {
     const responseData = { status: response.status, errors: [] as any[], data: null };
     if (response.ok) {
         const result = await response.json()
@@ -45,6 +46,37 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
         }
     }
     return responseData;
+}
+
+async function performRequest(
+    url: string,
+    method: string,
+    body: any,
+): Promise<ResponseData> {
+    const response =  await fetch(
+        url, {
+            method: String(method),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie('csrftoken')
+            },
+            body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
+        }
+    );
+    return await processResponse(response);
+}
+
+
+export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
+    url: P,
+    method: M,
+    body: RequestBody<P, M> extends undefined ? object : RequestBody<P, M>,
+    ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
+): Promise<ResponseData> => {
+    const pathParams = params[0]?.path;
+    const queryParams = params[0]?.query;
+    const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
+    return await performRequest(formattedUrl, method.toString(), body);
 }
 
 export function useApi <P extends Path, M extends PathMethod<P>>(
