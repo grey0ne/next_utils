@@ -9,9 +9,31 @@ import { getCookie } from '@/next_utils/helpers';
 
 const DEFAULT_PER_PAGE = 20;
 
-export async function fetcher (url: string): Promise<any> {
-    return fetch(url).then(res => res.json());
+class RequestError extends Error {
+    status: number;
+    info: any;
+
+    constructor(message: string, status: number, info: any) {
+        super(message);
+        this.name = this.constructor.name;
+        this.status = status;
+        this.info = info;
+    }
 }
+
+
+export const fetcher = async (url: string) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+        const error = new RequestError(
+            'An error occurred while fetching the data.',
+            response.status,
+            await response.json()
+        );
+        throw error;
+    }
+    return response.json();
+};
 
 type ResponseData = {
     status: number,
