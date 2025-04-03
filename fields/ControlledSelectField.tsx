@@ -33,22 +33,30 @@ export default function ControlledSelectField({ control, name, label, options, r
             render={({ field: { onChange, value } }) => {
                 return (
                     <Autocomplete
+                        getOptionLabel={(option) => {
+                            // This helps mitigate issue with the default value not being found in the options
+                            if (option.hasOwnProperty('title')) {
+                                return option.title;
+                            }
+                            return String(option);
+                        }}
                         options={options}
                         autoHighlight
-                        getOptionLabel={(option: Option) => option.title}
                         renderOption={SelectFieldOption}
                         value={ value }
                         onChange={(event: any, newValue: Option | null) => {
-                            onChange(newValue);
+                            onChange(newValue?.value);
                         }}
                         isOptionEqualToValue={(option: Option, value: Option) => option.value === value.value }
                         renderInput={(params) => (
                             <TextField
                                 {...params}
                                 label={ label }
-                                inputProps={{
-                                    ...params.inputProps,
-                                    autoComplete: 'new-password', // disable autocomplete and autofill
+                                slotProps={{
+                                    htmlInput: {
+                                        ...params.inputProps,
+                                        autoComplete: 'new-password', // disable autocomplete and autofill
+                                    }
                                 }}
                             />
                         )}
