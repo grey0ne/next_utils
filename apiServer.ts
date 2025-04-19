@@ -6,11 +6,18 @@ import { cookies } from 'next/headers'
 
 const BACKEND_URL = `http://${process.env.PROJECT_NAME}-django:8000`;
 
+export const apiGet = async <P extends Path>(
+    url: P,
+    ...params: RequestParams<P, 'get'> extends undefined ? [] : [RequestParams<P, 'get'>]
+): Promise<{ errors: string[], data: ResponseType<P, 'get'> | null}> => {
+    return apiRequest(url, 'get', {}, ...params); 
+}
+
+
 export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     url: P,
     method: M,
     body: RequestBody<P, M> extends undefined ? object : RequestBody<P, M>,
-    cache_tags?: string[],
     ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
 ): Promise<{ errors: string[], data: ResponseType<P, M> | null}> => {
     const pathParams = params[0]?.path;
@@ -26,7 +33,6 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
                 "Cookie": cookieHeader
             },
             cache: 'no-store',
-            next: { tags: cache_tags || [] }
         }
     );
     if (response.ok) {
