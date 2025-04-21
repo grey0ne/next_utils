@@ -14,9 +14,7 @@ type ModalButtonProps = {
 
 export function ModalButton<P extends React.FC<ModalContentProps & any>>(
     props: { component: P; contentProps?: Omit<React.ComponentProps<P>, 'onClose'>; } & ModalButtonProps
-) 
-
-{
+){
     const { title, component, contentProps, color = 'primary' } = props;
     const [showModal, setShowModal] = useState(false);
     const handleOpen = () => {
@@ -28,6 +26,8 @@ export function ModalButton<P extends React.FC<ModalContentProps & any>>(
     let modalContent;
     const result = component({ onClose: handleClose, ...contentProps });
     if (result instanceof Promise) {
+        // This contraption is needed to handle the case
+        // when the component returns a promise to make typescript happy
         result.then((c) => { modalContent = c} );
     } else {
         modalContent = result;
