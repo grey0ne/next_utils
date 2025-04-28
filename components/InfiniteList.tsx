@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react';
-import { Box, Typography, Paper, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper, CircularProgress, Stack } from '@mui/material';
 import { usePaginatedApi } from '@/next_utils/apiClient';
 import { Path, RequestPathParams, PaginatedResponseTypeItems } from '@/next_utils/apiHelpers';
 
@@ -50,7 +50,9 @@ export function InfiniteList<P extends Path>(props: {
 
     return (
         <Box sx={{ mt: 2 }}>
-            { renderItems(items) }
+            <Stack spacing={1}>
+                { renderItems(items) }
+            </Stack>
             <div ref={loadMoreRef} style={{ height: '20px' }} />
             {isLoading && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
