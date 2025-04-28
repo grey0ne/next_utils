@@ -2,7 +2,7 @@
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite'
 import {
-    PaginatedResponseType, Path, PathMethod, RequestParams,
+    PaginatedResponseType, PaginatedResponseTypeItems, Path, PathMethod, RequestParams,
     ResponseType, generateUrl, RequestBody
 } from '@/next_utils/apiHelpers';
 import { getCookie } from '@/next_utils/helpers';
@@ -97,11 +97,10 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     return await performRequest(formattedUrl, method.toString(), body);
 }
 
-export function useApi <P extends Path, M extends PathMethod<P>>(
+export function useApi <P extends Path>(
     url: P,
-    method: M,
-    params: RequestParams<P, M>
-): { data: ResponseType<P, M>, error: any, isLoading: boolean, mutate: any} {
+    params: RequestParams<P, 'get'>
+): { data: ResponseType<P, 'get'>, error: any, isLoading: boolean, mutate: any} {
     const pathParams = params?.path;
     const queryParams = params?.query;
     let shouldFetch = true;
@@ -123,12 +122,11 @@ export function useApi <P extends Path, M extends PathMethod<P>>(
 }
 
 
-export const usePaginatedApi = <P extends Path, M extends PathMethod<P>>(
+export const usePaginatedApi = <P extends Path>(
     url: P,
-    method: M,
-    ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
-): { items: PaginatedResponseType<P, M>, error: any, isLoading: boolean, size: number, setSize: any } => {
-    const getKey = (pageIndex: number, previousPageData: ResponseType<P, M>) => {
+    ...params: RequestParams<P, 'get'> extends undefined ? Array<any> : [RequestParams<P, 'get'>]
+): { items: PaginatedResponseTypeItems<P, 'get'>, error: any, isLoading: boolean, size: number, setSize: any } => {
+    const getKey = (pageIndex: number, previousPageData: PaginatedResponseType<P, 'get'>) => {
         let to_id = params[0]?.query?.last_id;
         let to_timestamp = params[0]?.query?.last_timestamp;
         const per_page = params[0]?.query?.per_page || DEFAULT_PER_PAGE;
@@ -146,7 +144,7 @@ export const usePaginatedApi = <P extends Path, M extends PathMethod<P>>(
     const { data, error, isLoading, size, setSize } = useSWRInfinite(
         getKey, fetcher, {revalidateFirstPage: false}
     )
-    const items: PaginatedResponseType<P, M> = [];
+    const items: PaginatedResponseTypeItems<P, 'get'> = [];
     if (data) {
         for (const page_data of data) {
             items.push(...page_data.items)
