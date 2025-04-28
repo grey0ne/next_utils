@@ -4,15 +4,17 @@ import { Box, Typography, Paper, CircularProgress } from '@mui/material';
 import { usePaginatedApi } from '@/next_utils/apiClient';
 import { Path, RequestPathParams, PaginatedResponseTypeItems } from '@/next_utils/apiHelpers';
 
+const DEFAULT_PER_PAGE = 20;
 
 export function InfiniteList<P extends Path>(props: {
     url: P,
     pathParams: RequestPathParams<P, 'get'> extends undefined ? {} : RequestPathParams<P, 'get'>
     renderItems: (items: PaginatedResponseTypeItems<P, 'get'>) => React.ReactNode,
+    perPage?: number,
  }) {
-    const { url, pathParams, renderItems } = props;
+    const { url, pathParams, renderItems, perPage } = props;
     const { items, error, isLoading, size, setSize } = usePaginatedApi(
-        url, { path: pathParams, query: { per_page: 10 } }
+        url, { path: pathParams, query: { per_page: perPage || DEFAULT_PER_PAGE } }
     );
 
     const observerRef = useRef<IntersectionObserver | null>(null);
