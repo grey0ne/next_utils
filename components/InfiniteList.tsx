@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useRef } from 'react';
-import { Box, Typography, Paper, CircularProgress } from '@mui/material';
+import { useInView } from 'react-intersection-observer';
+import { Box, Typography, Paper, CircularProgress, Stack } from '@mui/material';
 import { usePaginatedApi } from '@/next_utils/apiClient';
 import { Path, RequestPathParams, PaginatedResponseTypeItems } from '@/next_utils/apiHelpers';
 
@@ -17,28 +17,13 @@ export function InfiniteList<P extends Path>(props: {
         url, { path: pathParams, query: { per_page: perPage || DEFAULT_PER_PAGE } }
     );
 
-    const observerRef = useRef<IntersectionObserver | null>(null);
-    const loadMoreRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (loadMoreRef.current) {
-            observerRef.current = new IntersectionObserver(
-                (entries) => {
-                    if (entries[0].isIntersecting && !isLoading) {
-                        setSize(size + 1);
-                    }
-                },
-                { threshold: 0.1 }
-            );
-            observerRef.current.observe(loadMoreRef.current);
-        }
-
-        return () => {
-            if (observerRef.current) {
-                observerRef.current.disconnect();
-            }
-        };
-    }, [isLoading, size, setSize]);
+    const { ref } = useInView({
+        onChange: ( inView ) => { 
+            if (inView) { setSize(size + 1) }
+        },
+        threshold: 0,
+        skip: items.length === 0
+    });
 
     if (error) {
         return (
@@ -50,8 +35,10 @@ export function InfiniteList<P extends Path>(props: {
 
     return (
         <Box sx={{ mt: 2 }}>
-            { renderItems(items) }
-            <div ref={loadMoreRef} style={{ height: '20px' }} />
+            <Stack spacing={1}>
+                { renderItems(items) }
+            </Stack>
+            <div ref={ref} style={{ height: '20px' }} />
             {isLoading && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
                     <CircularProgress />
