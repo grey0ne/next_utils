@@ -1,8 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { MapContainer, TileLayer, useMap, Polygon, Polyline, LayerGroup } from 'react-leaflet';
 import { Box } from '@mui/material';
-import { GeoPoint, PolygonData, Bounds, MaskedMapProps, PolylineData } from './types';
+import { PolygonData, Bounds, MaskedMapProps, PolylineData } from './types';
 import 'leaflet/dist/leaflet.css';
 
 const DEFAULT_MASK_OPTIONS = {
@@ -84,6 +84,7 @@ export default function MaskedMap({ polygons, bounds, height, polylines }: Maske
             <MapContainer
                 id="map"
                 style={{ height: '100%', width: '100%' }}
+                attributionControl = {false}
             >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
