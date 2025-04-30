@@ -83,12 +83,9 @@ export default function MaskedMap({ polygons, bounds, height, polylines }: Maske
         <Box sx={{ height: height || '400px', width: '100%', position: 'relative' }}>
             <MapContainer
                 id="map"
-                zoom={18}
                 style={{ height: '100%', width: '100%' }}
-                scrollWheelZoom={false}
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <MaskLayer polygons={ polygons } />
