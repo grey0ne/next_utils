@@ -14,7 +14,7 @@ const DEFAULT_MASK_OPTIONS = {
 
 const DEFAULT_POLYLINE_OPTIONS = {
     color: 'red',
-    weight: 2,
+    weight: 1,
     opacity: 0.9,
 }
 
