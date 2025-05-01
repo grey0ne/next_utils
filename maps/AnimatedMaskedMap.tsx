@@ -31,7 +31,7 @@ function revealPolygonFromPoint(
     ])
 }
 
-const MAX_INTERMEDIATE_POINTS = 10;
+const MAX_INTERMEDIATE_POINTS = 40;
 
 function revealPolygonsFromPoint(
     revealed: Map<string, number>, polygons: PolygonData[],
@@ -151,9 +151,11 @@ export default function AnimatedMaskedMap({ animationSpeed, height, polylines }:
                 <Typography variant="h6" p={1}>
                     {`Distance: ${(totalDistance / 1000).toFixed(2)} km`}
                 </Typography>
+                { animationSteps > 1 && (
                 <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev - 1); }}>
                     -
                 </Button> 
+                )}
                 <Typography variant="h6" p={1}>
                     {`Animation speed: ${animationSteps}`}
                 </Typography>
