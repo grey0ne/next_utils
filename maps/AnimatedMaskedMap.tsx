@@ -84,6 +84,7 @@ export default function AnimatedMaskedMap({ animationSpeed, height, polylines }:
     const [drawnPoints, setDrawnPoints] = useState<PolylineData[]>([[]]);
     const [revealedCells, setRevealedCells] = useState<Map<string, number>>(new Map<string, number>());
     const [animationSteps, setAnimationSteps] = useState(ANIMATION_STEPS);
+    const [paused, setPaused] = useState(false);
     if (!polylines || polylines.length === 0) {
         return null;
     }
@@ -96,6 +97,9 @@ export default function AnimatedMaskedMap({ animationSpeed, height, polylines }:
 
     useEffect(() => {
         const tm = setTimeout(() => {
+            if (paused) {
+                return;
+            }
             let stepDistance = 0;
             let newPolygons: PolygonData[] = [...maskPolygons];
             let newBounds: Bounds = [...bounds] as Bounds;
@@ -133,7 +137,7 @@ export default function AnimatedMaskedMap({ animationSpeed, height, polylines }:
         return () => {
             clearTimeout(tm);
         }
-    }, [maskPolygons, linesCounter, pointCounter, bounds, polylines, revealedCells, animationSpeed, animationSteps]);
+    }, [maskPolygons, linesCounter, pointCounter, bounds, polylines, revealedCells, animationSpeed, animationSteps, paused]);
 
     return (
         <Box>
@@ -147,14 +151,17 @@ export default function AnimatedMaskedMap({ animationSpeed, height, polylines }:
                 <Typography variant="h6" p={1}>
                     {`Distance: ${(totalDistance / 1000).toFixed(2)} km`}
                 </Typography>
-                <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev + 1); }}>
-                    +
+                <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev - 1); }}>
+                    -
                 </Button> 
                 <Typography variant="h6" p={1}>
                     {`Animation speed: ${animationSteps}`}
                 </Typography>
-                <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev - 1); }}>
-                    -
+                <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev + 1); }}>
+                    +
+                </Button> 
+                <Button variant="contained" onClick={() => { setPaused(!paused); }}>
+                    { paused ? 'Resume' : 'Pause' }
                 </Button> 
             </Stack>
         </Box>
