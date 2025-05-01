@@ -5,19 +5,20 @@ export type Bounds = [[number, number], [number, number]];
 
 export type MaskedMapProps = {
     polygons?: Array<PolygonData>;
-    polylines?: Array<PolylineData>;
+    routes?: Array<RouteData>;
     bounds?: Bounds;
     height?: string; 
 }
 
 export type RouteData = {
-    id: string;
+    id: string | number;
     polyline: PolygonData;
     routeType: string;
+    color?: string;
 }
 
 export interface AnimatedMaskedMapProps {
-    polylines: Array<PolylineData>;
+    routes: Array<RouteData>;
     animationSpeed?: number;
     height?: string; 
     routeTypeOptions?: {[ key: string ]: RouteTypeOptions };

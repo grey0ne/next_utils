@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { MapContainer, TileLayer, useMap, Polygon, Polyline, LayerGroup } from 'react-leaflet';
 import { Box } from '@mui/material';
-import { PolygonData, Bounds, MaskedMapProps, PolylineData } from './types';
+import { PolygonData, Bounds, MaskedMapProps, RouteData } from './types';
 import 'leaflet/dist/leaflet.css';
 
 const DEFAULT_MASK_OPTIONS = {
@@ -31,7 +31,6 @@ function MaskLayer({ polygons }: { polygons?: Array<PolygonData> } ) {
         return null;
     }
     const maskPolygons = [DEFAULT_MASK_POLYGON, ...polygons]
-
     return (
         <LayerGroup>
             <Polygon
@@ -43,19 +42,20 @@ function MaskLayer({ polygons }: { polygons?: Array<PolygonData> } ) {
 }
 
 
-function RouteLayer({ polylines }: { polylines?: PolylineData[]} ) {
-    if (!polylines || polylines.length === 0) {
+function RouteLayer({ routes }: { routes?: RouteData[]} ) {
+    if (!routes || routes.length === 0) {
         return null;
     }
-    const elems = polylines.map((polyline, index) => {
-        if (polyline.length === 0) {
+    const elems = routes.map((route) => {
+        if (route.polyline.length === 0) {
             return null;
         }
+        const options = {...DEFAULT_POLYLINE_OPTIONS, color: route.color || DEFAULT_POLYLINE_OPTIONS.color};
         return (
             <Polyline
-                key={index}
-                positions={polyline}
-                pathOptions={DEFAULT_POLYLINE_OPTIONS}
+                key={route.id}
+                positions={route.polyline}
+                pathOptions={options}
             />
         )
     })
@@ -78,19 +78,22 @@ function BoundsUpdater({ bounds }: { bounds?: Bounds }) {
 }
 
 
-export default function MaskedMap({ polygons, bounds, height, polylines }: MaskedMapProps) {
+export default function MaskedMap({ polygons, bounds, height, routes }: MaskedMapProps) {
     return (
         <Box sx={{ height: height || '400px', width: '100%', position: 'relative' }}>
             <MapContainer
                 id="map"
                 style={{ height: '100%', width: '100%' }}
                 attributionControl = {false}
+                scrollWheelZoom = {false}
+                zoomControl = {false}
+                zoomAnimation = {false}
             >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <MaskLayer polygons={ polygons } />
-                <RouteLayer polylines={ polylines } />
+                <RouteLayer routes={ routes } />
                 <BoundsUpdater bounds={ bounds } />
             </MapContainer>
         </Box>

@@ -1,6 +1,6 @@
 import MaskedMap from "./MaskedMap";
 import { useEffect, useState } from "react";
-import { AnimatedMaskedMapProps, PolygonData, Bounds, PolylineData } from "./types";
+import { AnimatedMaskedMapProps, PolygonData, Bounds, PolylineData, RouteData } from "./types";
 import { Box, Typography, Stack, Button } from "@mui/material";
 import { getDistance, getDistanceInMeters, extendBounds } from "./helpers";
 
@@ -76,24 +76,32 @@ function revealPolygonsFromPoint(
 
 const ANIMATION_STEPS = 1;
 
-export default function AnimatedMaskedMap({ animationSpeed, height, polylines }: AnimatedMaskedMapProps) {
+function copyRouteData(route: RouteData): RouteData {
+    const result = { ...route };
+    result.polyline = [];
+    return result;
+}
+
+export default function AnimatedMaskedMap({ animationSpeed, height, routes }: AnimatedMaskedMapProps) {
     const [linesCounter, setLinesCounter] = useState(0);
     const [pointCounter, setPointCounter] = useState(0);
     const [totalDistance, setTotalDistance] = useState(0);
+    const [distanceByType, setDistanceByType] = useState<{[key: string]: number}>({});
     const [maskPolygons, setMaskPolygons] = useState<Array<PolygonData>>([]);
-    const [drawnPoints, setDrawnPoints] = useState<PolylineData[]>([[]]);
     const [revealedCells, setRevealedCells] = useState<Map<string, number>>(new Map<string, number>());
     const [animationSteps, setAnimationSteps] = useState(ANIMATION_STEPS);
     const [paused, setPaused] = useState(false);
-    if (!polylines || polylines.length === 0) {
+    if (!routes || routes.length === 0) {
         return null;
     }
-    const firstPoint = polylines[0][0];
+    const firstRoute = routes[0];
+    const firstPoint = firstRoute.polyline[0];
     const defaultBounds: Bounds = [
         [firstPoint[0] - BOUND_SIZE, firstPoint[1] - BOUND_SIZE],
         [firstPoint[0] + BOUND_SIZE, firstPoint[1] + BOUND_SIZE]
     ];
     const [bounds, setBounds] = useState<Bounds>(defaultBounds);
+    const [drawnRoutes, setDrawnRoutes] = useState<RouteData[]>([copyRouteData(firstRoute)]);
 
     useEffect(() => {
         const tm = setTimeout(() => {
@@ -103,32 +111,41 @@ export default function AnimatedMaskedMap({ animationSpeed, height, polylines }:
             let stepDistance = 0;
             let newPolygons: PolygonData[] = [...maskPolygons];
             let newBounds: Bounds = [...bounds] as Bounds;
-            let newDrawnPoints: PolylineData[] = [...drawnPoints];
+            let newDrawnRoutes: RouteData[] = [...drawnRoutes];
             let newPointCounter = pointCounter;
             let newLinesCounter = linesCounter;
+            let currentRoute = routes[newLinesCounter];
+            let newDistanceByType = {...distanceByType};
             for (let i = 0; i < animationSteps; i++) {
-                if (newLinesCounter >= polylines.length) {
+                if (newLinesCounter >= routes.length) {
                     clearTimeout(tm);
                     continue;
                 }
-                if (newPointCounter >= polylines[newLinesCounter].length) {
+                if (newPointCounter >= currentRoute.polyline.length) {
                     newLinesCounter++;
+                    currentRoute = routes[newLinesCounter];
                     newPointCounter = 0;
-                    newDrawnPoints.push([]);
+                    if (currentRoute) {
+                        newDrawnRoutes.push(copyRouteData(currentRoute));
+                    }
                     continue;
                 }
-                const newPoint = polylines[newLinesCounter][newPointCounter];
-                const prevPoint = polylines[newLinesCounter][newPointCounter - 1];
-                stepDistance += revealPolygonsFromPoint(revealedCells, newPolygons, newPoint, MAP_REVEAL_RADIUS, prevPoint);
-                const lastPolyline = newDrawnPoints[newDrawnPoints.length - 1];
-                newDrawnPoints[newDrawnPoints.length - 1] = [...lastPolyline, newPoint];
+                const newPoint = currentRoute.polyline[newPointCounter];
+                const prevPoint = currentRoute.polyline[newPointCounter - 1];
+                const intervalDistance = revealPolygonsFromPoint(revealedCells, newPolygons, newPoint, MAP_REVEAL_RADIUS, prevPoint);
+                stepDistance += intervalDistance;
+                newDistanceByType[currentRoute.routeType] = (newDistanceByType[currentRoute.routeType] || 0) + intervalDistance;
+                const lastRoute = newDrawnRoutes[newDrawnRoutes.length - 1];
+                lastRoute.polyline = [...lastRoute.polyline, newPoint]; // This trickery is needed to mutate the array pointer
+
                 extendBounds(newBounds, newPoint);
                 newPointCounter++;
             }
             setBounds(newBounds);
             setMaskPolygons(newPolygons);
-            setDrawnPoints(newDrawnPoints);
+            setDrawnRoutes(newDrawnRoutes);
             setTotalDistance((prev) => prev + stepDistance);
+            setDistanceByType(newDistanceByType);
             setRevealedCells(revealedCells);
             setPointCounter(newPointCounter);
             setLinesCounter(newLinesCounter);
@@ -137,20 +154,30 @@ export default function AnimatedMaskedMap({ animationSpeed, height, polylines }:
         return () => {
             clearTimeout(tm);
         }
-    }, [maskPolygons, linesCounter, pointCounter, bounds, polylines, revealedCells, animationSpeed, animationSteps, paused]);
+    }, [
+        maskPolygons, linesCounter, pointCounter, bounds, routes,
+        revealedCells, animationSpeed, animationSteps, paused, distanceByType, drawnRoutes
+    ]);
 
     return (
         <Box>
             <MaskedMap
                 bounds={bounds}
                 polygons={maskPolygons}
-                polylines={drawnPoints}
+                routes={drawnRoutes}
                 height={height}
             />
-            <Stack spacing={1} direction="row" mt={1}>
+            <Stack spacing={1} direction="row" mt={1} alignItems={"start"}>
                 <Typography variant="h6" p={1}>
                     {`Distance: ${(totalDistance / 1000).toFixed(2)} km`}
                 </Typography>
+                <Box>
+                    {Object.entries(distanceByType).map(([key, value]) => (
+                        <Typography key={key} variant="h6" p={1}>
+                            {`${key}: ${(value / 1000).toFixed(2)} km`}
+                        </Typography>
+                    ))}
+                </Box>
                 { animationSteps > 1 && (
                 <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev - 1); }}>
                     -
