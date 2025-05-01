@@ -1,6 +1,6 @@
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { Locale } from "@/app/types";
+import { Locale } from "@/next_utils/types";
 import { Stack, Box, Typography } from '@mui/material';
 
 type LocaleTabsProps = {

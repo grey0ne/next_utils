@@ -10,8 +10,21 @@ export type MaskedMapProps = {
     height?: string; 
 }
 
+export type RouteData = {
+    id: string;
+    polyline: PolygonData;
+    routeType: string;
+}
+
 export interface AnimatedMaskedMapProps {
     polylines: Array<PolylineData>;
     animationSpeed?: number;
     height?: string; 
+    routeTypeOptions?: {[ key: string ]: RouteTypeOptions };
+}
+
+export interface RouteTypeOptions {
+    color: string;
+    weight: number;
+    opacity: number;
 }

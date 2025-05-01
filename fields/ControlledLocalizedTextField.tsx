@@ -1,6 +1,6 @@
 import { Controller } from "react-hook-form";
 import { TextField } from '@mui/material';
-import { LocalizedString, Locale } from "@/app/types";
+import { LocalizedString, Locale } from "@/next_utils/types";
 import { LocaleTabs } from "@/next_utils/components/LocaleTabs";
 import { useState } from "react";
 
