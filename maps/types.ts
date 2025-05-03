@@ -20,6 +20,7 @@ export type RouteData = {
 export interface AnimatedMaskedMapProps {
     routes: Array<RouteData>;
     animationSpeed?: number;
+    revealRadius?: number;
     height?: string; 
     routeTypeOptions?: {[ key: string ]: RouteTypeOptions };
 }

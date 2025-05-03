@@ -1,8 +1,8 @@
 import MaskedMap from "./MaskedMap";
 import { useEffect, useState } from "react";
-import { AnimatedMaskedMapProps, PolygonData, Bounds, PolylineData, RouteData } from "./types";
+import { AnimatedMaskedMapProps, PolygonData, Bounds, RouteData } from "./types";
 import { Box, Typography, Stack, Button } from "@mui/material";
-import { getDistance, getDistanceInMeters, extendBounds } from "./helpers";
+import { getDistance, getDistanceInMeters, extendBounds, calculateSquareArea } from "./helpers";
 
 const BOUND_SIZE = 0.005;
 const DEFAULT_ANIMATION_SPEED = 1000;
@@ -82,7 +82,7 @@ function copyRouteData(route: RouteData): RouteData {
     return result;
 }
 
-export default function AnimatedMaskedMap({ animationSpeed, height, routes }: AnimatedMaskedMapProps) {
+export default function AnimatedMaskedMap({ animationSpeed, height, routes, revealRadius }: AnimatedMaskedMapProps) {
     const [linesCounter, setLinesCounter] = useState(0);
     const [pointCounter, setPointCounter] = useState(0);
     const [totalDistance, setTotalDistance] = useState(0);
@@ -102,6 +102,8 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes }: An
     ];
     const [bounds, setBounds] = useState<Bounds>(defaultBounds);
     const [drawnRoutes, setDrawnRoutes] = useState<RouteData[]>([copyRouteData(firstRoute)]);
+
+    const actualRevealRadius = revealRadius || MAP_REVEAL_RADIUS;
 
     useEffect(() => {
         const tm = setTimeout(() => {
@@ -132,7 +134,7 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes }: An
                 }
                 const newPoint = currentRoute.polyline[newPointCounter];
                 const prevPoint = currentRoute.polyline[newPointCounter - 1];
-                const intervalDistance = revealPolygonsFromPoint(revealedCells, newPolygons, newPoint, MAP_REVEAL_RADIUS, prevPoint);
+                const intervalDistance = revealPolygonsFromPoint(revealedCells, newPolygons, newPoint, actualRevealRadius, prevPoint);
                 stepDistance += intervalDistance;
                 newDistanceByType[currentRoute.routeType] = (newDistanceByType[currentRoute.routeType] || 0) + intervalDistance;
                 const lastRoute = newDrawnRoutes[newDrawnRoutes.length - 1];
@@ -159,6 +161,15 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes }: An
         revealedCells, animationSpeed, animationSteps, paused, distanceByType, drawnRoutes
     ]);
 
+    let revealedSquareArea = 0;
+    if (maskPolygons.length > 0) {
+        const firstPoint = maskPolygons[0][0];
+        revealedSquareArea = calculateSquareArea(
+            [firstPoint[0], firstPoint[1]],
+            [firstPoint[0] - actualRevealRadius, firstPoint[1] - actualRevealRadius],
+
+        )
+    }
     return (
         <Box>
             <MaskedMap
@@ -167,16 +178,19 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes }: An
                 routes={drawnRoutes}
                 height={height}
             />
-            <Stack spacing={1} direction="row" mt={1} alignItems={"start"}>
-                <Typography variant="h6" p={1}>
-                    {`Distance: ${(totalDistance / 1000).toFixed(2)} km`}
-                </Typography>
-                <Box>
+            <Stack spacing={1} direction="row" mt={1} alignItems={"start"} position={'absolute'} top={0} left={0} zIndex={1000}>
+                <Box pl={1}>
                     {Object.entries(distanceByType).map(([key, value]) => (
-                        <Typography key={key} variant="h6" p={1}>
+                        <Typography key={key} variant="h6">
                             {`${key}: ${(value / 1000).toFixed(2)} km`}
                         </Typography>
                     ))}
+                    <Typography variant="h6">
+                        {`Total: ${(totalDistance / 1000).toFixed(2)} km`}
+                    </Typography>
+                    <Typography variant="h6">
+                        {`Area: ${(revealedSquareArea * maskPolygons.length / 1000000).toFixed(2)} sqkm`}
+                    </Typography>
                 </Box>
                 { animationSteps > 1 && (
                 <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev - 1); }}>
