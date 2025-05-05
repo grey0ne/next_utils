@@ -3,6 +3,11 @@ import { useEffect, useState } from "react";
 import { AnimatedMaskedMapProps, PolygonData, Bounds, RouteData } from "./types";
 import { Box, Typography, Stack, Button } from "@mui/material";
 import { getDistance, getDistanceInMeters, extendBounds, calculateSquareArea } from "./helpers";
+import SpeedIcon from '@mui/icons-material/Speed';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const BOUND_SIZE = 0.005;
 const DEFAULT_ANIMATION_SPEED = 1000;
@@ -178,33 +183,33 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
                 routes={drawnRoutes}
                 height={height}
             />
-            <Stack spacing={1} direction="row" mt={1} alignItems={"start"} position={'absolute'} top={0} left={0} zIndex={1000}>
-                <Box pl={1}>
-                    {Object.entries(distanceByType).map(([key, value]) => (
-                        <Typography key={key} variant="h6">
-                            {`${key}: ${(value / 1000).toFixed(2)} km`}
-                        </Typography>
-                    ))}
-                    <Typography variant="h6">
-                        {`Total: ${(totalDistance / 1000).toFixed(2)} km`}
+            <Box pl={1} position={'absolute'} top={0} left={0} zIndex={1000}>
+                {Object.entries(distanceByType).map(([key, value]) => (
+                    <Typography key={key} variant="h6">
+                        {`${key}: ${(value / 1000).toFixed(2)} km`}
                     </Typography>
-                    <Typography variant="h6">
-                        {`Area: ${(revealedSquareArea * maskPolygons.length / 1000000).toFixed(2)} sqkm`}
-                    </Typography>
-                </Box>
-                { animationSteps > 1 && (
-                <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev - 1); }}>
-                    -
+                ))}
+                <Typography variant="h6">
+                    {`Total: ${(totalDistance / 1000).toFixed(2)} km`}
+                </Typography>
+                <Typography variant="h6">
+                    {`Area: ${(revealedSquareArea * maskPolygons.length / 1000000).toFixed(2)} sqkm`}
+                </Typography>
+            </Box>
+            <Stack spacing={1} direction="row" mr={1} alignItems={"start"} position={'absolute'} bottom={0} right={0} zIndex={1000}>
+                <Button variant="contained" disabled={animationSteps <= 1} onClick={() => { setAnimationSteps((prev) => prev - 1); }}>
+                    <RemoveIcon />
                 </Button> 
-                )}
                 <Typography variant="h6" p={1}>
-                    {`Animation speed: ${animationSteps}`}
+                    <SpeedIcon />
+                    &nbsp;
+                    {animationSteps}
                 </Typography>
                 <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev + 1); }}>
-                    +
+                    <AddIcon />
                 </Button> 
                 <Button variant="contained" onClick={() => { setPaused(!paused); }}>
-                    { paused ? 'Resume' : 'Pause' }
+                    { paused ? <PlayArrowIcon /> : <PauseIcon /> }
                 </Button> 
             </Stack>
         </Box>
