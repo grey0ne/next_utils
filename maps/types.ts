@@ -15,6 +15,7 @@ export type RouteData = {
     polyline: PolygonData;
     routeType: string;
     color?: string;
+    opacity?: number;
 }
 
 export interface AnimatedMaskedMapProps {
@@ -23,6 +24,7 @@ export interface AnimatedMaskedMapProps {
     revealRadius?: number;
     height?: string; 
     routeTypeOptions?: {[ key: string ]: RouteTypeOptions };
+    maxDrawnRoutes?: number;
 }
 
 export interface RouteTypeOptions {

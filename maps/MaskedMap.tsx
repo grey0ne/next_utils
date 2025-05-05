@@ -50,7 +50,11 @@ function RouteLayer({ routes }: { routes?: RouteData[]} ) {
         if (route.polyline.length === 0) {
             return null;
         }
-        const options = {...DEFAULT_POLYLINE_OPTIONS, color: route.color || DEFAULT_POLYLINE_OPTIONS.color};
+        const options = {
+            ...DEFAULT_POLYLINE_OPTIONS,
+            color: route.color || DEFAULT_POLYLINE_OPTIONS.color,
+            opacity: route.opacity || 1
+        };
         return (
             <Polyline
                 key={route.id}
