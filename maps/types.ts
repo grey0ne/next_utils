@@ -26,7 +26,5 @@ export interface AnimatedMaskedMapProps {
 }
 
 export interface RouteTypeOptions {
-    color: string;
-    weight: number;
-    opacity: number;
+    label: string;
 }

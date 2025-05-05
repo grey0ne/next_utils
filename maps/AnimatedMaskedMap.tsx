@@ -8,6 +8,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { useTranslations } from "next-intl";
 
 const BOUND_SIZE = 0.005;
 const DEFAULT_ANIMATION_SPEED = 1000;
@@ -87,7 +88,7 @@ function copyRouteData(route: RouteData): RouteData {
     return result;
 }
 
-export default function AnimatedMaskedMap({ animationSpeed, height, routes, revealRadius }: AnimatedMaskedMapProps) {
+export default function AnimatedMaskedMap({ animationSpeed, height, routes, revealRadius, routeTypeOptions }: AnimatedMaskedMapProps) {
     const [linesCounter, setLinesCounter] = useState(0);
     const [pointCounter, setPointCounter] = useState(0);
     const [totalDistance, setTotalDistance] = useState(0);
@@ -109,6 +110,8 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
     const [drawnRoutes, setDrawnRoutes] = useState<RouteData[]>([copyRouteData(firstRoute)]);
 
     const actualRevealRadius = revealRadius || MAP_REVEAL_RADIUS;
+
+    const t = useTranslations('AnimatedMaskedMap');
 
     useEffect(() => {
         const tm = setTimeout(() => {
@@ -186,25 +189,26 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
             <Box pl={1} position={'absolute'} top={0} left={0} zIndex={1000}>
                 {Object.entries(distanceByType).map(([key, value]) => (
                     <Typography key={key} variant="h6">
-                        {`${key}: ${(value / 1000).toFixed(2)} km`}
+                        {`${routeTypeOptions?.[key].label || key}: ${(value / 1000).toFixed(2)} km`}
                     </Typography>
                 ))}
                 <Typography variant="h6">
-                    {`Total: ${(totalDistance / 1000).toFixed(2)} km`}
+                    {t('distance_total', {distance: (totalDistance / 1000).toFixed(2)})}
                 </Typography>
                 <Typography variant="h6">
-                    {`Area: ${(revealedSquareArea * maskPolygons.length / 1000000).toFixed(2)} sqkm`}
+                    {t('area_total', {area: (revealedSquareArea * maskPolygons.length / 1000000).toFixed(2)})}
                 </Typography>
             </Box>
-            <Stack spacing={1} direction="row" mr={1} alignItems={"start"} position={'absolute'} bottom={0} right={0} zIndex={1000}>
+            <Stack spacing={1} direction="row" p={1} alignItems={"start"} position={'absolute'} bottom={0} right={0} zIndex={1000}>
                 <Button variant="contained" disabled={animationSteps <= 1} onClick={() => { setAnimationSteps((prev) => prev - 1); }}>
                     <RemoveIcon />
                 </Button> 
-                <Typography variant="h6" p={1}>
-                    <SpeedIcon />
-                    &nbsp;
-                    {animationSteps}
-                </Typography>
+                <Stack direction="row" spacing={1} alignItems="anchor-center">
+                    <SpeedIcon/>
+                    <Typography variant="h5">
+                        {animationSteps}
+                    </Typography>
+                </Stack>
                 <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev + 1); }}>
                     <AddIcon />
                 </Button> 
