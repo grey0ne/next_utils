@@ -11,9 +11,13 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { useTranslations } from "next-intl";
 
 const BOUND_SIZE = 0.005;
-const DEFAULT_ANIMATION_SPEED = 1000;
+const DEFAULT_ANIMATION_SPEED = 50;
 
 const MAP_REVEAL_RADIUS = 0.0005;
+const DEFAULT_ANIMATION_STEPS = 1;
+
+const MAX_INTERMEDIATE_POINTS = 40;
+const MAX_DRAWN_ROUTES = 10;
 
 function revealPolygonFromPoint(
     revealed: Map<string, number>, 
@@ -37,7 +41,6 @@ function revealPolygonFromPoint(
     ])
 }
 
-const MAX_INTERMEDIATE_POINTS = 40;
 
 function revealPolygonsFromPoint(
     revealed: Map<string, number>, polygons: PolygonData[],
@@ -80,12 +83,55 @@ function revealPolygonsFromPoint(
     return totalDistance;
 }
 
-const ANIMATION_STEPS = 1;
 
-function copyRouteData(route: RouteData): RouteData {
+function copyEmptyRouteData(route: RouteData): RouteData {
     const result = { ...route };
     result.polyline = [];
     return result;
+}
+
+type AnimationControlProps = {
+    animationSteps: number;
+    setAnimationSteps: (steps: number) => void;
+    paused: boolean;
+    setPaused: (paused: boolean) => void;
+    animationFinished: boolean;
+    resetAnimation: () => void;
+}
+
+function AnimationControl({ animationSteps, setAnimationSteps, animationFinished, paused, setPaused, resetAnimation }: AnimationControlProps) {
+    const t = useTranslations('AnimatedMaskedMap');
+    const stepControl = animationFinished ? (
+        <Button variant="contained" onClick={() => { resetAnimation(); }}>
+            {t('reset')}
+        </Button> 
+    ) : (
+        <>
+            <Stack direction="row" spacing={1} alignItems={"start"}>
+                <Button variant="contained" disabled={animationSteps <= 1} onClick={() => { setAnimationSteps(animationSteps - 1); }}>
+                    <RemoveIcon />
+                </Button> 
+                <Stack direction="row" spacing={1} alignItems={"anchor-center"}>
+                    <SpeedIcon/>
+                    <Typography variant="h5">
+                        {animationSteps}
+                    </Typography>
+                </Stack>
+                <Button variant="contained" onClick={() => { setAnimationSteps(animationSteps + 1); }}>
+                    <AddIcon />
+                </Button> 
+            </Stack>
+            <Button variant="contained" onClick={() => { setPaused(!paused); }}>
+                { paused ? <PlayArrowIcon /> : <PauseIcon /> }
+            </Button> 
+        </>
+    )
+
+    return (
+        <Stack spacing={1} direction="row" p={1} alignItems={"start"} position={'absolute'} bottom={0} right={0} zIndex={1000}>
+            { stepControl }
+        </Stack>
+    )
 }
 
 export default function AnimatedMaskedMap({ animationSpeed, height, routes, revealRadius, routeTypeOptions }: AnimatedMaskedMapProps) {
@@ -95,7 +141,7 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
     const [distanceByType, setDistanceByType] = useState<{[key: string]: number}>({});
     const [maskPolygons, setMaskPolygons] = useState<Array<PolygonData>>([]);
     const [revealedCells, setRevealedCells] = useState<Map<string, number>>(new Map<string, number>());
-    const [animationSteps, setAnimationSteps] = useState(ANIMATION_STEPS);
+    const [animationSteps, setAnimationSteps] = useState(DEFAULT_ANIMATION_STEPS);
     const [paused, setPaused] = useState(false);
     if (!routes || routes.length === 0) {
         return null;
@@ -107,8 +153,17 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
         [firstPoint[0] + BOUND_SIZE, firstPoint[1] + BOUND_SIZE]
     ];
     const [bounds, setBounds] = useState<Bounds>(defaultBounds);
-    const [drawnRoutes, setDrawnRoutes] = useState<RouteData[]>([copyRouteData(firstRoute)]);
+    const [drawnRoutes, setDrawnRoutes] = useState<RouteData[]>([copyEmptyRouteData(firstRoute)]);
 
+    const resetAnimation = () => {
+        setLinesCounter(0);
+        setPointCounter(0);
+        setTotalDistance(0);
+        setDistanceByType({});
+        setMaskPolygons([]);
+        setRevealedCells(new Map<string, number>());
+        setDrawnRoutes([copyEmptyRouteData(firstRoute)]);
+    }
     const actualRevealRadius = revealRadius || MAP_REVEAL_RADIUS;
 
     const t = useTranslations('AnimatedMaskedMap');
@@ -117,6 +172,9 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
         const tm = setTimeout(() => {
             if (paused) {
                 return;
+            }
+            if (linesCounter >= routes.length) {
+                return
             }
             let stepDistance = 0;
             let newPolygons: PolygonData[] = [...maskPolygons];
@@ -128,15 +186,14 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
             let newDistanceByType = {...distanceByType};
             for (let i = 0; i < animationSteps; i++) {
                 if (newLinesCounter >= routes.length) {
-                    clearTimeout(tm);
-                    continue;
+                    break;
                 }
                 if (newPointCounter >= currentRoute.polyline.length) {
                     newLinesCounter++;
                     currentRoute = routes[newLinesCounter];
                     newPointCounter = 0;
                     if (currentRoute) {
-                        newDrawnRoutes.push(copyRouteData(currentRoute));
+                        newDrawnRoutes.push(copyEmptyRouteData(currentRoute));
                     }
                     continue;
                 }
@@ -178,6 +235,7 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
 
         )
     }
+    const animationFinished = linesCounter >= routes.length;
     return (
         <Box>
             <MaskedMap
@@ -189,7 +247,7 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
             <Box pl={1} position={'absolute'} top={0} left={0} zIndex={1000}>
                 {Object.entries(distanceByType).map(([key, value]) => (
                     <Typography key={key} variant="h6">
-                        {`${routeTypeOptions?.[key].label || key}: ${(value / 1000).toFixed(2)} km`}
+                        {`${routeTypeOptions?.[key].label || key}: ${(value / 1000).toFixed(2)} ${t('km')}`}
                     </Typography>
                 ))}
                 <Typography variant="h6">
@@ -199,23 +257,14 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
                     {t('area_total', {area: (revealedSquareArea * maskPolygons.length / 1000000).toFixed(2)})}
                 </Typography>
             </Box>
-            <Stack spacing={1} direction="row" p={1} alignItems={"start"} position={'absolute'} bottom={0} right={0} zIndex={1000}>
-                <Button variant="contained" disabled={animationSteps <= 1} onClick={() => { setAnimationSteps((prev) => prev - 1); }}>
-                    <RemoveIcon />
-                </Button> 
-                <Stack direction="row" spacing={1} alignItems="anchor-center">
-                    <SpeedIcon/>
-                    <Typography variant="h5">
-                        {animationSteps}
-                    </Typography>
-                </Stack>
-                <Button variant="contained" onClick={() => { setAnimationSteps((prev) => prev + 1); }}>
-                    <AddIcon />
-                </Button> 
-                <Button variant="contained" onClick={() => { setPaused(!paused); }}>
-                    { paused ? <PlayArrowIcon /> : <PauseIcon /> }
-                </Button> 
-            </Stack>
+            <AnimationControl 
+                animationSteps={animationSteps}
+                setAnimationSteps={setAnimationSteps}
+                paused={paused}
+                setPaused={setPaused}
+                animationFinished={animationFinished}
+                resetAnimation={resetAnimation}
+            />
         </Box>
     )
 }
