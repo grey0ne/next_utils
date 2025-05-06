@@ -14,6 +14,8 @@ export type RouteData = {
     id: string | number;
     polyline: PolygonData;
     routeType: string;
+    title?: string;
+    routeDate?: string;
     color?: string;
     opacity?: number;
 }

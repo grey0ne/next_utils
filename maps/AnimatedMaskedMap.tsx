@@ -8,7 +8,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { useTranslations } from "next-intl";
+import { useTranslations, Locale, useLocale } from "next-intl";
 
 const BOUND_SIZE = 0.005;
 const MAX_BOUND_SIZE = 20000; // meters
@@ -169,7 +169,7 @@ function animationIteration(
                 }
                 newDrawnRoutes.push(copyEmptyRouteData(currentRoute));
                 for (let i = 0; i < newDrawnRoutes.length; i++) {
-                    newDrawnRoutes[i].opacity = (i / newDrawnRoutes.length);
+                    newDrawnRoutes[i].opacity = (i / newDrawnRoutes.length + 0.01);
                 }
             }
             if ( loadRoutes && newLinesCounter == routes.length - 2) {
@@ -216,7 +216,7 @@ function DistanceCounter({ distanceByType, totalDistance, routeTypeOptions, mask
         )
     }
     return (
-        <Box pl={1} position={'absolute'} top={0} left={0} zIndex={1000}>
+        <Box p={1} position={'absolute'} top={0} left={0} zIndex={1000}>
             {Object.entries(distanceByType).map(([key, value]) => (
                 <Typography key={key} variant="h6">
                     {`${routeTypeOptions?.[key].label || key}: ${(value / 1000).toFixed(2)} ${t('km')}`}
@@ -227,6 +227,23 @@ function DistanceCounter({ distanceByType, totalDistance, routeTypeOptions, mask
             </Typography>
             <Typography variant="h6">
                 {t('area_total', {area: (revealedSquareArea * maskPolygons.length / 1000000).toFixed(2)})}
+            </Typography>
+        </Box>
+    )
+}
+
+function RouteInfo({ route }: { route: RouteData }) {
+    const locale = useLocale();
+    const formattedDate = new Date(route.routeDate || '').toLocaleString(
+        locale, { year:"numeric", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", hourCycle: "h23"}
+    ) 
+    return (
+        <Box p={1} position={'absolute'} top={0} right={0} zIndex={1000} textAlign="right">
+            <Typography variant="body2">
+                { route.title || '' }
+            </Typography>
+            <Typography variant="body2">
+                { formattedDate }
             </Typography>
         </Box>
     )
@@ -301,6 +318,7 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
 
 
     const animationFinished = linesCounter >= routes.length;
+    const currentRoute = routes[linesCounter];
     return (
         <Box>
             <MaskedMap
@@ -324,6 +342,7 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
                 animationFinished={animationFinished}
                 resetAnimation={resetAnimation}
             />
+            <RouteInfo route={currentRoute} />
         </Box>
     )
 }
