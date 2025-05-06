@@ -134,7 +134,8 @@ function AnimationControl({ animationSteps, setAnimationSteps, animationFinished
     )
 }
 
-export default function AnimatedMaskedMap({ animationSpeed, height, routes, revealRadius, routeTypeOptions, maxDrawnRoutes }: AnimatedMaskedMapProps) {
+export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
+    const { animationSpeed, routes, revealRadius, height, routeTypeOptions, maxDrawnRoutes, loadRoutes } = props;
     const [linesCounter, setLinesCounter] = useState(0);
     const [pointCounter, setPointCounter] = useState(0);
     const [totalDistance, setTotalDistance] = useState(0);
@@ -200,6 +201,9 @@ export default function AnimatedMaskedMap({ animationSpeed, height, routes, reve
                         for (let i = 0; i < newDrawnRoutes.length; i++) {
                             newDrawnRoutes[i].opacity = (i / newDrawnRoutes.length);
                         }
+                    }
+                    if ( loadRoutes && newLinesCounter == routes.length - 1) {
+                        loadRoutes();
                     }
                     continue;
                 }

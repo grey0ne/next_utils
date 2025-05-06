@@ -25,6 +25,7 @@ export interface AnimatedMaskedMapProps {
     height?: string; 
     routeTypeOptions?: {[ key: string ]: RouteTypeOptions };
     maxDrawnRoutes?: number;
+    loadRoutes?: () => void;
 }
 
 export interface RouteTypeOptions {

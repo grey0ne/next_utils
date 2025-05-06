@@ -125,7 +125,7 @@ export function useApi <P extends Path>(
 export const usePaginatedApi = <P extends Path>(
     url: P,
     ...params: RequestParams<P, 'get'> extends undefined ? Array<any> : [RequestParams<P, 'get'>]
-): { items: PaginatedResponseTypeItems<P, 'get'>, error: any, isLoading: boolean, size: number, setSize: any } => {
+): { items: PaginatedResponseTypeItems<P, 'get'>, error: any, isLoading: boolean, size: number, setSize: (size: any) => void } => {
     const getKey = (pageIndex: number, previousPageData: PaginatedResponseType<P, 'get'>) => {
         let to_id = params[0]?.query?.last_id;
         let to_timestamp = params[0]?.query?.last_timestamp;
@@ -152,6 +152,9 @@ export const usePaginatedApi = <P extends Path>(
     }
     return {
         items: items,
-        error, isLoading, size, setSize
+        error,
+        isLoading,
+        size,
+        setSize
     }
 }
