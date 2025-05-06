@@ -1,6 +1,6 @@
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { Locale } from "@/next_utils/types";
+import { Locale } from "next-intl";
 import { Stack, Box, Typography } from '@mui/material';
 
 type LocaleTabsProps = {
@@ -23,8 +23,8 @@ export function LocaleTabs({ selectedLocale, setLocale, title }: LocaleTabsProps
                 indicatorColor="primary"
                 onChange={ handleChange }
             >
-                <Tab label={ Locale.EN } value={ Locale.EN } />
-                <Tab label={ Locale.RU } value={ Locale.RU } />
+                <Tab label='en' value='en' />
+                <Tab label='ru' value='ru' />
             </Tabs>
         </Stack>
     )
