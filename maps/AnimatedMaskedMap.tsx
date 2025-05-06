@@ -232,7 +232,10 @@ function DistanceCounter({ distanceByType, totalDistance, routeTypeOptions, mask
     )
 }
 
-function RouteInfo({ route }: { route: RouteData }) {
+function RouteInfo({ route }: { route?: RouteData }) {
+    if (!route) {
+        return null;
+    }
     const locale = useLocale();
     const formattedDate = new Date(route.routeDate || '').toLocaleString(
         locale, { year:"numeric", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", hourCycle: "h23"}
@@ -251,6 +254,8 @@ function RouteInfo({ route }: { route: RouteData }) {
 
 export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
     const { animationSpeed, routes, revealRadius, height, routeTypeOptions, maxDrawnRoutes, loadRoutes } = props;
+    const showInterface = props.showInterface !== undefined ? props.showInterface : true;
+    const cycleAnimation = props.cycleAnimation !== undefined ? props.cycleAnimation : false;
     const [linesCounter, setLinesCounter] = useState(0);
     const [pointCounter, setPointCounter] = useState(0);
     const [totalDistance, setTotalDistance] = useState(0);
@@ -287,6 +292,9 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
                 return;
             }
             if (linesCounter >= routes.length) {
+                if (cycleAnimation) {
+                    resetAnimation();
+                }
                 return
             }
             const { 
@@ -327,22 +335,26 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
                 routes={drawnRoutes}
                 height={height}
             />
-            <DistanceCounter
-                totalDistance={totalDistance}
-                maskPolygons={maskPolygons}
-                distanceByType={distanceByType}
-                revealRadius={actualRevealRadius}
-                routeTypeOptions={routeTypeOptions}
-            />
-            <AnimationControl 
-                animationSteps={animationSteps}
-                setAnimationSteps={setAnimationSteps}
-                paused={paused}
-                setPaused={setPaused}
-                animationFinished={animationFinished}
-                resetAnimation={resetAnimation}
-            />
-            <RouteInfo route={currentRoute} />
+            { showInterface && (
+                <>
+                    <DistanceCounter
+                        totalDistance={totalDistance}
+                        maskPolygons={maskPolygons}
+                        distanceByType={distanceByType}
+                        revealRadius={actualRevealRadius}
+                        routeTypeOptions={routeTypeOptions}
+                    />
+                    <AnimationControl 
+                        animationSteps={animationSteps}
+                        setAnimationSteps={setAnimationSteps}
+                        paused={paused}
+                        setPaused={setPaused}
+                        animationFinished={animationFinished}
+                        resetAnimation={resetAnimation}
+                    />
+                    <RouteInfo route={currentRoute} />
+                </>
+            )}
         </Box>
     )
 }
