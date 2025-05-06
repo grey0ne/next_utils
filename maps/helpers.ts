@@ -24,6 +24,13 @@ export function getDistance(point1: GeoPoint, point2: GeoPoint) {
     return Math.sqrt(Math.pow((point1[0] - point2[0]), 2) + Math.pow((point1[1] - point2[1]), 2));
 }
 
+export function getBounds(center: GeoPoint, size: number): Bounds {
+    return [
+        [center[0] - size, center[1] - size],
+        [center[0] + size, center[1] + size]
+    ];
+}
+
 export function extendBounds (bounds: Bounds, latlng: GeoPoint) {
     if (latlng[0] < bounds[0][0]) {
         bounds[0][0] = latlng[0];

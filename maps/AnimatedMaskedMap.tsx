@@ -2,7 +2,7 @@ import MaskedMap from "./MaskedMap";
 import { useEffect, useState } from "react";
 import { AnimatedMaskedMapProps, PolygonData, Bounds, RouteData } from "./types";
 import { Box, Typography, Stack, Button } from "@mui/material";
-import { getDistance, getDistanceInMeters, extendBounds, calculateSquareArea } from "./helpers";
+import { getDistance, getDistanceInMeters, extendBounds, calculateSquareArea, getBounds } from "./helpers";
 import SpeedIcon from '@mui/icons-material/Speed';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -11,6 +11,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { useTranslations } from "next-intl";
 
 const BOUND_SIZE = 0.005;
+const MAX_BOUND_SIZE = 20000; // meters
 const DEFAULT_ANIMATION_SPEED = 50;
 
 const MAP_REVEAL_RADIUS = 0.0005;
@@ -60,10 +61,10 @@ function revealPolygonsFromPoint(
             (prevPoint[1] - curPoint[1]) / distance
         ];
         let counter = 0;
-        while (distance > MAP_REVEAL_RADIUS && counter < MAX_INTERMEDIATE_POINTS) {
+        while (distance > revealRadius && counter < MAX_INTERMEDIATE_POINTS) {
             curPoint = [
-                curPoint[0] + (vector[0] * MAP_REVEAL_RADIUS),
-                curPoint[1] + (vector[1] * MAP_REVEAL_RADIUS)
+                curPoint[0] + (vector[0] * revealRadius),
+                curPoint[1] + (vector[1] * revealRadius)
             ];
             pointsToReveal.push(curPoint);
             distance = getDistance(curPoint, prevPoint);
@@ -134,6 +135,103 @@ function AnimationControl({ animationSteps, setAnimationSteps, animationFinished
     )
 }
 
+function animationIteration(
+    animationSteps: number, routes: RouteData[],
+    pointCounter: number, linesCounter: number,
+    distanceByType: {[key: string]: number},
+    maskPolygons: PolygonData[],
+    bounds: Bounds,
+    drawnRoutes: RouteData[],
+    revealedCells: Map<string, number>,
+    revealRadius: number,
+    maxDrawnRoutes: number,
+    loadRoutes?: (() => void),
+) {
+    let stepDistance = 0;
+    let newPointCounter = pointCounter;
+    let newLinesCounter = linesCounter;
+    let newDrawnRoutes: RouteData[] = [...drawnRoutes];
+    let newBounds: Bounds = [...bounds] as Bounds;
+    let newPolygons: PolygonData[] = [...maskPolygons];
+    const newDistanceByType = {...distanceByType};
+    let currentRoute = routes[newLinesCounter];
+    for (let i = 0; i < animationSteps; i++) {
+        if (newLinesCounter >= routes.length) {
+            break;
+        }
+        if (newPointCounter >= currentRoute.polyline.length) {
+            newLinesCounter++;
+            currentRoute = routes[newLinesCounter];
+            newPointCounter = 0;
+            if (currentRoute) {
+                if (newDrawnRoutes.length >= ( maxDrawnRoutes )) {
+                    newDrawnRoutes.shift();
+                }
+                newDrawnRoutes.push(copyEmptyRouteData(currentRoute));
+                for (let i = 0; i < newDrawnRoutes.length; i++) {
+                    newDrawnRoutes[i].opacity = (i / newDrawnRoutes.length);
+                }
+            }
+            if ( loadRoutes && newLinesCounter == routes.length - 2) {
+                console.log('Loading more routes. Total routes:', routes.length);
+                loadRoutes();
+            }
+            continue;
+        }
+        const newPoint = currentRoute.polyline[newPointCounter];
+        const prevPoint = currentRoute.polyline[newPointCounter - 1];
+        const intervalDistance = revealPolygonsFromPoint(revealedCells, newPolygons, newPoint, revealRadius, prevPoint);
+        stepDistance += intervalDistance;
+        newDistanceByType[currentRoute.routeType] = (newDistanceByType[currentRoute.routeType] || 0) + intervalDistance;
+        const lastRoute = newDrawnRoutes[newDrawnRoutes.length - 1];
+        lastRoute.polyline = [...lastRoute.polyline, newPoint]; // This trickery is needed to mutate the array pointer
+        
+        if (getDistanceInMeters(newPoint, newBounds[0]) > MAX_BOUND_SIZE) {
+            newBounds = getBounds(newPoint, BOUND_SIZE);
+        } else {
+            extendBounds(newBounds, newPoint);
+        }
+        newPointCounter++;
+    }
+    return { newPointCounter, newLinesCounter, newBounds, newDrawnRoutes, newPolygons, newDistanceByType, stepDistance };
+}
+
+type DistanceCounterProps = {
+    distanceByType: {[key: string]: number};
+    totalDistance: number;
+    maskPolygons: PolygonData[];
+    revealRadius: number;
+    routeTypeOptions?: {[ key: string ]: { label: string }};
+}
+
+function DistanceCounter({ distanceByType, totalDistance, routeTypeOptions, maskPolygons, revealRadius }: DistanceCounterProps) {
+    const t = useTranslations('AnimatedMaskedMap');
+    let revealedSquareArea = 0;
+    if (maskPolygons.length > 0) {
+        const firstPoint = maskPolygons[0][0];
+        revealedSquareArea = calculateSquareArea(
+            [firstPoint[0], firstPoint[1]],
+            [firstPoint[0] - revealRadius, firstPoint[1] - revealRadius],
+
+        )
+    }
+    return (
+        <Box pl={1} position={'absolute'} top={0} left={0} zIndex={1000}>
+            {Object.entries(distanceByType).map(([key, value]) => (
+                <Typography key={key} variant="h6">
+                    {`${routeTypeOptions?.[key].label || key}: ${(value / 1000).toFixed(2)} ${t('km')}`}
+                </Typography>
+            ))}
+            <Typography variant="h6">
+                {t('distance_total', {distance: (totalDistance / 1000).toFixed(2)})}
+            </Typography>
+            <Typography variant="h6">
+                {t('area_total', {area: (revealedSquareArea * maskPolygons.length / 1000000).toFixed(2)})}
+            </Typography>
+        </Box>
+    )
+}
+
 export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
     const { animationSpeed, routes, revealRadius, height, routeTypeOptions, maxDrawnRoutes, loadRoutes } = props;
     const [linesCounter, setLinesCounter] = useState(0);
@@ -149,10 +247,7 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
     }
     const firstRoute = routes[0];
     const firstPoint = firstRoute.polyline[0];
-    const defaultBounds: Bounds = [
-        [firstPoint[0] - BOUND_SIZE, firstPoint[1] - BOUND_SIZE],
-        [firstPoint[0] + BOUND_SIZE, firstPoint[1] + BOUND_SIZE]
-    ];
+    const defaultBounds: Bounds = getBounds(firstPoint, BOUND_SIZE);
     const [bounds, setBounds] = useState<Bounds>(defaultBounds);
     const [drawnRoutes, setDrawnRoutes] = useState<RouteData[]>([copyEmptyRouteData(firstRoute)]);
 
@@ -177,47 +272,15 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
             if (linesCounter >= routes.length) {
                 return
             }
-            let stepDistance = 0;
-            let newPolygons: PolygonData[] = [...maskPolygons];
-            let newBounds: Bounds = [...bounds] as Bounds;
-            let newDrawnRoutes: RouteData[] = [...drawnRoutes];
-            let newPointCounter = pointCounter;
-            let newLinesCounter = linesCounter;
-            let currentRoute = routes[newLinesCounter];
-            let newDistanceByType = {...distanceByType};
-            for (let i = 0; i < animationSteps; i++) {
-                if (newLinesCounter >= routes.length) {
-                    break;
-                }
-                if (newPointCounter >= currentRoute.polyline.length) {
-                    newLinesCounter++;
-                    currentRoute = routes[newLinesCounter];
-                    newPointCounter = 0;
-                    if (currentRoute) {
-                        if (newDrawnRoutes.length >= ( maxDrawnRoutes || MAX_DRAWN_ROUTES)) {
-                            newDrawnRoutes.shift();
-                        }
-                        newDrawnRoutes.push(copyEmptyRouteData(currentRoute));
-                        for (let i = 0; i < newDrawnRoutes.length; i++) {
-                            newDrawnRoutes[i].opacity = (i / newDrawnRoutes.length);
-                        }
-                    }
-                    if ( loadRoutes && newLinesCounter == routes.length - 1) {
-                        loadRoutes();
-                    }
-                    continue;
-                }
-                const newPoint = currentRoute.polyline[newPointCounter];
-                const prevPoint = currentRoute.polyline[newPointCounter - 1];
-                const intervalDistance = revealPolygonsFromPoint(revealedCells, newPolygons, newPoint, actualRevealRadius, prevPoint);
-                stepDistance += intervalDistance;
-                newDistanceByType[currentRoute.routeType] = (newDistanceByType[currentRoute.routeType] || 0) + intervalDistance;
-                const lastRoute = newDrawnRoutes[newDrawnRoutes.length - 1];
-                lastRoute.polyline = [...lastRoute.polyline, newPoint]; // This trickery is needed to mutate the array pointer
-
-                extendBounds(newBounds, newPoint);
-                newPointCounter++;
-            }
+            const { 
+                newPointCounter, newLinesCounter, newBounds, newDrawnRoutes,
+                newPolygons, newDistanceByType, stepDistance
+            } = animationIteration(
+                animationSteps, routes, pointCounter, linesCounter,
+                distanceByType, maskPolygons, bounds, drawnRoutes, revealedCells,
+                actualRevealRadius, maxDrawnRoutes || MAX_DRAWN_ROUTES, loadRoutes
+            )
+            
             setBounds(newBounds);
             setMaskPolygons(newPolygons);
             setDrawnRoutes(newDrawnRoutes);
@@ -236,15 +299,7 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
         revealedCells, animationSpeed, animationSteps, paused, distanceByType, drawnRoutes
     ]);
 
-    let revealedSquareArea = 0;
-    if (maskPolygons.length > 0) {
-        const firstPoint = maskPolygons[0][0];
-        revealedSquareArea = calculateSquareArea(
-            [firstPoint[0], firstPoint[1]],
-            [firstPoint[0] - actualRevealRadius, firstPoint[1] - actualRevealRadius],
 
-        )
-    }
     const animationFinished = linesCounter >= routes.length;
     return (
         <Box>
@@ -254,19 +309,13 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
                 routes={drawnRoutes}
                 height={height}
             />
-            <Box pl={1} position={'absolute'} top={0} left={0} zIndex={1000}>
-                {Object.entries(distanceByType).map(([key, value]) => (
-                    <Typography key={key} variant="h6">
-                        {`${routeTypeOptions?.[key].label || key}: ${(value / 1000).toFixed(2)} ${t('km')}`}
-                    </Typography>
-                ))}
-                <Typography variant="h6">
-                    {t('distance_total', {distance: (totalDistance / 1000).toFixed(2)})}
-                </Typography>
-                <Typography variant="h6">
-                    {t('area_total', {area: (revealedSquareArea * maskPolygons.length / 1000000).toFixed(2)})}
-                </Typography>
-            </Box>
+            <DistanceCounter
+                totalDistance={totalDistance}
+                maskPolygons={maskPolygons}
+                distanceByType={distanceByType}
+                revealRadius={actualRevealRadius}
+                routeTypeOptions={routeTypeOptions}
+            />
             <AnimationControl 
                 animationSteps={animationSteps}
                 setAnimationSteps={setAnimationSteps}
