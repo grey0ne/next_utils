@@ -328,7 +328,7 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
     const animationFinished = linesCounter >= routes.length;
     const currentRoute = routes[linesCounter];
     return (
-        <Box>
+        <>
             <MaskedMap
                 bounds={bounds}
                 polygons={maskPolygons}
@@ -355,6 +355,6 @@ export default function AnimatedMaskedMap(props: AnimatedMaskedMapProps) {
                     <RouteInfo route={currentRoute} />
                 </>
             )}
-        </Box>
+        </>
     )
 }
