@@ -82,6 +82,7 @@ function BoundsUpdater({ bounds }: { bounds?: Bounds }) {
 }
 
 
+
 export default function MaskedMap({ polygons, bounds, height, routes }: MaskedMapProps) {
     return (
         <Box sx={{ height: height || '400px', width: '100%', position: 'relative' }}>
@@ -89,9 +90,9 @@ export default function MaskedMap({ polygons, bounds, height, routes }: MaskedMa
                 id="map"
                 style={{ height: '100%', width: '100%' }}
                 attributionControl = {false}
-                scrollWheelZoom = {false}
-                zoomControl = {false}
-                zoomAnimation = {false}
+                //scrollWheelZoom = {false}
+                //zoomControl = {false}
+                //zoomAnimation = {false}
             >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
