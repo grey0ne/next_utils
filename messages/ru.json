@@ -1,0 +1,8 @@
+{
+    "AnimatedMaskedMap": {
+        "distance_total": "Всего: {distance} км",
+        "area_total": "Площадь: {area} км²",
+        "km": "км",
+        "reset": "Сброс"
+    }
+}

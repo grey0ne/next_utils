@@ -1,0 +1,8 @@
+{
+    "AnimatedMaskedMap": {
+        "distance_total": "Total: {distance} km",
+        "area_total": "Area: {area} km²",
+        "km": "km",
+        "reset": "Reset"
+    }
+}

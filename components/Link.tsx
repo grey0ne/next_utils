@@ -1,7 +1,7 @@
 import React from 'react';
-import RegularLink from 'next/link';
+import { Link as NextLink } from '@/i18n/navigation';
 
 export const NoPrefetchLink = React.forwardRef(
-    (props: any, ref:React.ForwardedRef<any>) => <RegularLink {...props} ref={ ref } prefetch={props.prefetch ?? false}/>
+    (props: any, ref:React.ForwardedRef<any>) => <NextLink {...props} ref={ ref } prefetch={props.prefetch ?? false}/>
 )
 NoPrefetchLink.displayName = 'NoPrefetchLink';

@@ -3,17 +3,27 @@ import { paths } from '@/api/apiTypes';
 export type Path = keyof paths;
 export type PathMethod<T extends Path> = keyof paths[T];
 
+
 export type RequestParams<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
     parameters: any;
 }
     ? paths[P][M]['parameters']
     : undefined;
 
+
+export type RequestPathParams<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
+    parameters: {path: any};
+}
+    ? paths[P][M]['parameters']['path']
+    : undefined;
+
+
 export type RequestBody<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
-    requestBody: any;
+    requestBody: { content: {[x: string]: any } };
 }
     ? paths[P][M]['requestBody']['content']['application/json']
     : undefined;
+
 
 export type ResponseType<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
     responses: { 200: { content: {[x: string]: any } } };
@@ -21,17 +31,25 @@ export type ResponseType<P extends Path, M extends PathMethod<P>> = paths[P][M] 
     ? paths[P][M]['responses'][200]['content']['application/json']
     : undefined;
 
+
 export type Error400Type<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
     responses: { 400: { content: {[x: string]: any } } };
 }
     ? paths[P][M]['responses'][400]['content']['application/json']
     : undefined;
 
+
 export type PaginatedResponseType<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
-    responses: { 200: { content: {[x: string]: any } } };
+    responses: { 200: { content: { 'application/json': {items: Array<any>, last_id: number, last_timestamp: string} } } };
+}
+    ? paths[P][M]['responses'][200]['content']['application/json']
+    : { items: Array<any>, last_id: number | null, last_timestamp: string | null };
+
+export type PaginatedResponseTypeItems<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
+    responses: { 200: { content: { 'application/json': { items: Array<any>} } } };
 }
     ? paths[P][M]['responses'][200]['content']['application/json']['items']
-    : any[];
+    : Array<any>;
 
 export function formatUrl(url: string, params: any): string {
     let result = url;
@@ -40,6 +58,7 @@ export function formatUrl(url: string, params: any): string {
     }
     return result;
 }
+
 
 export function generateUrl(url: string, pathParams: {[key: string]: string | number} , queryParams?: {[key: string]: any}): string {
     let formattedUrl = `${url}`;
