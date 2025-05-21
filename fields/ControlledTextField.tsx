@@ -6,9 +6,13 @@ type ControlledTextFieldProps = {
     label: string,
     control: any,
     required?: boolean,
+    rows?: number,
+    width?: string
 }
 
-export default function ControlledTextField({ name, control, label, required=false }: ControlledTextFieldProps) {
+export default function ControlledTextField({ name, control, label, required=false, rows=1, width='100%' }: ControlledTextFieldProps) {
+    const multiline = rows > 1;
+
     return (
         <Controller
             name={ name }
@@ -19,7 +23,9 @@ export default function ControlledTextField({ name, control, label, required=fal
             render={({ field: { onChange, value } }) => (
                 <TextField
                     value={ value } onChange={ onChange }
+                    sx={{ width: width }}
                     label={ label } required={ required }  variant="outlined"
+                    multiline={ multiline } rows={ rows }
                 />
             )}
         />

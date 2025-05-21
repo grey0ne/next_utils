@@ -22,6 +22,15 @@ function SelectFieldOption (props: any, option: Option) {
     )
 }
 
+function getOption(value: any, options: Option[]) {
+    for (const option of options) {
+        if (option.value === value) {
+            return option
+        }
+    }
+    return null
+}
+
 export default function ControlledSelectField({ control, name, label, options, required=false }: ControlledSelectFieldProps) {
     return (
         <Controller
@@ -38,12 +47,12 @@ export default function ControlledSelectField({ control, name, label, options, r
                             if (option.hasOwnProperty('title')) {
                                 return option.title;
                             }
-                            return String(option);
+                            return '';
                         }}
                         options={options}
                         autoHighlight
                         renderOption={SelectFieldOption}
-                        value={ value }
+                        value={ getOption(value, options) }
                         onChange={(event: any, newValue: Option | null) => {
                             onChange(newValue?.value);
                         }}
