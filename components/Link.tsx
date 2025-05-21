@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as NextLink } from '@/i18n/navigation';
+import { Link as NextLink } from '@/next_utils/i18n/navigation';
 
 export const NoPrefetchLink = React.forwardRef(
     (props: any, ref:React.ForwardedRef<any>) => <NextLink {...props} ref={ ref } prefetch={props.prefetch ?? false}/>
