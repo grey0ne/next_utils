@@ -10,7 +10,7 @@ type ControlledTextFieldProps = {
     width?: string
 }
 
-export default function ControlledTextField({ name, control, label, required=false, rows=1, width='100%' }: ControlledTextFieldProps) {
+export function ControlledTextField({ name, control, label, required=false, rows=1, width='100%' }: ControlledTextFieldProps) {
     const multiline = rows > 1;
 
     return (

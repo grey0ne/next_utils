@@ -31,7 +31,7 @@ function getOption(value: any, options: Option[]) {
     return null
 }
 
-export default function ControlledSelectField({ control, name, label, options, required=false }: ControlledSelectFieldProps) {
+export function ControlledSelectField({ control, name, label, options, required=false }: ControlledSelectFieldProps) {
     return (
         <Controller
             name={ name }

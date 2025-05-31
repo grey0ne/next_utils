@@ -42,3 +42,16 @@ export function hashCode(data: object) {
     return hash;
 }
 
+export function renderLocalizedString(
+    value: string | Record<string, string>,
+    locale: string
+): string {
+    if (typeof value === 'string') {
+        return value;
+    }
+    if (typeof value === 'object' && value !== null) {
+        return value[locale] || `No translation to {locale} available`;
+    }
+    return '';
+}
+

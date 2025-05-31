@@ -10,9 +10,10 @@ type ControlledLocalizedTextFieldProps = {
     control: any,
     label: string,
     required: boolean
+    width?: string
 }
 
-export function ControlledLocalizedTextField({ name, control, label, required }: ControlledLocalizedTextFieldProps) {
+export function ControlledLocalizedTextField({ name, control, label, required, width='100%' }: ControlledLocalizedTextFieldProps) {
     const [selectedLocale, setLocale] = useState<Locale>('en');
     const renderFields = ({ field: { onChange, value }}: {field: {onChange: any, value: LocalizedString}}) => {
         const onChangeLocale = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +25,8 @@ export function ControlledLocalizedTextField({ name, control, label, required }:
             <>
                 <TextField
                     key={ selectedLocale }
-                    value={ value[selectedLocale] } onChange={ onChangeLocale }
+                    sx={{ width: width }}
+                    value={ value[selectedLocale] || '' } onChange={ onChangeLocale }
                     label={ selectedLocale } required={ required }  variant="outlined"
                 />
             </>
