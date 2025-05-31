@@ -50,7 +50,7 @@ export function renderLocalizedString(
         return value;
     }
     if (typeof value === 'object' && value !== null) {
-        return value[locale] || `No translation to {locale} available`;
+        return value[locale] || `No translation to "${locale}"`;
     }
     return '';
 }
