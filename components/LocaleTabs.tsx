@@ -2,6 +2,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { Locale } from "next-intl";
 import { Stack, Box, Typography } from '@mui/material';
+import { AVAILABLE_LOCALES } from '@/next_utils/constants';
+import { ENABLED_LOCALES } from '@/constants';
 
 type LocaleTabsProps = {
     selectedLocale: Locale,
@@ -13,6 +15,17 @@ export function LocaleTabs({ selectedLocale, setLocale, title }: LocaleTabsProps
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setLocale(newValue as Locale);
     };
+
+    const tabElems = AVAILABLE_LOCALES.map((locale) => {
+        if (!ENABLED_LOCALES.includes(locale.code)) return null;
+        return (
+            <Tab
+                key={locale.code}
+                label={locale.shortLabel}
+                value={locale.code}
+            />
+        )
+    })
         
     return (
         <Stack direction="row" spacing={2} sx={{ mb: 2, alignItems: 'end', justifyContent: 'space-between' }}>
@@ -23,8 +36,7 @@ export function LocaleTabs({ selectedLocale, setLocale, title }: LocaleTabsProps
                 indicatorColor="primary"
                 onChange={ handleChange }
             >
-                <Tab label='en' value='en' />
-                <Tab label='ru' value='ru' />
+                {tabElems}
             </Tabs>
         </Stack>
     )
