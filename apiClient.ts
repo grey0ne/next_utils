@@ -41,11 +41,11 @@ type ResponseData = {
     data: any | null
 }
 
-export const untypedApiRequest = async (
+export async function untypedApiRequest(
     url: string,
     method: string,
     body: object,
-): Promise<ResponseData> => {
+): Promise<ResponseData> {
     return await performRequest(url, method, body);
 }
 
@@ -66,6 +66,15 @@ async function processResponse(response: any): Promise<ResponseData> {
     return responseData;
 }
 
+
+function getHeaders() {
+    return {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie('csrftoken')
+    };
+}
+
+
 async function performRequest(
     url: string,
     method: string,
@@ -74,10 +83,7 @@ async function performRequest(
     const response =  await fetch(
         url, {
             method: String(method),
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCookie('csrftoken')
-            },
+            headers: getHeaders(),
             body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
         }
     );
@@ -96,6 +102,7 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
     return await performRequest(formattedUrl, method.toString(), body);
 }
+
 
 export function useApi <P extends Path>(
     url: P,
