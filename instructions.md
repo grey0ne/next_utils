@@ -1,5 +1,3 @@
-# Cursor Rules for Grey Store Project
-
 ## Frontend Guidelines
 - Use Material UI components for all UI elements
 - Use Material UI Dialog component for modal forms
@@ -34,3 +32,6 @@
 - Keep frontend code in the `spa` directory
 - Keep backend code in the `backend` directory
 - Follow the established module organization
+
+## Frontend Performance
+- Consider potential rerenders, provide optimized code and warn if needed
