@@ -10,7 +10,7 @@ type ControlledLocalizedTextFieldProps = {
     name: string,
     control: any,
     label: string,
-    required: boolean
+    required?: boolean
     width?: string
 }
 

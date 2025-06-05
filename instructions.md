@@ -16,6 +16,7 @@
 - Use React Hook Form for form handling
 - Use fields from `next_utils/fields`
 - For related object selection, use `ControlledSelectField` from `spa/next_utils/fields`
+- For localized fields use `ControlledLocalizedTextField` from `spa/next_utils/fields`
 
 ## Backend Development
 - Use decorators from dataorm module for backend endpoints
@@ -35,3 +36,6 @@
 
 ## Frontend Performance
 - Consider potential rerenders, provide optimized code and warn if needed
+
+## Localization
+- When creating frontend pages and components use react-intl to localize displayed string. Update localization messages file accordingly

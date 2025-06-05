@@ -3,6 +3,14 @@
         "distance_total": "Всего: {distance} км",
         "area_total": "Площадь: {area} км²",
         "km": "км",
-        "reset": "Сброс"
+        "reset": "Сбросить"
+    },
+    "loader": {
+        "loading": "Загрузка..."
+    },
+    "generic_modal_form": {
+        "cancel": "Отмена",
+        "submit": "Отправить",
+        "submitting": "Отправка..."
     }
 }
