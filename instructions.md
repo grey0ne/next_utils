@@ -14,6 +14,7 @@
 
 ## Forms and Fields
 - Use React Hook Form for form handling
+- If possible, use Generic Modal Form to simplify form creation. Generic Modal Form requires only Field Schema to be defined
 - Use fields from `next_utils/fields`
 - For related object selection, use `ControlledSelectField` from `spa/next_utils/fields`
 - For localized fields use `ControlledLocalizedTextField` from `spa/next_utils/fields`
