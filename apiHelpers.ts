@@ -1,6 +1,29 @@
 import { paths } from '@/api/apiTypes';
 
+type GetItemsPath = {
+    responses: {
+        200: {
+            content: {
+                'application/json': {
+                    items: Array<any>;
+                }
+            }
+        }
+    }
+}
+
+type PostDataPath = {
+    post: any
+}
+
 export type Path = keyof paths;
+export type ItemsPath = {
+    [K in keyof paths]: paths[K]['get'] extends GetItemsPath ? K : never
+}[keyof paths];
+export type PostPath = {
+    [K in keyof paths]: paths[K] extends PostDataPath ? K : never
+}[keyof paths];
+
 export type PathMethod<T extends Path> = keyof paths[T];
 
 
