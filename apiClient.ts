@@ -95,10 +95,10 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     url: P,
     method: M,
     body: RequestBody<P, M> extends undefined ? object : RequestBody<P, M>,
-    ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
+    params: RequestParams<P, M>
 ): Promise<ResponseData> => {
-    const pathParams = params[0]?.path;
-    const queryParams = params[0]?.query;
+    const pathParams = params?.path;
+    const queryParams = params?.query;
     const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
     return await performRequest(formattedUrl, method.toString(), body);
 }

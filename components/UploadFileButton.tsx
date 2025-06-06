@@ -1,17 +1,21 @@
 import { Button } from "@mui/material";
 import { useRef } from "react";
-import { untypedApiRequest } from "@/next_utils/apiClient";
+import { apiRequest } from "@/next_utils/apiClient";
 import { convertBase64 } from "@/next_utils/helpers";
+import { PostPath, RequestParams } from '../apiHelpers';
 
-type UploadFileButtonProps = {
+type UploadFileButtonProps<P extends PostPath> = {
     title: string,
-    url: string,
+    url: P;
+    urlParams: RequestParams<P, 'post'>
     onSuccess?: () => void;
     onError?: (error: string) => void;
 }
 
 
-export function UploadFileButton({ title, url, onSuccess, onError }: UploadFileButtonProps) {
+export function UploadFileButton<P extends PostPath>({
+    title, url, urlParams, onSuccess, onError
+}: UploadFileButtonProps<P>) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +26,7 @@ export function UploadFileButton({ title, url, onSuccess, onError }: UploadFileB
             const base64 = await convertBase64(file);
             const fileData = { uploaded_file: base64 };
 
-            await untypedApiRequest(url, 'post', fileData);
+            await apiRequest(url, 'post', fileData, urlParams);
 
             if (onSuccess) {
                 onSuccess()

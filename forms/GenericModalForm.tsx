@@ -1,6 +1,5 @@
 'use client';
 import { 
-    Modal, 
     Box, 
     Typography, 
     FormHelperText, 
@@ -13,65 +12,9 @@ import { ControlledTextField } from '@/next_utils/fields/ControlledTextField';
 import { ControlledLocalizedTextField } from '@/next_utils/fields/ControlledLocalizedTextField';
 import { ControlledDynamicSelectField } from '@/next_utils/fields/ControlledDynamicSelectField';
 import { useTranslations } from 'next-intl';
-import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
-
-
-const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    minWidth: 600,
-    p: 4,
-    borderRadius: 2,
-};
-
-export enum FormFieldType {
-    TEXT_FIELD = 'textField',
-    MULTILINE_TEXT_FIELD = 'multilineTextField',
-    LOCALIZED_TEXT_FIELD = 'localizedTextField',
-    MULTILINE_LOCALIZED_TEXT_FIELD = 'multilineLocalizedTextField',
-    DYNAMIC_SELECT_FIELD = 'dynamicSelectField',
-}
-
-interface BaseFieldSchema {
-    name: string;
-    label: string;
-    fieldType: FormFieldType;
-    required?: boolean;
-}
-
-export interface DynamicSelectFieldSchema <P extends ItemsPath> extends BaseFieldSchema {
-    fieldType: FormFieldType.DYNAMIC_SELECT_FIELD;
-    dataUrl: P,
-    dataUrlParams: RequestParams<P, 'get'>
-    optionLabelField: string;
-}
-
-export interface TextFieldSchema extends BaseFieldSchema {
-    fieldType: FormFieldType.TEXT_FIELD | FormFieldType.LOCALIZED_TEXT_FIELD
-    rows?: number;
-}
-
-export type FormFieldSchema = 
-    TextFieldSchema | 
-    DynamicSelectFieldSchema<ItemsPath>;    
-
-export type FormSchema = {
-    fields: FormFieldSchema[]
-}
-
-interface GenericModalFormProps <P extends PostPath> {
-    formSchema: FormSchema;
-    submitUrl: P;
-    submitUrlParams: RequestParams<P, 'post'>
-    title: string;
-    initialData?: any;
-    onClose?: () => void;
-    onSuccess?: () => void;
-}
+import { PostPath } from "@/next_utils/apiHelpers";
+import { FormFieldSchema, FormFieldType, GenericModalFormProps } from './types';
+import { StyledModal } from '../modal/StyledModal';
 
 
 function renderFields(fields: FormFieldSchema[], control: any, errors: any) {
@@ -106,7 +49,7 @@ function renderFields(fields: FormFieldSchema[], control: any, errors: any) {
     return fieldElements;
 }
 
-export function GenericModalForm(props: GenericModalFormProps<PostPath>) {
+export function GenericModalForm<P extends PostPath>(props: GenericModalFormProps<P>) {
     const { formSchema, initialData, submitUrl, title, onClose, onSuccess } = props;
     const t = useTranslations('generic_modal_form');
     const { 
@@ -117,45 +60,37 @@ export function GenericModalForm(props: GenericModalFormProps<PostPath>) {
         defaultValues: initialData
     });
 
-
     const onSubmit = async (data: any) => {
         await apiRequest(submitUrl, 'post', data, props.submitUrlParams);
-        if (onSuccess) {
-            onSuccess();
-        }
-        if (onClose) {
-            onClose();
-        }
+        onSuccess?.();
+        onClose?.();
     };
 
     return (
-        <Modal
-            open={true}
+        <StyledModal
             onClose={onClose}
         >
-            <Box sx={modalStyle}>
-                <Typography id="edit-company-modal-title" variant="h6" component="h2" gutterBottom>
-                    { title }
-                </Typography>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <Stack spacing={2}>
-                        {renderFields(formSchema.fields, control, errors)}
-                    </Stack>
-                    <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                        <Button onClick={onClose} disabled={isSubmitting}>
-                            { t('cancel') }
-                        </Button>
-                        <Button 
-                            type="submit" 
-                            variant="contained" 
-                            color="primary"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? t('submitting') : t('submit')}
-                        </Button>
-                    </Box>
-                </form>
-            </Box>
-        </Modal>
+            <Typography id="edit-company-modal-title" variant="h6" component="h2" gutterBottom>
+                { title }
+            </Typography>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Stack spacing={2}>
+                    {renderFields(formSchema.fields, control, errors)}
+                </Stack>
+                <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                    <Button onClick={onClose} disabled={isSubmitting}>
+                        { t('cancel') }
+                    </Button>
+                    <Button 
+                        type="submit" 
+                        variant="contained" 
+                        color="primary"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? t('submitting') : t('submit')}
+                    </Button>
+                </Box>
+            </form>
+        </StyledModal>
     );
 }

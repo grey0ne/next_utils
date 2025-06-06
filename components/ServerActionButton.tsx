@@ -1,26 +1,29 @@
 'use client'
 import { useState } from 'react';
 import { Button } from "@mui/material";
-import { untypedApiRequest } from '../apiClient';
+import { apiRequest } from '../apiClient';
+import { PostPath, RequestParams } from '../apiHelpers';
 
-type ServerActionButtonProps = {
-    url: string;
+type ServerActionButtonProps<P extends PostPath> = {
+    url: P;
+    urlParams: RequestParams<P, 'post'>
     title: string;
     onSuccess?: () => void;
     onError?: (error: string) => void;
     variant?: 'contained' | 'outlined' | 'text';
 };
-export function ServerActionButton({
+export function ServerActionButton<P extends PostPath>({
     url,
     onSuccess,
     onError,
     variant = 'contained',
     title,
-}: ServerActionButtonProps) {
+    urlParams,
+}: ServerActionButtonProps<P>) {
     const [loading, setLoading] = useState<boolean>(false);
     const handleAction = async () => {
         setLoading(true);
-        const { errors } = await untypedApiRequest(url, 'post', {});
+        const { errors } = await apiRequest(url, 'post', {}, urlParams);
         setLoading(false);
         if (errors.length > 0) {
             if (onError) {
