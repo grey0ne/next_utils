@@ -30,7 +30,9 @@ const modalStyle = {
 
 export enum FormFieldType {
     TEXT_FIELD = 'textField',
+    MULTILINE_TEXT_FIELD = 'multilineTextField',
     LOCALIZED_TEXT_FIELD = 'localizedTextField',
+    MULTILINE_LOCALIZED_TEXT_FIELD = 'multilineLocalizedTextField',
     DYNAMIC_SELECT_FIELD = 'dynamicSelectField',
 }
 
@@ -43,19 +45,18 @@ interface BaseFieldSchema {
 
 export interface DynamicSelectFieldSchema <P extends ItemsPath> extends BaseFieldSchema {
     fieldType: FormFieldType.DYNAMIC_SELECT_FIELD;
-    fieldOptions: {
-        dataUrl: P,
-        dataUrlParams: RequestParams<P, 'get'>
-        optionLabelField: string;
-    }
+    dataUrl: P,
+    dataUrlParams: RequestParams<P, 'get'>
+    optionLabelField: string;
 }
 
-export interface BasicFieldSchema extends BaseFieldSchema {
-    fieldType: FormFieldType.TEXT_FIELD | FormFieldType.LOCALIZED_TEXT_FIELD;
+export interface TextFieldSchema extends BaseFieldSchema {
+    fieldType: FormFieldType.TEXT_FIELD | FormFieldType.LOCALIZED_TEXT_FIELD
+    rows?: number;
 }
 
 export type FormFieldSchema = 
-    BasicFieldSchema | 
+    TextFieldSchema | 
     DynamicSelectFieldSchema<ItemsPath>;    
 
 export type FormSchema = {
@@ -78,18 +79,18 @@ function renderFields(fields: FormFieldSchema[], control: any, errors: any) {
         let resultElem;
         const baseFields = {control, name: field.name, label: field.label, required: field.required};
         if (field.fieldType === FormFieldType.TEXT_FIELD) {
-            resultElem = <ControlledTextField {...baseFields} />
+            resultElem = <ControlledTextField {...baseFields} rows={field.rows || 1} />
         }
         if (field.fieldType === FormFieldType.LOCALIZED_TEXT_FIELD){
-            resultElem = <ControlledLocalizedTextField {...baseFields} />
+            resultElem = <ControlledLocalizedTextField {...baseFields} rows={field.rows || 1}/>
         }
         if (field.fieldType === FormFieldType.DYNAMIC_SELECT_FIELD) {
             resultElem = (
                 <ControlledDynamicSelectField
                     {...baseFields}
-                    dataUrl={field.fieldOptions?.dataUrl}
-                    dataUrlParams={field.fieldOptions?.dataUrlParams}
-                    optionLabelField={ field.fieldOptions?.optionLabelField}
+                    dataUrl={field.dataUrl}
+                    dataUrlParams={field.dataUrlParams}
+                    optionLabelField={ field.optionLabelField}
                 />
             );
         }

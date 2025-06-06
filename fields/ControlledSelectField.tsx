@@ -2,7 +2,7 @@ import { Controller, Control } from "react-hook-form";
 import { TextField, Autocomplete } from '@mui/material';
 
 type Option = {
-    value: string,
+    value: string | number,
     title: string
 }
 
@@ -37,7 +37,6 @@ export function ControlledSelectField({ control, name, label, options, required=
             name={ name }
             control={ control }
             rules={{ required: required }}
-            defaultValue={ null }
             shouldUnregister={ true }
             render={({ field: { onChange, value } }) => {
                 return (

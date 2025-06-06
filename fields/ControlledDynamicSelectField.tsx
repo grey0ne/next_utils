@@ -17,13 +17,12 @@ export function ControlledDynamicSelectField <P extends ItemsPath>({
     control, name, label, dataUrl, dataUrlParams, optionLabelField, required = false
 }: ControlledDynamiSelectFieldProps<P>) {
     const optionsData = useApi(dataUrl, dataUrlParams);
-    const options = (optionsData?.data?.items || []) as Array<{ [key: string]: any; id: number }>;
+    const options = (optionsData?.data?.items || []) as Array<{ [key: string | number]: any; id: number }>;
 
     const optionElems = options.map(option => ({
-        value: option.id.toString(),
+        value: option.id,
         title: option[optionLabelField]
     }));
-
 
     return (
         <ControlledSelectField
