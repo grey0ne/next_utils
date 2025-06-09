@@ -11,6 +11,7 @@ import { apiRequest } from '@/next_utils/apiClient';
 import { ControlledTextField } from '@/next_utils/fields/ControlledTextField';
 import { ControlledLocalizedTextField } from '@/next_utils/fields/ControlledLocalizedTextField';
 import { ControlledDynamicSelectField } from '@/next_utils/fields/ControlledDynamicSelectField';
+import { ControlledSelectField } from '@/next_utils/fields/ControlledSelectField';
 import { useTranslations } from 'next-intl';
 import { PostPath } from "@/next_utils/apiHelpers";
 import { FormFieldSchema, FormFieldType, GenericModalFormProps } from './types';
@@ -36,6 +37,14 @@ function renderFields(fields: FormFieldSchema[], control: any, errors: any) {
                     optionLabelField={ field.optionLabelField}
                 />
             );
+        }
+        if (field.fieldType === FormFieldType.SELECT_FIELD) {
+            resultElem = (
+                <ControlledSelectField
+                    {...baseFields}
+                    options={field.options}
+                />
+            )
         }
         return (
             <Box key={field.name}>
@@ -70,15 +79,15 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
         <StyledModal
             onClose={onClose}
         >
-            <Typography id="edit-company-modal-title" variant="h6" component="h2" gutterBottom>
+            <Typography id="edit-company-modal-title" variant="h6" gutterBottom sx={{ mb: 2 }}>
                 { title }
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack spacing={2}>
                     {renderFields(formSchema.fields, control, errors)}
                 </Stack>
-                <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                    <Button onClick={onClose} disabled={isSubmitting}>
+                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                    <Button onClick={onClose} disabled={isSubmitting} variant='contained' color='warning'>
                         { t('cancel') }
                     </Button>
                     <Button 

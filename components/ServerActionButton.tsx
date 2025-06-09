@@ -11,12 +11,14 @@ type ServerActionButtonProps<P extends PostPath> = {
     onSuccess?: () => void;
     onError?: (error: string) => void;
     variant?: 'contained' | 'outlined' | 'text';
+    color?: 'primary' | 'secondary' | 'info' | 'warning' | 'error' | 'success';
 };
 export function ServerActionButton<P extends PostPath>({
     url,
     onSuccess,
     onError,
     variant = 'contained',
+    color = 'primary',
     title,
     urlParams,
 }: ServerActionButtonProps<P>) {
@@ -43,6 +45,7 @@ export function ServerActionButton<P extends PostPath>({
             onClick={handleAction}
             disabled={ loading }
             variant={variant}
+            color={color}
         >
             {loading ? '...' : title}
         </Button>

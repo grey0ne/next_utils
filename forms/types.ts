@@ -1,4 +1,5 @@
 import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
+import { Option } from '@/next_utils/fields/ControlledSelectField';
 
 export enum FormFieldType {
     TEXT_FIELD = 'textField',
@@ -6,6 +7,7 @@ export enum FormFieldType {
     LOCALIZED_TEXT_FIELD = 'localizedTextField',
     MULTILINE_LOCALIZED_TEXT_FIELD = 'multilineLocalizedTextField',
     DYNAMIC_SELECT_FIELD = 'dynamicSelectField',
+    SELECT_FIELD = 'selectField'
 }
 
 interface BaseFieldSchema {
@@ -22,6 +24,11 @@ export interface DynamicSelectFieldSchema <P extends ItemsPath> extends BaseFiel
     optionLabelField: string;
 }
 
+export interface SelectFieldSchema extends BaseFieldSchema {
+    fieldType: FormFieldType.SELECT_FIELD;
+    options: Option[]
+}
+
 export interface TextFieldSchema extends BaseFieldSchema {
     fieldType: FormFieldType.TEXT_FIELD | FormFieldType.LOCALIZED_TEXT_FIELD
     rows?: number;
@@ -29,6 +36,7 @@ export interface TextFieldSchema extends BaseFieldSchema {
 
 export type FormFieldSchema = 
     TextFieldSchema | 
+    SelectFieldSchema |
     DynamicSelectFieldSchema<ItemsPath>;    
 
 export type FormSchema = {

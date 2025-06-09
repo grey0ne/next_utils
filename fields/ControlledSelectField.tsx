@@ -1,7 +1,7 @@
 import { Controller, Control } from "react-hook-form";
 import { TextField, Autocomplete } from '@mui/material';
 
-type Option = {
+export type Option = {
     value: string | number,
     title: string
 }
