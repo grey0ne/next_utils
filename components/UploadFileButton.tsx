@@ -8,13 +8,14 @@ type UploadFileButtonProps<P extends PostPath> = {
     title: string,
     url: P;
     urlParams: RequestParams<P, 'post'>
+    acceptedFileTypes: string;
     onSuccess?: () => void;
     onError?: (error: string) => void;
 }
 
 
 export function UploadFileButton<P extends PostPath>({
-    title, url, urlParams, onSuccess, onError
+    title, url, urlParams, onSuccess, onError, acceptedFileTypes
 }: UploadFileButtonProps<P>) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -24,7 +25,7 @@ export function UploadFileButton<P extends PostPath>({
 
         try {
             const base64 = await convertBase64(file);
-            const fileData = { uploaded_file: base64 };
+            const fileData = { uploaded_file: base64, file_name: file.name };
 
             await apiRequest(url, 'post', fileData, urlParams);
 
@@ -41,7 +42,7 @@ export function UploadFileButton<P extends PostPath>({
         <>
             <input
                 type="file"
-                accept="image/*"
+                accept={ acceptedFileTypes }
                 style={{ display: 'none' }}
                 ref={fileInputRef}
                 onChange={handleFileUpload}
