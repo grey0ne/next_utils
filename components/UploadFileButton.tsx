@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@mui/material";
 import { useRef } from "react";
 import { apiRequest } from "@/next_utils/apiClient";
