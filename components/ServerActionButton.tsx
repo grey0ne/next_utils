@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from "@mui/material";
 import { apiRequest } from '../apiClient';
 import { PostPath, RequestParams } from '../apiHelpers';
+import { useNotifications } from '@/next_utils/notifications/NotificationsContext';
 
 type ServerActionButtonProps<P extends PostPath> = {
     url: P;
@@ -13,6 +14,7 @@ type ServerActionButtonProps<P extends PostPath> = {
     variant?: 'contained' | 'outlined' | 'text';
     color?: 'primary' | 'secondary' | 'info' | 'warning' | 'error' | 'success';
 };
+
 export function ServerActionButton<P extends PostPath>({
     url,
     onSuccess,
@@ -23,15 +25,17 @@ export function ServerActionButton<P extends PostPath>({
     urlParams,
 }: ServerActionButtonProps<P>) {
     const [loading, setLoading] = useState<boolean>(false);
+    const { showNotification } = useNotifications();
+
     const handleAction = async () => {
         setLoading(true);
         const { errors } = await apiRequest(url, 'post', {}, urlParams);
         setLoading(false);
         if (errors.length > 0) {
+            const errorMessage = errors[0]['detail'];
+            showNotification(errorMessage);
             if (onError) {
-                onError(errors[0]['detail']);
-            } else {
-                console.error(errors[0]['detail']);
+                onError(errorMessage);
             }
         } else {
             if (onSuccess) {
@@ -43,7 +47,7 @@ export function ServerActionButton<P extends PostPath>({
     return (
         <Button
             onClick={handleAction}
-            disabled={ loading }
+            disabled={loading}
             variant={variant}
             color={color}
         >
