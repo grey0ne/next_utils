@@ -4,7 +4,10 @@ import {
     Typography, 
     FormHelperText, 
     Button,
-    Stack
+    Stack,
+    DialogActions,
+    DialogTitle,
+    DialogContent,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { apiRequest } from '@/next_utils/apiClient';
@@ -79,14 +82,14 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
         <StyledModal
             onClose={onClose}
         >
-            <Typography id="edit-company-modal-title" variant="h6" gutterBottom sx={{ mb: 2 }}>
+            <DialogTitle>
                 { title }
-            </Typography>
+            </DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Stack spacing={2}>
+                <DialogContent>
                     {renderFields(formSchema.fields, control, errors)}
-                </Stack>
-                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                </DialogContent>
+                <DialogActions>
                     <Button onClick={onClose} disabled={isSubmitting} variant='contained' color='warning'>
                         { t('cancel') }
                     </Button>
@@ -98,7 +101,7 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
                     >
                         {isSubmitting ? t('submitting') : t('submit')}
                     </Button>
-                </Box>
+                </DialogActions>
             </form>
         </StyledModal>
     );
