@@ -3,9 +3,7 @@ import { Option } from '@/next_utils/fields/ControlledSelectField';
 
 export enum FormFieldType {
     TEXT_FIELD = 'textField',
-    MULTILINE_TEXT_FIELD = 'multilineTextField',
     LOCALIZED_TEXT_FIELD = 'localizedTextField',
-    MULTILINE_LOCALIZED_TEXT_FIELD = 'multilineLocalizedTextField',
     DYNAMIC_SELECT_FIELD = 'dynamicSelectField',
     SELECT_FIELD = 'selectField'
 }
@@ -30,7 +28,7 @@ export interface SelectFieldSchema extends BaseFieldSchema {
 }
 
 export interface TextFieldSchema extends BaseFieldSchema {
-    fieldType: FormFieldType.TEXT_FIELD | FormFieldType.LOCALIZED_TEXT_FIELD | FormFieldType.MULTILINE_TEXT_FIELD | FormFieldType.MULTILINE_LOCALIZED_TEXT_FIELD
+    fieldType: FormFieldType.TEXT_FIELD | FormFieldType.LOCALIZED_TEXT_FIELD
     rows?: number;
 }
 

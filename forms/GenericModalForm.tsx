@@ -1,7 +1,6 @@
 'use client';
 import { 
     Box, 
-    Typography, 
     FormHelperText, 
     Button,
     Stack,
@@ -20,8 +19,14 @@ import { PostPath } from "@/next_utils/apiHelpers";
 import { FormFieldSchema, FormFieldType, GenericModalFormProps } from './types';
 import { StyledModal } from '../modal/StyledModal';
 
+type FieldsProps = {
+    fields: FormFieldSchema[];
+    control: any;
+    errors: any;
+}
 
-function renderFields(fields: FormFieldSchema[], control: any, errors: any) {
+function FormFields(props: FieldsProps) {
+    const { fields, control, errors } = props;
     const fieldElements = fields.map((field) => {
         let resultElem;
         const baseFields = {control, name: field.name, label: field.label, required: field.required};
@@ -58,7 +63,9 @@ function renderFields(fields: FormFieldSchema[], control: any, errors: any) {
             </Box>
         )
     })
-    return fieldElements;
+    return (
+        <Stack spacing={2}>{ fieldElements }</Stack>
+    )
 }
 
 export function GenericModalForm<P extends PostPath>(props: GenericModalFormProps<P>) {
@@ -87,7 +94,7 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
             </DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <DialogContent>
-                    {renderFields(formSchema.fields, control, errors)}
+                    <FormFields fields={formSchema.fields} control={control} errors={errors} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose} disabled={isSubmitting} variant='contained' color='warning'>

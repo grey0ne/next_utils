@@ -6,6 +6,11 @@ import { cookies } from 'next/headers'
 
 const BACKEND_URL = `http://${process.env.PROJECT_NAME}-django:8000`;
 
+/**
+ * Server-side API Get function. 
+ * @Example
+ * const { errors, data } = await apiGet('/api/tasks/user/{user_id}' { path: { user_id: 1 } })
+ */
 export const apiGet = async <P extends Path>(
     url: P,
     ...params: RequestParams<P, 'get'> extends undefined ? [] : [RequestParams<P, 'get'>]
