@@ -1,3 +1,4 @@
+'use client'
 import { PostPath } from "../apiHelpers";
 import { GenericModalFormProps } from "./types"
 import { GenericModalForm } from "./GenericModalForm";

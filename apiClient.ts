@@ -132,7 +132,14 @@ export function useApi <P extends Path>(
 export const usePaginatedApi = <P extends Path>(
     url: P,
     ...params: RequestParams<P, 'get'> extends undefined ? Array<any> : [RequestParams<P, 'get'>]
-): { items: PaginatedResponseTypeItems<P, 'get'>, error: any, isLoading: boolean, size: number, setSize: (size: any) => void } => {
+): {
+    items: PaginatedResponseTypeItems<P, 'get'>,
+    error: any,
+    isLoading: boolean,
+    size: number,
+    setSize: (size: any) => void,
+    mutate: () => void
+} => {
     const getKey = (pageIndex: number, previousPageData: PaginatedResponseType<P, 'get'>) => {
         let to_id = params[0]?.query?.last_id;
         let to_timestamp = params[0]?.query?.last_timestamp;
@@ -148,7 +155,7 @@ export const usePaginatedApi = <P extends Path>(
         const queryParams = { to_timestamp, to_id, per_page: per_page }
         return generateUrl(url.toString(), params[0]?.path, queryParams);
     }
-    const { data, error, isLoading, size, setSize } = useSWRInfinite(
+    const { data, error, isLoading, size, setSize, mutate } = useSWRInfinite(
         getKey, fetcher, {revalidateFirstPage: false}
     )
     const items: PaginatedResponseTypeItems<P, 'get'> = [];
@@ -162,6 +169,7 @@ export const usePaginatedApi = <P extends Path>(
         error,
         isLoading,
         size,
-        setSize
+        setSize,
+        mutate
     }
 }

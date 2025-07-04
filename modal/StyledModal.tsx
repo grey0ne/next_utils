@@ -1,15 +1,7 @@
-import { Modal, Box } from '@mui/material';
+import { Box, Dialog } from '@mui/material';
 
 const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
     minWidth: 600,
-    p: 4,
-    borderRadius: 2,
 };
 
 
@@ -18,13 +10,13 @@ export function StyledModal({ children, onClose }: {
     onClose?: () => void;
 }) {
     return (
-        <Modal
+        <Dialog
             open={true}
             onClose={onClose}
         >
             <Box sx={modalStyle}>
                 {children}
             </Box>
-        </Modal>
+        </Dialog>
     )
 }

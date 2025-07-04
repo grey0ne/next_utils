@@ -6,17 +6,15 @@ import { Path, RequestPathParams, PaginatedResponseTypeItems } from '@/next_util
 
 const DEFAULT_PER_PAGE = 20;
 
-export function InfiniteList<P extends Path>(props: {
-    url: P,
-    pathParams: RequestPathParams<P, 'get'> extends undefined ? {} : RequestPathParams<P, 'get'>
-    renderItems: (items: PaginatedResponseTypeItems<P, 'get'>) => React.ReactNode,
-    perPage?: number,
- }) {
-    const { url, pathParams, renderItems, perPage } = props;
-    const { items, error, isLoading, size, setSize } = usePaginatedApi(
-        url, { path: pathParams, query: { per_page: perPage || DEFAULT_PER_PAGE } }
-    );
-
+export function ControlledInfiniteList<ItemType>(props: {
+    items: ItemType[],
+    size: number,
+    setSize: (size: number) => void,
+    renderItems: (items: ItemType[]) => React.ReactNode,
+    error?: string,
+    isLoading?: boolean,
+}) {
+    const { items, size, setSize, error, isLoading, renderItems } = props;
     const { ref } = useInView({
         onChange: ( inView ) => { 
             if (inView) { setSize(size + 1) }
@@ -46,4 +44,25 @@ export function InfiniteList<P extends Path>(props: {
             )}
         </Box>
     );
+}
+
+export function InfiniteList<P extends Path>(props: {
+    url: P,
+    pathParams: RequestPathParams<P, 'get'> extends undefined ? {} : RequestPathParams<P, 'get'>
+    renderItems: (items: PaginatedResponseTypeItems<P, 'get'>) => React.ReactNode,
+    perPage?: number,
+ }) {
+    const { url, pathParams, renderItems, perPage } = props;
+    const { items, error, isLoading, size, setSize } = usePaginatedApi(
+        url, { path: pathParams, query: { per_page: perPage || DEFAULT_PER_PAGE } }
+    );
+
+    return <ControlledInfiniteList
+        items={items}
+        size={size}
+        setSize={setSize}
+        renderItems={renderItems}
+        error={error}
+        isLoading={isLoading}
+    />
 }

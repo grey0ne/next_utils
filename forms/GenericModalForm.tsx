@@ -1,10 +1,12 @@
 'use client';
 import { 
     Box, 
-    Typography, 
     FormHelperText, 
     Button,
-    Stack
+    Stack,
+    DialogActions,
+    DialogTitle,
+    DialogContent,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { apiRequest } from '@/next_utils/apiClient';
@@ -17,8 +19,14 @@ import { PostPath } from "@/next_utils/apiHelpers";
 import { FormFieldSchema, FormFieldType, GenericModalFormProps } from './types';
 import { StyledModal } from '../modal/StyledModal';
 
+type FieldsProps = {
+    fields: FormFieldSchema[];
+    control: any;
+    errors: any;
+}
 
-function renderFields(fields: FormFieldSchema[], control: any, errors: any) {
+function FormFields(props: FieldsProps) {
+    const { fields, control, errors } = props;
     const fieldElements = fields.map((field) => {
         let resultElem;
         const baseFields = {control, name: field.name, label: field.label, required: field.required};
@@ -55,7 +63,9 @@ function renderFields(fields: FormFieldSchema[], control: any, errors: any) {
             </Box>
         )
     })
-    return fieldElements;
+    return (
+        <Stack spacing={2}>{ fieldElements }</Stack>
+    )
 }
 
 export function GenericModalForm<P extends PostPath>(props: GenericModalFormProps<P>) {
@@ -79,14 +89,14 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
         <StyledModal
             onClose={onClose}
         >
-            <Typography id="edit-company-modal-title" variant="h6" gutterBottom sx={{ mb: 2 }}>
+            <DialogTitle>
                 { title }
-            </Typography>
+            </DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Stack spacing={2}>
-                    {renderFields(formSchema.fields, control, errors)}
-                </Stack>
-                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                <DialogContent>
+                    <FormFields fields={formSchema.fields} control={control} errors={errors} />
+                </DialogContent>
+                <DialogActions>
                     <Button onClick={onClose} disabled={isSubmitting} variant='contained' color='warning'>
                         { t('cancel') }
                     </Button>
@@ -98,7 +108,7 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
                     >
                         {isSubmitting ? t('submitting') : t('submit')}
                     </Button>
-                </Box>
+                </DialogActions>
             </form>
         </StyledModal>
     );
