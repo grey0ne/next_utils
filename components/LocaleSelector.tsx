@@ -16,7 +16,7 @@ export function LocaleSelector() {
     return (
         <Select
             value={locale}
-            sx={{ color: 'inherit' }}
+            sx={{ color: 'inherit', border: 'none' }}
             IconComponent={() => null} // Hide default icon
             variant="outlined"
         >
