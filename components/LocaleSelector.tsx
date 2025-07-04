@@ -4,7 +4,7 @@ import { Box, Select, MenuItem } from "@mui/material"
 import { usePathname } from '@/next_utils/i18n/navigation';
 import { useLocale } from "next-intl";
 import { AVAILABLE_LOCALES } from "@/next_utils/constants"; 
-import { ENABLED_LOCALES } from "@/constants";
+import { ENABLED_LOCALES } from "./../../constants";
 
 export function LocaleSelector() {
     const url = usePathname();
