@@ -3,7 +3,7 @@ import Tab from '@mui/material/Tab';
 import { Locale } from "next-intl";
 import { Stack, Box, Typography } from '@mui/material';
 import { AVAILABLE_LOCALES } from '@/next_utils/constants';
-import { ENABLED_LOCALES } from '@/constants';
+import { ENABLED_LOCALES } from './../../constants';
 
 type LocaleTabsProps = {
     selectedLocale: Locale,
