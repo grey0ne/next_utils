@@ -5,6 +5,10 @@
         "km": "km",
         "reset": "Reset"
     },
+    "NavigationHeader": {
+        "login": "Login",
+        "admin": "Admin"
+    },
     "loader": {
         "loading": "Loading..."
     },
