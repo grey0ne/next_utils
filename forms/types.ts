@@ -5,7 +5,8 @@ export enum FormFieldType {
     TEXT_FIELD = 'textField',
     LOCALIZED_TEXT_FIELD = 'localizedTextField',
     DYNAMIC_SELECT_FIELD = 'dynamicSelectField',
-    SELECT_FIELD = 'selectField'
+    SELECT_FIELD = 'selectField',
+    TEXT_LIST_FIELD = 'textListField',
 }
 
 interface BaseFieldSchema {
@@ -32,13 +33,25 @@ export interface TextFieldSchema extends BaseFieldSchema {
     rows?: number;
 }
 
+export interface TextListFieldSchema extends BaseFieldSchema {
+    fieldType: FormFieldType.TEXT_LIST_FIELD;
+    rows?: number;
+}
+
 export type FormFieldSchema = 
     TextFieldSchema | 
     SelectFieldSchema |
+    TextListFieldSchema |
     DynamicSelectFieldSchema<ItemsPath>;    
 
 export type FormSchema = {
     fields: FormFieldSchema[]
+}
+
+export interface GenericFormProps {
+    formSchema: FormSchema;
+    initialData?: any;
+    onSuccess?: (data?: any) => void;
 }
 
 export interface GenericModalFormProps <P extends PostPath> {
@@ -48,6 +61,6 @@ export interface GenericModalFormProps <P extends PostPath> {
     title: string;
     initialData?: any;
     onClose?: () => void;
-    onSuccess?: () => void;
+    onSuccess?: (data?: any) => void;
 }
 

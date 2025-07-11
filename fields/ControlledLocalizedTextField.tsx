@@ -1,7 +1,7 @@
 import { Controller } from "react-hook-form";
 import { TextField } from '@mui/material';
 import { LocalizedString } from "@/next_utils/types";
-import { Locale } from "next-intl";
+import { Locale, useLocale } from "next-intl";
 import { LocaleTabs } from "@/next_utils/components/LocaleTabs";
 import { useState } from "react";
 import { AVAILABLE_LOCALES } from "@/next_utils/constants";
@@ -16,7 +16,8 @@ type ControlledLocalizedTextFieldProps = {
 }
 
 export function ControlledLocalizedTextField({ name, control, label, required, width='100%', rows=1 }: ControlledLocalizedTextFieldProps) {
-    const [selectedLocale, setLocale] = useState<Locale>('en');
+    const locale = useLocale();
+    const [selectedLocale, setLocale] = useState<Locale>(locale);
     const renderFields = ({ field: { onChange, value }}: {field: {onChange: any, value: LocalizedString}}) => {
         const localeLabel = AVAILABLE_LOCALES.find(locale => locale.code === selectedLocale)?.shortLabel || selectedLocale;
         const fieldLabel = `${label} (${localeLabel})`;
