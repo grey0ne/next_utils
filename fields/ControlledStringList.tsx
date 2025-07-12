@@ -17,7 +17,7 @@ export function ControlledStringList({ name, control, label, width = '100%' }: C
     const fieldElems = fields.map((item, index) => (
         <TextField
             key={item.id}
-            {...control.register(`${name}.${index}.value`)}
+            {...control.register(`${name}.${index}`)}
         />
 
     ))
@@ -28,7 +28,7 @@ export function ControlledStringList({ name, control, label, width = '100%' }: C
             </Stack>
             <Button
                 variant="outlined"
-                onClick={() => append({ value: '' })}
+                onClick={() => append('')}
                 sx={{ width: width, marginTop: 1 }}
             >
                 Add {label}

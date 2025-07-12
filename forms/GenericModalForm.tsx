@@ -5,7 +5,7 @@ import {
     DialogTitle,
     DialogContent,
 } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { apiRequest } from '@/next_utils/apiClient';
 import { useTranslations } from 'next-intl';
 import { PostPath } from "@/next_utils/apiHelpers";
@@ -14,15 +14,10 @@ import { StyledModal } from '../modal/StyledModal';
 import { FormFields } from './GenericFormFields';
 
 
-
 export function GenericModalForm<P extends PostPath>(props: GenericModalFormProps<P>) {
     const { formSchema, initialData, submitUrl, title, onClose, onSuccess } = props;
     const t = useTranslations('generic_modal_form');
-    const { 
-        control, 
-        handleSubmit, 
-        formState: { errors, isSubmitting } 
-    } = useForm<any>({
+    const formMethods = useForm<any>({
         defaultValues: initialData
     });
 
@@ -32,6 +27,8 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
         onClose?.();
     };
 
+    const isSubmitting = formMethods.formState.isSubmitting;
+
     return (
         <StyledModal
             onClose={onClose}
@@ -39,24 +36,26 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
             <DialogTitle>
                 { title }
             </DialogTitle>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <DialogContent>
-                    <FormFields fields={formSchema.fields} control={control} errors={errors} />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={onClose} disabled={isSubmitting} variant='contained' color='warning'>
-                        { t('cancel') }
-                    </Button>
-                    <Button 
-                        type="submit" 
-                        variant="contained" 
-                        color="primary"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? t('submitting') : t('submit')}
-                    </Button>
-                </DialogActions>
-            </form>
+            <FormProvider {...formMethods}>
+                <form onSubmit={formMethods.handleSubmit(onSubmit)}>
+                    <DialogContent>
+                        <FormFields fields={formSchema.fields} />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={onClose} disabled={isSubmitting} variant='contained' color='warning'>
+                            { t('cancel') }
+                        </Button>
+                        <Button 
+                            type="submit" 
+                            variant="contained" 
+                            color="primary"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? t('submitting') : t('submit')}
+                        </Button>
+                    </DialogActions>
+                </form>
+            </FormProvider>
         </StyledModal>
     );
 }

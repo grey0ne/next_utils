@@ -1,15 +1,16 @@
-import { Control, Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { FormControlLabel, Checkbox } from '@mui/material';
 
 type ControlledCheckBoxProps = {
     name: string,
     label: string,
     required?: boolean,
-    control: Control<any>,
 }
 
 
-export default function ControlledCheckBox({ name, control, label, required=false }: ControlledCheckBoxProps) {
+export default function ControlledCheckBox({ name, label, required=false }: ControlledCheckBoxProps) {
+    const { control } = useFormContext();
+
     const checkbox = (
         <Controller
             name={ name }

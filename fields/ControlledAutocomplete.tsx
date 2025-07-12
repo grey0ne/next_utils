@@ -1,4 +1,5 @@
-import { Controller, Control, FieldValues } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
+
 import { Autocomplete, TextField } from '@mui/material';
 
 interface Option {
@@ -9,7 +10,6 @@ interface Option {
 type ControlledAutocompleteProps = {
     name: string
     label: string
-    control: Control<FieldValues>
     options: Option[]
     required?: boolean
     setInputValue?: (value: string) => void
@@ -23,7 +23,8 @@ function OptionElem (props: any, option: Option) {
     )
 }
 
-export default function ControlledAutocomplete({ name, label, control, options, required, setInputValue }: ControlledAutocompleteProps) {
+export default function ControlledAutocomplete({ name, label, options, required, setInputValue }: ControlledAutocompleteProps) {
+    const { control } = useFormContext();
     return (
         <Controller
             name={ name }

@@ -6,16 +6,16 @@ import { ControlledDynamicSelectField } from '@/next_utils/fields/ControlledDyna
 import { ControlledSelectField } from '@/next_utils/fields/ControlledSelectField';
 import { ControlledStringList } from '../fields/ControlledStringList';
 import { FormFieldSchema, FormFieldType } from './types';
+import { useFormContext } from 'react-hook-form';
 
 type FieldsProps = {
     fields: FormFieldSchema[];
-    control: any;
-    errors: any;
 }
 
 
 export function FormFields(props: FieldsProps) {
-    const { fields, control, errors } = props;
+    const { control, formState } = useFormContext();
+    const { fields } = props;
     const fieldElements = fields.map((field) => {
         let resultElem;
         const baseFields = {control, name: field.name, label: field.label, required: field.required};
@@ -49,8 +49,8 @@ export function FormFields(props: FieldsProps) {
         return (
             <Box key={field.name}>
                 {resultElem}
-                {errors[field.name] && (
-                    <FormHelperText error>{errors[field.name]?.message as string}</FormHelperText>
+                {formState.errors[field.name] && (
+                    <FormHelperText error>{formState.errors[field.name]?.message as string}</FormHelperText>
                 )}
             </Box>
         )

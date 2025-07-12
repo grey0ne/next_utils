@@ -1,9 +1,13 @@
-export function convertBase64(blob: Blob){
+export function convertBase64(blob: Blob): Promise<string | ArrayBuffer> {
     return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
         fileReader.readAsDataURL(blob);
   
         fileReader.onload = () => {
+            if (fileReader.result === null) {
+                reject(new Error("FileReader result is null"));
+                return;
+            }
             resolve(fileReader.result);
         };
   
