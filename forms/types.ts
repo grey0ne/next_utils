@@ -7,6 +7,7 @@ export enum FormFieldType {
     DYNAMIC_SELECT_FIELD = 'dynamicSelectField',
     SELECT_FIELD = 'selectField',
     TEXT_LIST_FIELD = 'textListField',
+    BASE64_FILE_FIELD = 'base64ImageUploadField',
 }
 
 interface BaseFieldSchema {
@@ -33,6 +34,11 @@ export interface TextFieldSchema extends BaseFieldSchema {
     rows?: number;
 }
 
+export interface Base64FileFieldSchema extends BaseFieldSchema {
+    fieldType: FormFieldType.BASE64_FILE_FIELD;
+    acceptedFileTypes: string;
+}
+
 export interface TextListFieldSchema extends BaseFieldSchema {
     fieldType: FormFieldType.TEXT_LIST_FIELD;
     rows?: number;
@@ -42,6 +48,7 @@ export type FormFieldSchema =
     TextFieldSchema | 
     SelectFieldSchema |
     TextListFieldSchema |
+    Base64FileFieldSchema |
     DynamicSelectFieldSchema<ItemsPath>;    
 
 export type FormSchema = {
@@ -61,6 +68,6 @@ export interface GenericModalFormProps <P extends PostPath> {
     title: string;
     initialData?: any;
     onClose?: () => void;
-    onSuccess?: (data?: any) => void;
+    onSuccess?: (data?: any, responseData?: any) => void;
 }
 

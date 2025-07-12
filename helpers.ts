@@ -1,3 +1,6 @@
+import { BackendLocalizedString, BackendLocale } from './types';
+import { Locale } from 'next-intl';
+
 export function convertBase64(blob: Blob): Promise<string | ArrayBuffer> {
     return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
@@ -47,14 +50,17 @@ export function hashCode(data: object) {
 }
 
 export function renderLocalizedString(
-    value: string | Record<string, string>,
-    locale: string
+    value: string | BackendLocalizedString | null | undefined,
+    locale: Locale
 ): string {
+    if (!value) {
+        return '';
+    }
     if (typeof value === 'string') {
         return value;
     }
-    if (typeof value === 'object' && value !== null) {
-        return value[locale] || `No translation to "${locale}"`;
+    if (typeof value === 'object') {
+        return value[locale as BackendLocale] || `No translation to "${locale}"`;
     }
     return '';
 }

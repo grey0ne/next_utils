@@ -104,6 +104,18 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
 }
 
 
+export const apiPost = async <P extends Path>(
+    url: P,
+    body: RequestBody<P, 'post'> extends undefined ? object : RequestBody<P, 'post'>,
+    params: RequestParams<P, 'post'>
+): Promise<ResponseData> => {
+    const pathParams = params?.path;
+    const queryParams = params?.query;
+    const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
+    return await performRequest(formattedUrl, 'post', body);
+}
+
+
 export function useApi <P extends Path>(
     url: P,
     params: RequestParams<P, 'get'>

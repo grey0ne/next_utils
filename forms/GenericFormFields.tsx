@@ -5,6 +5,7 @@ import { ControlledLocalizedTextField } from '@/next_utils/fields/ControlledLoca
 import { ControlledDynamicSelectField } from '@/next_utils/fields/ControlledDynamicSelectField';
 import { ControlledSelectField } from '@/next_utils/fields/ControlledSelectField';
 import { ControlledStringList } from '../fields/ControlledStringList';
+import { ControlledBase64FileField } from '../fields/ControlledBase64FileField';
 import { FormFieldSchema, FormFieldType } from './types';
 import { useFormContext } from 'react-hook-form';
 
@@ -45,6 +46,9 @@ export function FormFields(props: FieldsProps) {
         }
         if (field.fieldType === FormFieldType.TEXT_LIST_FIELD) {
             resultElem = <ControlledStringList {...baseFields} />
+        }
+        if (field.fieldType === FormFieldType.BASE64_FILE_FIELD) {
+            resultElem = <ControlledBase64FileField {...baseFields} acceptedFileTypes={field.acceptedFileTypes} />
         }
         return (
             <Box key={field.name}>

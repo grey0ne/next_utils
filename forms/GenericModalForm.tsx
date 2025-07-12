@@ -6,7 +6,7 @@ import {
     DialogContent,
 } from '@mui/material';
 import { useForm, FormProvider } from 'react-hook-form';
-import { apiRequest } from '@/next_utils/apiClient';
+import { apiPost } from '@/next_utils/apiClient';
 import { useTranslations } from 'next-intl';
 import { PostPath } from "@/next_utils/apiHelpers";
 import { GenericModalFormProps } from './types';
@@ -22,8 +22,8 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
     });
 
     const onSubmit = async (data: any) => {
-        await apiRequest(submitUrl, 'post', data, props.submitUrlParams);
-        onSuccess?.(data);
+        const responseData = await apiPost(submitUrl, data, props.submitUrlParams);
+        onSuccess?.(data, responseData);
         onClose?.();
     };
 
