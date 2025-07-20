@@ -96,7 +96,7 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     method: M,
     body: RequestBody<P, M> extends undefined ? object : RequestBody<P, M>,
     params: RequestParams<P, M>
-): Promise<ResponseData> => {
+): Promise<{ data: ResponseType<P, M> | null, errors: any, status: number}> => {
     const pathParams = params?.path;
     const queryParams = params?.query;
     const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
@@ -108,9 +108,11 @@ export const apiPost = async <P extends Path>(
     url: P,
     body: RequestBody<P, 'post'> extends undefined ? object : RequestBody<P, 'post'>,
     params: RequestParams<P, 'post'>
-): Promise<ResponseData> => {
-    const pathParams = params?.path;
-    const queryParams = params?.query;
+): Promise<{ data: ResponseType<P, 'post'> | null, errors: any, status: number}> => {
+    // convery params to any to avoid errors on APIs without post requests
+    const untypedParams = params as any
+    const pathParams = untypedParams?.path;
+    const queryParams = untypedParams?.query;
     const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
     return await performRequest(formattedUrl, 'post', body);
 }
