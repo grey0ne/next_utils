@@ -13,7 +13,9 @@ For server nextjs components use methods from spa/next_utils/apiServer.ts
 ## Forms and modals
 For forms use React hook form and fields from next_utils/fields
 
-For backend endpoints use decorators from dataorm module. Backend endpoints is defined in api.py file
+For backend endpoints use decorators from dataorm module. Backend endpoints is defined in api.py file.
+For single item endpoints use single_item decorator from dataorm
+For data altering requests use action decorator from dataorm
 If new schema is needed for endpoint define it as dataclass in schema.py file in corressponding module
 
 If you need to fetch data in client component use useApi method from spa/next_utils/apiClient.ts
