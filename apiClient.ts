@@ -41,11 +41,11 @@ type ResponseData = {
     data: any | null
 }
 
-export const untypedApiRequest = async (
+export async function untypedApiRequest(
     url: string,
     method: string,
     body: object,
-): Promise<ResponseData> => {
+): Promise<ResponseData> {
     return await performRequest(url, method, body);
 }
 
@@ -66,6 +66,15 @@ async function processResponse(response: any): Promise<ResponseData> {
     return responseData;
 }
 
+
+function getHeaders() {
+    return {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie('csrftoken')
+    };
+}
+
+
 async function performRequest(
     url: string,
     method: string,
@@ -74,10 +83,7 @@ async function performRequest(
     const response =  await fetch(
         url, {
             method: String(method),
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCookie('csrftoken')
-            },
+            headers: getHeaders(),
             body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
         }
     );
@@ -89,13 +95,28 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     url: P,
     method: M,
     body: RequestBody<P, M> extends undefined ? object : RequestBody<P, M>,
-    ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
-): Promise<ResponseData> => {
-    const pathParams = params[0]?.path;
-    const queryParams = params[0]?.query;
+    params: RequestParams<P, M>
+): Promise<{ data: ResponseType<P, M> | null, errors: any, status: number}> => {
+    const pathParams = params?.path;
+    const queryParams = params?.query;
     const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
     return await performRequest(formattedUrl, method.toString(), body);
 }
+
+
+export const apiPost = async <P extends Path>(
+    url: P,
+    body: RequestBody<P, 'post'> extends undefined ? object : RequestBody<P, 'post'>,
+    params: RequestParams<P, 'post'>
+): Promise<{ data: ResponseType<P, 'post'> | null, errors: any, status: number}> => {
+    // convery params to any to avoid errors on APIs without post requests
+    const untypedParams = params as any
+    const pathParams = untypedParams?.path;
+    const queryParams = untypedParams?.query;
+    const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
+    return await performRequest(formattedUrl, 'post', body);
+}
+
 
 export function useApi <P extends Path>(
     url: P,
@@ -125,7 +146,14 @@ export function useApi <P extends Path>(
 export const usePaginatedApi = <P extends Path>(
     url: P,
     ...params: RequestParams<P, 'get'> extends undefined ? Array<any> : [RequestParams<P, 'get'>]
-): { items: PaginatedResponseTypeItems<P, 'get'>, error: any, isLoading: boolean, size: number, setSize: (size: any) => void } => {
+): {
+    items: PaginatedResponseTypeItems<P, 'get'>,
+    error: any,
+    isLoading: boolean,
+    size: number,
+    setSize: (size: any) => void,
+    mutate: () => void
+} => {
     const getKey = (pageIndex: number, previousPageData: PaginatedResponseType<P, 'get'>) => {
         let to_id = params[0]?.query?.last_id;
         let to_timestamp = params[0]?.query?.last_timestamp;
@@ -141,7 +169,7 @@ export const usePaginatedApi = <P extends Path>(
         const queryParams = { to_timestamp, to_id, per_page: per_page }
         return generateUrl(url.toString(), params[0]?.path, queryParams);
     }
-    const { data, error, isLoading, size, setSize } = useSWRInfinite(
+    const { data, error, isLoading, size, setSize, mutate } = useSWRInfinite(
         getKey, fetcher, {revalidateFirstPage: false}
     )
     const items: PaginatedResponseTypeItems<P, 'get'> = [];
@@ -155,6 +183,7 @@ export const usePaginatedApi = <P extends Path>(
         error,
         isLoading,
         size,
-        setSize
+        setSize,
+        mutate
     }
 }

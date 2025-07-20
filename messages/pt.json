@@ -1,0 +1,20 @@
+{
+    "AnimatedMaskedMap": {
+        "distance_total": "Total: {distance} km",
+        "area_total": "Área: {area} km²",
+        "km": "km",
+        "reset": "Reiniciar"
+    },
+    "NavigationHeader": {
+        "login": "Entrar",
+        "admin": "Admin"
+    },
+    "loader": {
+        "loading": "Carregando..."
+    },
+    "generic_modal_form": {
+        "cancel": "Cancelar",
+        "submit": "Enviar",
+        "submitting": "Enviando..."
+    }
+} 

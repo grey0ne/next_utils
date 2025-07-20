@@ -1,8 +1,8 @@
 import { Controller, Control } from "react-hook-form";
 import { TextField, Autocomplete } from '@mui/material';
 
-type Option = {
-    value: string,
+export type Option = {
+    value: string | number,
     title: string
 }
 
@@ -22,13 +22,21 @@ function SelectFieldOption (props: any, option: Option) {
     )
 }
 
-export default function ControlledSelectField({ control, name, label, options, required=false }: ControlledSelectFieldProps) {
+function getOption(value: any, options: Option[]) {
+    for (const option of options) {
+        if (option.value === value) {
+            return option
+        }
+    }
+    return null
+}
+
+export function ControlledSelectField({ control, name, label, options, required=false }: ControlledSelectFieldProps) {
     return (
         <Controller
             name={ name }
             control={ control }
             rules={{ required: required }}
-            defaultValue={ null }
             shouldUnregister={ true }
             render={({ field: { onChange, value } }) => {
                 return (
@@ -38,12 +46,12 @@ export default function ControlledSelectField({ control, name, label, options, r
                             if (option.hasOwnProperty('title')) {
                                 return option.title;
                             }
-                            return String(option);
+                            return '';
                         }}
                         options={options}
                         autoHighlight
                         renderOption={SelectFieldOption}
-                        value={ value }
+                        value={ getOption(value, options) }
                         onChange={(event: any, newValue: Option | null) => {
                             onChange(newValue?.value);
                         }}

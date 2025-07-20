@@ -4,5 +4,17 @@
         "area_total": "Area: {area} km²",
         "km": "km",
         "reset": "Reset"
+    },
+    "NavigationHeader": {
+        "login": "Login",
+        "admin": "Admin"
+    },
+    "loader": {
+        "loading": "Loading..."
+    },
+    "generic_modal_form": {
+        "cancel": "Cancel",
+        "submit": "Submit",
+        "submitting": "Submitting..."
     }
 }

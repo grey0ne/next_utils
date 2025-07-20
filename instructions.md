@@ -1,27 +1,42 @@
-For frontend Material UI components should be used
-For modal form use Material UI Dialog component
-Use latest version of Material UI for Grid components. Grid component require size attribute like in this example <Grid size={{xs: 12, md: 12}}> use other project pages as an example
-Use 4 spaces indents in typescript files
+## Frontend Guidelines
+- Use Material UI components for all UI elements
+- Use Material UI Dialog component for modal forms
+- Use latest version of Material UI Grid components with size attribute: `<Grid size={{xs: 12, md: 12}}>`
+- Use 4 spaces indentation in TypeScript files
+- Do not use default exports for additional JS components and functions
 
-## API Endpoints and usage
-Always use exisiting API endpoints
-API type definitions located in spa/api/apiTypes.ts
-For client nextjs components use methods from spa/next_utils/apiClient.ts
-For server nextjs components use methods from spa/next_utils/apiServer.ts
+## API and Data Fetching
+- Use existing API endpoints
+- API type definitions are in `spa/api/apiTypes.ts`
+- For client Next.js components: use methods from `spa/next_utils/apiClient.ts`
+- For server Next.js components: use methods from `spa/next_utils/apiServer.ts`
+- Use `useApi` method from `spa/next_utils/apiClient.ts` for data fetching in client components
 
+## Forms and Fields
+- Use React Hook Form for form handling
+- If possible, use Generic Modal Form to simplify form creation. Generic Modal Form requires only Field Schema to be defined
+- Use fields from `next_utils/fields`
+- For related object selection, use `ControlledSelectField` from `spa/next_utils/fields`
+- For localized fields use `ControlledLocalizedTextField` from `spa/next_utils/fields`
 
-## Forms and modals
-For forms use React hook form and fields from next_utils/fields
+## Backend Development
+- Use decorators from dataorm module for backend endpoints
+- Define endpoints in `api.py` files
+- Define new schemas as dataclasses in `schema.py` files within corresponding modules
 
-For backend endpoints use decorators from dataorm module. Backend endpoints is defined in api.py file.
-For single item endpoints use single_item decorator from dataorm
-For data altering requests use action decorator from dataorm
-If new schema is needed for endpoint define it as dataclass in schema.py file in corressponding module
+## Code Style
+- Do not add comments to generated code
+- Follow the project's existing patterns and conventions
+- Use TypeScript for frontend development
+- Maintain consistent code formatting
 
-If you need to fetch data in client component use useApi method from spa/next_utils/apiClient.ts
+## Project Structure
+- Keep frontend code in the `spa` directory
+- Keep backend code in the `backend` directory
+- Follow the established module organization
 
-For form fields that require to choose from related objects use ControlledSelectField from spa/next_utils/fields folder
+## Frontend Performance
+- Consider potential rerenders, provide optimized code and warn if needed
 
-Do not add comments to generated code
-
-When export additional js components and functions do not use default export
+## Localization
+- When creating frontend pages and components use react-intl to localize displayed string. Update localization messages file accordingly
