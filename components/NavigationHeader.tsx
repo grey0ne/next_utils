@@ -21,7 +21,8 @@ type NavigationHeaderProps = {
 const LINK_STYLE = { color: 'inherit', textDecoration: 'none' };
 
 export async function NavigationHeader({ title, links, showAdmin, showUser }: NavigationHeaderProps) {
-    const { data: currentUser } = await apiGet('/api/current_user/', {});
+    const { data: currentUserData } = await apiGet('/api/current_user/', {});
+    const currentUser = currentUserData?.user
     const t = await getTranslations('NavigationHeader');
 
     const linkElems = links.map((link) => {
