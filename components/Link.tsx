@@ -7,13 +7,15 @@ const defaultLinkStyle = {
     textDecoration: 'none'
 }
 
+
+
 export const NoPrefetchLink = React.forwardRef(
-    (props: any, ref:React.ForwardedRef<any>) => <NextIntlLink {...props} ref={ ref } prefetch={props.prefetch ?? false} style={defaultLinkStyle}/>
+    (props: any, ref:React.ForwardedRef<any>) => <NextIntlLink {...props} ref={ ref } prefetch={props.prefetch ?? false} style={ { ...defaultLinkStyle, ...props.style } }/>
 )
 NoPrefetchLink.displayName = 'NoPrefetchLink';
 
 export const UnlocalizedLink = React.forwardRef(
-    (props: any, ref:React.ForwardedRef<any>) => <NextLink {...props} ref={ ref } prefetch={props.prefetch ?? false} style={defaultLinkStyle}/>
+    (props: any, ref:React.ForwardedRef<any>) => <NextLink {...props} ref={ ref } prefetch={props.prefetch ?? false} style={{ ...defaultLinkStyle, ...props.style }}/>
 )
 UnlocalizedLink.displayName = 'UnlocalizedLink';
 
