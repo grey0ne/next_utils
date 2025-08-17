@@ -120,18 +120,11 @@ export const apiPost = async <P extends Path>(
 
 export function useApi <P extends Path>(
     url: P,
-    params: RequestParams<P, 'get'>
+    params: RequestParams<P, 'get'>,
+    shouldFetch: boolean = true
 ): { data: ResponseType<P, 'get'>, error: any, isLoading: boolean, mutate: any} {
     const pathParams = params?.path;
     const queryParams = params?.query;
-    let shouldFetch = true;
-    if (pathParams) {
-        for (const key in pathParams) {
-            if (!pathParams[key]) {
-                shouldFetch = false; // Prevent fetching if path params are not set yet. Usually occures during cascade fetch
-            }
-        }
-    }
     const formattedUrl = generateUrl(url.toString(), pathParams, queryParams); 
     const { data, error, isLoading, mutate } = useSWR(shouldFetch ? formattedUrl : null, fetcher);
     return {
