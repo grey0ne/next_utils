@@ -33,7 +33,7 @@ export function ControlledLocalizedTextField({ name, label, required, width='100
                     sx={{ width: width }}
                     rows={ rows }
                     multiline={ rows > 1 }
-                    value={ value[selectedLocale as BackendLocale] || '' } onChange={ onChangeLocale }
+                    value={ value?.[selectedLocale as BackendLocale] || '' } onChange={ onChangeLocale }
                     label={ fieldLabel } required={ required }  variant="outlined"
                 />
             </>
