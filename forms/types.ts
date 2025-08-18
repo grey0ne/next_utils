@@ -32,6 +32,7 @@ export interface SelectFieldSchema extends BaseFieldSchema {
 export interface TextFieldSchema extends BaseFieldSchema {
     fieldType: FormFieldType.TEXT_FIELD | FormFieldType.LOCALIZED_TEXT_FIELD
     rows?: number;
+    enableTranslate?: boolean;
 }
 
 export interface Base64FileFieldSchema extends BaseFieldSchema {

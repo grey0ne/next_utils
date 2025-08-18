@@ -1,7 +1,5 @@
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import { Button, Tab, Tabs, Stack, Box, Typography } from '@mui/material';
 import { Locale } from "next-intl";
-import { Stack, Box, Typography } from '@mui/material';
 import { AVAILABLE_LOCALES } from '@/next_utils/constants';
 import { ENABLED_LOCALES } from './../../constants';
 
@@ -9,9 +7,10 @@ type LocaleTabsProps = {
     selectedLocale: Locale,
     setLocale: (locale: Locale) => void,
     title?: string,
+    translateHandler?: () => void
 }
 
-export function LocaleTabs({ selectedLocale, setLocale, title }: LocaleTabsProps) {
+export function LocaleTabs({ selectedLocale, setLocale, title, translateHandler }: LocaleTabsProps) {
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setLocale(newValue as Locale);
     };
@@ -30,6 +29,11 @@ export function LocaleTabs({ selectedLocale, setLocale, title }: LocaleTabsProps
     return (
         <Stack direction="row" spacing={2} sx={{ mb: 2, alignItems: 'end', justifyContent: 'space-between' }}>
             { title && <Box p={1}><Typography variant='h6'>{ title }</Typography></Box> }
+            { translateHandler && (
+                <Button variant="contained" color="primary" onClick={ translateHandler }>
+                    Translate
+                </Button>
+            )}
             <Tabs
                 value={ selectedLocale }
                 textColor="primary"

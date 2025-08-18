@@ -24,7 +24,7 @@ export function FormFields(props: FieldsProps) {
             resultElem = <ControlledTextField {...baseFields} rows={field.rows || 1} />
         }
         if (field.fieldType === FormFieldType.LOCALIZED_TEXT_FIELD){
-            resultElem = <ControlledLocalizedTextField {...baseFields} rows={field.rows || 1}/>
+            resultElem = <ControlledLocalizedTextField {...baseFields} rows={field.rows || 1} translate={field.enableTranslate}/>
         }
         if (field.fieldType === FormFieldType.DYNAMIC_SELECT_FIELD) {
             resultElem = (

@@ -1,10 +1,11 @@
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 import { BackendLocalizedString, BackendLocale } from "@/next_utils/types";
 import { Locale, useLocale } from "next-intl";
 import { LocaleTabs } from "@/next_utils/components/LocaleTabs";
 import { useState } from "react";
 import { AVAILABLE_LOCALES } from "@/next_utils/constants";
+import { apiPost } from "../apiClient";
 
 type ControlledLocalizedTextFieldProps = {
     name: string,
@@ -12,12 +13,26 @@ type ControlledLocalizedTextFieldProps = {
     required?: boolean
     width?: string
     rows?: number
+    translate?: boolean
 }
 
-export function ControlledLocalizedTextField({ name, label, required, width='100%', rows=1 }: ControlledLocalizedTextFieldProps) {
+export function ControlledLocalizedTextField({ name, label, required, width='100%', rows=1, translate=false }: ControlledLocalizedTextFieldProps) {
     const locale = useLocale();
-    const { control } = useFormContext();
+    const { control, getValues, setValue } = useFormContext();
     const [selectedLocale, setLocale] = useState<Locale>(locale);
+
+    const handleTranslate = async () => {
+        const value = getValues(name)?.['ru'] || '';
+        const { data } = await apiPost('/api/translation/get_translation', {
+            locale: selectedLocale,
+            text: value
+        }, {});
+        if (data) {
+            const newValues = { ...getValues(name) };
+            newValues[selectedLocale as BackendLocale] = data.translation;
+            setValue(name, newValues);
+        }
+    }
     const renderFields = ({ field: { onChange, value }}: {field: {onChange: any, value: BackendLocalizedString}}) => {
         const localeLabel = AVAILABLE_LOCALES.find(locale => locale.code === selectedLocale)?.shortLabel || selectedLocale;
         const fieldLabel = `${label} (${localeLabel})`;
@@ -40,7 +55,7 @@ export function ControlledLocalizedTextField({ name, label, required, width='100
 
     return (
         <>
-            <LocaleTabs title={ label } selectedLocale={ selectedLocale } setLocale={ setLocale } />
+            <LocaleTabs title={ label } selectedLocale={ selectedLocale } setLocale={ setLocale } translateHandler={ translate ? handleTranslate : undefined } />
             <Controller
                 name={ name }
                 control={ control }
