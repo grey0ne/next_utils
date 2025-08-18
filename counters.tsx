@@ -6,6 +6,9 @@ type CountersProps = {
 }
 
 export function Counters({ gtag_id, ym_id }: CountersProps) {
+    if (process.env.NODE_ENV !== 'production') {
+        return null;
+    }
     let ymMetricCounter;
     let googleAnalyticsCounter;
     let googleAnalyticsScript;
