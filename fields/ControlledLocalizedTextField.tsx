@@ -16,13 +16,15 @@ type ControlledLocalizedTextFieldProps = {
     translate?: boolean
 }
 
+const SOURCE_LOCALE = 'ru';
+
 export function ControlledLocalizedTextField({ name, label, required, width='100%', rows=1, translate=false }: ControlledLocalizedTextFieldProps) {
     const locale = useLocale();
     const { control, getValues, setValue } = useFormContext();
     const [selectedLocale, setLocale] = useState<Locale>(locale);
 
     const handleTranslate = async () => {
-        const value = getValues(name)?.['ru'] || '';
+        const value = getValues(name)?.[SOURCE_LOCALE] || '';
         const { data } = await apiPost('/api/translation/get_translation', {
             locale: selectedLocale,
             text: value
@@ -53,9 +55,11 @@ export function ControlledLocalizedTextField({ name, label, required, width='100
         )
     }
 
+    const enableTranslate = translate && selectedLocale !== SOURCE_LOCALE;
+
     return (
         <>
-            <LocaleTabs title={ label } selectedLocale={ selectedLocale } setLocale={ setLocale } translateHandler={ translate ? handleTranslate : undefined } />
+            <LocaleTabs title={ label } selectedLocale={ selectedLocale } setLocale={ setLocale } translateHandler={ enableTranslate ? handleTranslate : undefined } />
             <Controller
                 name={ name }
                 control={ control }
