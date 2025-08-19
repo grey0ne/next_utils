@@ -1,11 +1,11 @@
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, Button } from '@mui/material';
+import { TextField } from '@mui/material';
 import { BackendLocalizedString, BackendLocale } from "@/next_utils/types";
 import { Locale, useLocale } from "next-intl";
 import { LocaleTabs } from "@/next_utils/components/LocaleTabs";
 import { useState } from "react";
 import { AVAILABLE_LOCALES } from "@/next_utils/constants";
-import { apiPost } from "../apiClient";
+import { untypedApiRequest } from "../apiClient";
 
 type ControlledLocalizedTextFieldProps = {
     name: string,
@@ -25,10 +25,11 @@ export function ControlledLocalizedTextField({ name, label, required, width='100
 
     const handleTranslate = async () => {
         const value = getValues(name)?.[SOURCE_LOCALE] || '';
-        const { data } = await apiPost('/api/translation/get_translation', {
+        // UntypedApiRequest is used here to be compatible with projects without translation service
+        const { data } = await untypedApiRequest('/api/translation/get_translation', 'POST', {
             locale: selectedLocale,
             text: value
-        }, {});
+        });
         if (data) {
             const newValues = { ...getValues(name) };
             newValues[selectedLocale as BackendLocale] = data.translation;
