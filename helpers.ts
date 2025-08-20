@@ -1,5 +1,8 @@
 import { BackendLocalizedString, BackendLocale } from './types';
 import { Locale } from 'next-intl';
+import { ENABLED_LOCALES } from '../constants';
+
+const PROJECT_DOMAIN = process.env.PROJECT_DOMAIN
 
 export function convertBase64(blob: Blob): Promise<string | ArrayBuffer> {
     return new Promise((resolve, reject) => {
@@ -65,3 +68,14 @@ export function renderLocalizedString(
     return '';
 }
 
+
+export function generateMetadataAlternates(url: string) {
+    const languages: any = {};
+    for (const locale of ENABLED_LOCALES) {
+        languages[locale] = `https://${PROJECT_DOMAIN}/${locale}${url}`;
+    }
+    return {
+        canonical: `https://${PROJECT_DOMAIN}${url}`,
+        languages: languages
+    }
+}
