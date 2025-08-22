@@ -22,12 +22,13 @@ UnlocalizedLink.displayName = 'UnlocalizedLink';
 type TextLinkProps = {
     href: string,
     children: React.ReactNode,
-    locale?: string
+    locale?: string,
+    style?: React.CSSProperties
 }
 
-export function TextLink({ href, children, locale }: TextLinkProps) {
+export function TextLink({ href, children, locale, style }: TextLinkProps) {
     return (
-        <NoPrefetchLink href={ href } locale={ locale } style={defaultLinkStyle}>
+        <NoPrefetchLink href={ href } locale={ locale } style={{ ...defaultLinkStyle, ...style }}>
             { children }
         </NoPrefetchLink>
     )
