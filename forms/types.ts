@@ -60,6 +60,7 @@ export interface GenericFormProps {
     formSchema: FormSchema;
     initialData?: any;
     onSuccess?: (data?: any) => void;
+    buttonTitle?: string;
 }
 
 export interface GenericModalFormProps <P extends PostPath> {
