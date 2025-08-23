@@ -6,15 +6,17 @@ type ControlledTextFieldProps = {
     label: string,
     required?: boolean,
     rows?: number,
-    width?: string
+    width?: string,
+    type?: string
 }
 
-export function ControlledTextField({ name, label, required=false, rows=1, width='100%' }: ControlledTextFieldProps) {
+export function ControlledTextField({ name, label, required=false, rows=1, width='100%', type='text' }: ControlledTextFieldProps) {
     const { control } = useFormContext();
     const multiline = rows > 1;
 
     return (
         <TextField
+            type={ type }
             sx={{ width: width }}
             label={ label } required={ required }  variant="outlined"
             multiline={ multiline } rows={ rows }
