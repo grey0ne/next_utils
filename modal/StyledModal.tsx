@@ -1,20 +1,18 @@
-import { Box, Dialog } from '@mui/material';
-
-const modalStyle = {
-    minWidth: 600,
-};
+import { Box, Dialog, SxProps } from '@mui/material';
 
 
-export function StyledModal({ children, onClose }: {
+export function StyledModal({ children, onClose, sx }: {
     children: React.ReactNode;
     onClose?: () => void;
+    sx?: SxProps;
 }) {
     return (
         <Dialog
             open={true}
             onClose={onClose}
+            sx={sx}
         >
-            <Box sx={modalStyle}>
+            <Box>
                 {children}
             </Box>
         </Dialog>
