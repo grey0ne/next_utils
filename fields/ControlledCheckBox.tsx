@@ -8,7 +8,7 @@ type ControlledCheckBoxProps = {
 }
 
 
-export default function ControlledCheckBox({ name, label, required=false }: ControlledCheckBoxProps) {
+export function ControlledCheckBox({ name, label, required=false }: ControlledCheckBoxProps) {
     const { control } = useFormContext();
 
     const checkbox = (

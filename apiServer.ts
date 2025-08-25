@@ -29,7 +29,9 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     const queryParams = params[0]?.query;
     const formattedUrl = BACKEND_URL + generateUrl(url, pathParams, queryParams); 
     const cookieStore = await cookies();
-    const cookieHeader = `sessionid=${cookieStore.get('sessionid')?.value}`;
+    const cookieHeader = cookieStore.getAll()
+        .map(cookie => `${cookie.name}=${cookie.value}`)
+        .join('; ');
     const response =  await fetch(
         formattedUrl, {
             method: String(method),

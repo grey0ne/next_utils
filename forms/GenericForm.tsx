@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 
 
 export function GenericForm(props: GenericFormProps) {
-    const { formSchema, initialData, onSuccess } = props;
+    const { formSchema, initialData, onSuccess, buttonTitle } = props;
     const t = useTranslations('generic_modal_form');
     const formMethods = useForm<any>({
         defaultValues: initialData
@@ -27,8 +27,9 @@ export function GenericForm(props: GenericFormProps) {
                         type="submit" 
                         variant="contained" 
                         color="primary"
+                        sx={{ maxWidth: '200px', alignSelf: 'flex-end' }}
                     >
-                        { t('submit') } 
+                        { buttonTitle || t('submit') } 
                     </Button>
                 </Stack>
             </form>

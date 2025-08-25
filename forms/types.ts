@@ -3,11 +3,13 @@ import { Option } from '@/next_utils/fields/SelectFieldHelpers';
 
 export enum FormFieldType {
     TEXT_FIELD = 'textField',
+    INTEGER_FIELD = 'integerField',
     LOCALIZED_TEXT_FIELD = 'localizedTextField',
     DYNAMIC_SELECT_FIELD = 'dynamicSelectField',
     SELECT_FIELD = 'selectField',
     TEXT_LIST_FIELD = 'textListField',
     BASE64_FILE_FIELD = 'base64ImageUploadField',
+    CHECKBOX_FIELD = 'checkboxField',
 }
 
 interface BaseFieldSchema {
@@ -33,6 +35,7 @@ export interface SelectFieldSchema extends BaseFieldSchema {
 export interface TextFieldSchema extends BaseFieldSchema {
     fieldType: FormFieldType.TEXT_FIELD | FormFieldType.LOCALIZED_TEXT_FIELD
     rows?: number;
+    enableTranslate?: boolean;
 }
 
 export interface Base64FileFieldSchema extends BaseFieldSchema {
@@ -45,11 +48,21 @@ export interface TextListFieldSchema extends BaseFieldSchema {
     rows?: number;
 }
 
+export interface IntegerFieldSchema extends BaseFieldSchema {
+    fieldType: FormFieldType.INTEGER_FIELD;
+}
+
+export interface CheckboxFieldSchema extends BaseFieldSchema {
+    fieldType: FormFieldType.CHECKBOX_FIELD;
+}
+
 export type FormFieldSchema = 
     TextFieldSchema | 
     SelectFieldSchema |
     TextListFieldSchema |
     Base64FileFieldSchema |
+    IntegerFieldSchema |
+    CheckboxFieldSchema |
     DynamicSelectFieldSchema<ItemsPath>;    
 
 export type FormSchema = {
@@ -60,6 +73,7 @@ export interface GenericFormProps {
     formSchema: FormSchema;
     initialData?: any;
     onSuccess?: (data?: any) => void;
+    buttonTitle?: string;
 }
 
 export interface GenericModalFormProps <P extends PostPath> {

@@ -5,6 +5,7 @@ import { Locale, useLocale } from "next-intl";
 import { LocaleTabs } from "@/next_utils/components/LocaleTabs";
 import { useState } from "react";
 import { AVAILABLE_LOCALES } from "@/next_utils/constants";
+import { untypedApiRequest } from "../apiClient";
 
 type ControlledLocalizedTextFieldProps = {
     name: string,
@@ -12,12 +13,29 @@ type ControlledLocalizedTextFieldProps = {
     required?: boolean
     width?: string
     rows?: number
+    translate?: boolean
 }
 
-export function ControlledLocalizedTextField({ name, label, required, width='100%', rows=1 }: ControlledLocalizedTextFieldProps) {
+const SOURCE_LOCALE = 'ru';
+
+export function ControlledLocalizedTextField({ name, label, required, width='100%', rows=1, translate=false }: ControlledLocalizedTextFieldProps) {
     const locale = useLocale();
-    const { control } = useFormContext();
+    const { control, getValues, setValue } = useFormContext();
     const [selectedLocale, setLocale] = useState<Locale>(locale);
+
+    const handleTranslate = async () => {
+        const value = getValues(name)?.[SOURCE_LOCALE] || '';
+        // UntypedApiRequest is used here to be compatible with projects without translation service
+        const { data } = await untypedApiRequest('/api/translation/get_translation', 'POST', {
+            locale: selectedLocale,
+            text: value
+        });
+        if (data) {
+            const newValues = { ...getValues(name) };
+            newValues[selectedLocale as BackendLocale] = data.translation;
+            setValue(name, newValues);
+        }
+    }
     const renderFields = ({ field: { onChange, value }}: {field: {onChange: any, value: BackendLocalizedString}}) => {
         const localeLabel = AVAILABLE_LOCALES.find(locale => locale.code === selectedLocale)?.shortLabel || selectedLocale;
         const fieldLabel = `${label} (${localeLabel})`;
@@ -27,22 +45,22 @@ export function ControlledLocalizedTextField({ name, label, required, width='100
             onChange(newValues);
         }
         return (
-            <>
-                <TextField
-                    key={ selectedLocale }
-                    sx={{ width: width }}
-                    rows={ rows }
-                    multiline={ rows > 1 }
-                    value={ value[selectedLocale as BackendLocale] || '' } onChange={ onChangeLocale }
-                    label={ fieldLabel } required={ required }  variant="outlined"
-                />
-            </>
+            <TextField
+                key={ selectedLocale }
+                sx={{ width: width }}
+                rows={ rows }
+                multiline={ rows > 1 }
+                value={ value?.[selectedLocale as BackendLocale] || '' } onChange={ onChangeLocale }
+                label={ fieldLabel } required={ required }  variant="outlined"
+            />
         )
     }
 
+    const enableTranslate = translate && selectedLocale !== SOURCE_LOCALE;
+
     return (
         <>
-            <LocaleTabs title={ label } selectedLocale={ selectedLocale } setLocale={ setLocale } />
+            <LocaleTabs title={ label } selectedLocale={ selectedLocale } setLocale={ setLocale } translateHandler={ enableTranslate ? handleTranslate : undefined } />
             <Controller
                 name={ name }
                 control={ control }

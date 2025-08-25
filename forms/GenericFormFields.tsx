@@ -6,6 +6,7 @@ import { ControlledDynamicSelectField } from '@/next_utils/fields/ControlledDyna
 import { ControlledSelectField } from '@/next_utils/fields/ControlledSelectField';
 import { ControlledStringList } from '../fields/ControlledStringList';
 import { ControlledBase64FileField } from '../fields/ControlledBase64FileField';
+import { ControlledCheckBox } from '@/next_utils/fields/ControlledCheckBox';
 import { FormFieldSchema, FormFieldType } from './types';
 import { useFormContext } from 'react-hook-form';
 
@@ -24,7 +25,7 @@ export function FormFields(props: FieldsProps) {
             resultElem = <ControlledTextField {...baseFields} rows={field.rows || 1} />
         }
         if (field.fieldType === FormFieldType.LOCALIZED_TEXT_FIELD){
-            resultElem = <ControlledLocalizedTextField {...baseFields} rows={field.rows || 1}/>
+            resultElem = <ControlledLocalizedTextField {...baseFields} rows={field.rows || 1} translate={field.enableTranslate}/>
         }
         if (field.fieldType === FormFieldType.DYNAMIC_SELECT_FIELD) {
             resultElem = (
@@ -50,6 +51,12 @@ export function FormFields(props: FieldsProps) {
         }
         if (field.fieldType === FormFieldType.BASE64_FILE_FIELD) {
             resultElem = <ControlledBase64FileField {...baseFields} acceptedFileTypes={field.acceptedFileTypes} />
+        }
+        if (field.fieldType === FormFieldType.INTEGER_FIELD) {
+            resultElem = <ControlledTextField {...baseFields} type='number' />
+        }
+        if (field.fieldType === FormFieldType.CHECKBOX_FIELD) {
+            resultElem = <ControlledCheckBox {...baseFields} />
         }
         return (
             <Box key={field.name}>
