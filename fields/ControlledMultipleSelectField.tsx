@@ -10,16 +10,21 @@ type ControlledSelectFieldProps = {
     required?: boolean
 }
 
-function getOption(value: any, options: Option[]) {
-    for (const option of options) {
-        if (option.value === value) {
-            return option
+
+
+function getOptions(value: any[], options: Option[]): Option[] {
+    const result: Option[] = []
+    value.map((value) => {
+        for (const option of options) {
+            if (option.value === value) {
+                result.push(option)
+            }
         }
-    }
-    return null
+    })
+    return result
 }
 
-export function ControlledSelectField({ control, name, label, options, required=false }: ControlledSelectFieldProps) {
+export function ControlledMultipleSelectField({ control, name, label, options, required=false }: ControlledSelectFieldProps) {
     return (
         <Controller
             name={ name }
@@ -27,6 +32,7 @@ export function ControlledSelectField({ control, name, label, options, required=
             rules={{ required: required }}
             shouldUnregister={ true }
             render={({ field: { onChange, value } }) => {
+                value = value || []
                 return (
                     <Autocomplete
                         getOptionLabel={(option) => {
@@ -39,11 +45,15 @@ export function ControlledSelectField({ control, name, label, options, required=
                         options={options}
                         autoHighlight
                         renderOption={SelectFieldOption}
-                        value={ getOption(value, options) }
-                        onChange={(event: any, newValue: Option | null) => {
-                            onChange(newValue?.value || null);
+                        value={ getOptions(value, options) }
+                        onChange={(event: any, newValue: Option[] | null) => {
+                            if (newValue) {
+                                onChange(newValue.map((option: Option) => option.value));
+                            } else {
+                                onChange([]);
+                            }
                         }}
-                        multiple={false}
+                        multiple={true}
                         isOptionEqualToValue={(option: Option, value: Option) => option.value === value.value }
                         renderInput={(params) => (
                             <TextField

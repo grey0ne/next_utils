@@ -34,6 +34,7 @@ export function FormFields(props: FieldsProps) {
                     dataUrl={field.dataUrl}
                     dataUrlParams={field.dataUrlParams}
                     optionLabelField={ field.optionLabelField}
+                    multiple={field.multiple}
                 />
             );
         }

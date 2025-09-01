@@ -1,5 +1,5 @@
 import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
-import { Option } from '@/next_utils/fields/ControlledSelectField';
+import { Option } from '@/next_utils/fields/SelectFieldHelpers';
 
 export enum FormFieldType {
     TEXT_FIELD = 'textField',
@@ -24,6 +24,7 @@ export interface DynamicSelectFieldSchema <P extends ItemsPath> extends BaseFiel
     dataUrl: P,
     dataUrlParams: RequestParams<P, 'get'>
     optionLabelField: string;
+    multiple?: boolean;
 }
 
 export interface SelectFieldSchema extends BaseFieldSchema {
