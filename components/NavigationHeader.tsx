@@ -3,6 +3,7 @@ import { NoPrefetchLink, UnlocalizedLink } from '@/next_utils/components/Link';
 import { apiGet } from '@/next_utils/apiServer';
 import { getTranslations } from 'next-intl/server';
 import { LocaleSelector } from '@/next_utils/components/LocaleSelector';
+import { getCurrentUser } from '@/api/serverMethods';
 
 type HeaderLink = {
     url: string;
@@ -21,8 +22,7 @@ type NavigationHeaderProps = {
 const LINK_STYLE = { color: 'inherit', textDecoration: 'none' };
 
 export async function NavigationHeader({ title, links, showAdmin, showUser }: NavigationHeaderProps) {
-    const { data: currentUserData } = await apiGet('/api/users/current_user/', {});
-    const currentUser = currentUserData?.user
+    const currentUser = await getCurrentUser();
     const t = await getTranslations('NavigationHeader');
 
     const linkElems = links.map((link) => {
