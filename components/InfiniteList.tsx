@@ -2,7 +2,9 @@
 import { useInView } from 'react-intersection-observer';
 import { Box, Typography, Paper, CircularProgress, Stack } from '@mui/material';
 import { usePaginatedApi } from '@/next_utils/apiClient';
-import { Path, RequestPathParams, PaginatedResponseTypeItems } from '@/next_utils/apiHelpers';
+import {
+    Path, RequestPathParams, PaginatedResponseTypeItems, PaginatedResponseType
+} from '@/next_utils/apiHelpers';
 
 const DEFAULT_PER_PAGE = 20;
 
@@ -51,10 +53,11 @@ export function InfiniteList<P extends Path>(props: {
     pathParams: RequestPathParams<P, 'get'> extends undefined ? {} : RequestPathParams<P, 'get'>
     renderItems: (items: PaginatedResponseTypeItems<P, 'get'>) => React.ReactNode,
     perPage?: number,
+    initialData?: PaginatedResponseType<P, 'get'>
  }) {
-    const { url, pathParams, renderItems, perPage } = props;
+    const { url, pathParams, renderItems, perPage, initialData } = props;
     const { items, error, isLoading, size, setSize } = usePaginatedApi(
-        url, { path: pathParams, query: { per_page: perPage || DEFAULT_PER_PAGE } }
+        url, initialData, { path: pathParams, query: { per_page: perPage || DEFAULT_PER_PAGE } }
     );
 
     return <ControlledInfiniteList
