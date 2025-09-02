@@ -1,5 +1,6 @@
 import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
 import { Option } from '@/next_utils/fields/SelectFieldHelpers';
+import { SxProps } from "@mui/material";
 
 export enum FormFieldType {
     TEXT_FIELD = 'textField',
@@ -82,6 +83,9 @@ export interface GenericModalFormProps <P extends PostPath> {
     submitUrlParams: RequestParams<P, 'post'>
     title: string;
     initialData?: any;
+    fullscreenBreakpoint?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+    fullWidth?: boolean;
+    maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
     onClose?: () => void;
     onSuccess?: (data?: any, responseData?: any) => void;
 }

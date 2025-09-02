@@ -79,3 +79,12 @@ export function generateMetadataAlternates(url: string) {
         languages: languages
     }
 }
+
+export function formatDate(dateString: string, locale?: BackendLocale) {
+    return new Date(dateString).toLocaleDateString(locale || 'en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+};
+

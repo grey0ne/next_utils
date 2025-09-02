@@ -15,7 +15,7 @@ import { FormFields } from './GenericFormFields';
 
 
 export function GenericModalForm<P extends PostPath>(props: GenericModalFormProps<P>) {
-    const { formSchema, initialData, submitUrl, title, onClose, onSuccess } = props;
+    const { formSchema, initialData, submitUrl, title, onClose, onSuccess, fullscreenBreakpoint, fullWidth, maxWidth } = props;
     const t = useTranslations('generic_modal_form');
     const formMethods = useForm<any>({
         defaultValues: initialData
@@ -31,6 +31,9 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
 
     return (
         <StyledModal
+            fullscreenBreakpoint={fullscreenBreakpoint}
+            fullWidth={fullWidth}
+            maxWidth={maxWidth}
             onClose={onClose}
         >
             <DialogTitle>
