@@ -1,50 +1,65 @@
 import { AppBar, Toolbar, Typography, Box } from '@mui/material';
 import { NoPrefetchLink, UnlocalizedLink } from '@/next_utils/components/Link';
-import { apiGet } from '@/next_utils/apiServer';
 import { getTranslations } from 'next-intl/server';
 import { LocaleSelector } from '@/next_utils/components/LocaleSelector';
-import { getCurrentUser } from '@/api/serverMethods';
+import { getUserDataFromCookie } from '@/next_utils/userDataServer';
+import { components } from '@/api/apiTypes';
+import { AuthProvider, LoginModalButton } from '@/next_utils/login/LoginModal';
+
+type CurrentUserData = components['schemas']['CurrentUserData']['user'];
 
 type HeaderLink = {
     url: string;
     label: string;
     external?: boolean;
     needAuth?: boolean;
+    needAdmin?: boolean;
 }
+
 
 type NavigationHeaderProps = {
     title: string;
     links: HeaderLink[];
-    showAdmin?: boolean;
+    showDjangoAdmin?: boolean;
     showUser?: boolean;
+    authProviders?: AuthProvider[];
+    headerColor?: 'primary' | 'secondary';
 }
 
 const LINK_STYLE = { color: 'inherit', textDecoration: 'none' };
 
-export async function NavigationHeader({ title, links, showAdmin, showUser }: NavigationHeaderProps) {
-    const currentUser = await getCurrentUser();
+
+function LinkElem({ link, currentUser }: { link: HeaderLink, currentUser?: CurrentUserData | null }) {
+    if (link.needAuth && !currentUser) return null;
+    if (link.needAdmin && !currentUser?.is_superuser) return null;
+    if (link.external) {
+        return (
+            <UnlocalizedLink href={link.url} style={LINK_STYLE} key={link.label}>
+                {link.label}
+            </UnlocalizedLink>
+        )
+    } else {
+        return (
+            <NoPrefetchLink href={link.url} style={LINK_STYLE} key={link.label}>
+                {link.label}
+            </NoPrefetchLink>
+        )
+    }
+}
+
+export async function NavigationHeader({
+    title, links, showDjangoAdmin, showUser,
+    authProviders, headerColor = 'secondary'
+}: NavigationHeaderProps) {
+    const currentUser = await getUserDataFromCookie();
     const t = await getTranslations('NavigationHeader');
 
-    const linkElems = links.map((link) => {
-        if (link.needAuth && !currentUser) return null;
-        if (link.external) {
-            return (
-                <UnlocalizedLink href="/admin/" style={LINK_STYLE} key={link.label}>
-                    {link.label}
-                </UnlocalizedLink>
-            )
-        } else {
-            return (
-                <NoPrefetchLink href={link.url} style={LINK_STYLE} key={link.label}>
-                    {link.label}
-                </NoPrefetchLink>
-            )
-        }
-    })
+    const linkElems = links.map((link) => <LinkElem link={link} currentUser={currentUser} key={link.label} />)
+    const authEnabled = authProviders && authProviders.length > 0;
 
     return (
-        <AppBar position="static" color='secondary'>
-            <Toolbar>
+        <AppBar position="static" color={headerColor}>
+            <Toolbar sx={{ maxWidth: 1200, margin: "0 auto", width: "100%"}}>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     <NoPrefetchLink href="/" style={LINK_STYLE}>
                         { title }
@@ -52,9 +67,9 @@ export async function NavigationHeader({ title, links, showAdmin, showUser }: Na
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     {linkElems}
-                    { showAdmin && currentUser && (
+                    { showDjangoAdmin && currentUser && (
                         <UnlocalizedLink href="/admin/" style={LINK_STYLE}>
-                            {t('admin')}
+                            {t('django_admin')}
                         </UnlocalizedLink>
                     )}
 
@@ -64,11 +79,7 @@ export async function NavigationHeader({ title, links, showAdmin, showUser }: Na
                         </Typography>
                     )}
                     <LocaleSelector />
-                    {!currentUser && (
-                        <UnlocalizedLink href="/login/yandex-oauth2/" style={LINK_STYLE}>
-                            {t('login')}
-                        </UnlocalizedLink>
-                    )}
+                    {!currentUser && authEnabled && <LoginModalButton modalTitle={t('login')} enabledProviders={authProviders} />}
                 </Box>
             </Toolbar>
         </AppBar>

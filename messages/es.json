@@ -7,7 +7,7 @@
     },
     "NavigationHeader": {
         "login": "Iniciar sesión",
-        "admin": "Admin"
+        "django_admin": "Djnago Admin"
     },
     "loader": {
         "loading": "Cargando..."
