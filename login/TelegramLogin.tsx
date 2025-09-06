@@ -1,5 +1,7 @@
 "use client";
 import { useEffect } from "react";
+import { TelegramLoginProps } from "./types";
+import { apiPost } from "../apiClient";
 
 
 declare global {
@@ -9,11 +11,6 @@ declare global {
     }
 }
 
-type TelegramLoginProps = {
-    botUsername: string;
-    onSuccess: (user: any) => void;
-}
-
 export function TelegramLogin({ botUsername, onSuccess }: TelegramLoginProps) {
     useEffect(() => {
         const script = document.createElement("script");
@@ -21,19 +18,24 @@ export function TelegramLogin({ botUsername, onSuccess }: TelegramLoginProps) {
         script.async = true;
         script.setAttribute("data-telegram-login", botUsername);
         script.setAttribute("data-size", "large");
-        script.setAttribute("data-onauth", "onTelegramAuth(user)");
+        script.setAttribute("data-auth-url", "/complete/telegram/");
         script.setAttribute("data-request-access", "write"); // "write" = requests send messages permission
         document.getElementById("telegram-login")?.appendChild(script);
 
         window.onTelegramAuth = (user: any) => {
             console.log("Telegram auth success:", user);
-            fetch("/api/auth/telegram", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(user),
-            }).then((res) => res.json()).then((data) => {
+            const telegramData = {
+                auth_date: user.auth_date,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                photo_url: user.photo_url,
+                username: user.username,
+                hash: user.hash,
+                id: user.id
+            }
+            apiPost("/api/auth/telegram", telegramData, {}).then((data) => {
                 console.log("Login success:", data);
-                onSuccess(data);
+                onSuccess?.(data);
             }).catch((err) => console.error("Login failed", err));
         };
     }, []);

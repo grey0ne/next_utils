@@ -80,10 +80,11 @@ async function performRequest(
     method: string,
     body: any,
 ): Promise<ResponseData> {
+    const headers = getHeaders();
     const response =  await fetch(
         url, {
             method: String(method),
-            headers: getHeaders(),
+            headers: headers,
             body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
         }
     );

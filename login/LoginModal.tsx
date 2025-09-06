@@ -1,45 +1,69 @@
 'use client'
 import { useState } from 'react'
 import { StyledModal } from '../modal/StyledModal'
-import { Box, Typography } from '@mui/material'
+import { Typography, Stack, Button } from '@mui/material'
+import { UnlocalizedLink } from '../components/Link'
 import { TelegramLogin } from './TelegramLogin'
-
-
-export type AuthProvider = 'telegram' | 'yandex' | 'google';
+import { YandexLogin } from './YandexLogin'
+import { AuthProviderParams, AuthProviderType } from './types'
+import { useTranslations } from 'next-intl';
 
 type LoginModalProps = {
     onClose?: () => void;
     modalTitle?: string;
-    enabledProviders?: AuthProvider[];
+    enabledProviders?: AuthProviderParams[];
 }
 
 export function LoginModal({ onClose, modalTitle, enabledProviders = [] }: LoginModalProps) {
+    const t = useTranslations('LoginModal');
     const buttonElems = [];
-    if (enabledProviders.includes('telegram')) {
-        buttonElems.push(<TelegramLogin botUsername="samplebot" onSuccess={() => {}} />)
+    for (const provider of enabledProviders) {
+        if (provider.providerType === AuthProviderType.TELEGRAM) {
+            buttonElems.push(<TelegramLogin {...provider} key={provider.providerType}/>)
+        }
+        if (provider.providerType === AuthProviderType.YANDEX_JS) {
+            buttonElems.push(<YandexLogin {...provider} key={provider.providerType}/>)
+        }
+        if (provider.providerType === AuthProviderType.YANDEX_REDIRECT) {
+            buttonElems.push(
+                <a href='/login/yandex-oauth2/' key={provider.providerType}>
+                    <Button variant="contained" color="primary">
+                        { t('login_yandex_caption')}
+                    </Button>
+                </a>
+            )
+        }
     }
     return (
         <StyledModal onClose={onClose} maxWidth="sm" fullscreenBreakpoint={false}>
-            <Box p={2}>
-                <Typography variant="h6">{ modalTitle || 'Login' }</Typography>
+            <Stack p={2} spacing={2} alignItems="center">
+                <Typography variant="h6">{ modalTitle || t('login_modal_header') }</Typography>
                 { buttonElems }
-            </Box>
+            </Stack>
         </StyledModal>
     )
 }
 
-const DefaultButtonComponent = ({ onClick }: { onClick: () => void }) => {
-    return <Typography variant="body1" onClick={onClick} sx={{ cursor: 'pointer' }}>Login</Typography>
+const DefaultButtonComponent = ({ onClick, buttonText }: { onClick: () => void, buttonText: string }) => {
+    return <Typography variant="body1" onClick={onClick} sx={{ cursor: 'pointer' }}>{buttonText}</Typography>
 }
 
 type LoginModalButtonProps = LoginModalProps & {
     buttonComponent?: React.ComponentType<{ onClick: () => void }>;
-
+    buttonText?: string;
 }
-export function LoginModalButton({ modalTitle, buttonComponent: ButtonComponent, enabledProviders = [] }: LoginModalButtonProps) {
+
+export function LoginModalButton({
+    modalTitle, buttonComponent: ButtonComponent, enabledProviders = [], buttonText
+}: LoginModalButtonProps) {
+    const t = useTranslations('LoginModal');
+    const authEnabled = enabledProviders && enabledProviders.length > 0;
+    if (!authEnabled) {
+        return null;
+    }
     const [showModal, setShowModal] = useState(false)
     const clickHandler = () => { setShowModal(true) }
-    const buttonElement = ButtonComponent ? <ButtonComponent onClick={clickHandler} /> : <DefaultButtonComponent onClick={clickHandler} />
+    const buttonElement = ButtonComponent ? <ButtonComponent onClick={clickHandler} /> : <DefaultButtonComponent onClick={clickHandler} buttonText={buttonText || t('login_modal_button_text')} />
     return (
         <>
             { buttonElement }

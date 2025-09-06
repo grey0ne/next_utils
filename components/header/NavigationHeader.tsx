@@ -1,10 +1,14 @@
 import { AppBar, Toolbar, Typography, Box } from '@mui/material';
 import { NoPrefetchLink, UnlocalizedLink } from '@/next_utils/components/Link';
 import { getTranslations } from 'next-intl/server';
-import { LocaleSelector } from '@/next_utils/components/LocaleSelector';
+import { LocaleSelector } from '@/next_utils/components/header/LocaleSelector';
 import { getUserDataFromCookie } from '@/next_utils/userDataServer';
 import { components } from '@/api/apiTypes';
-import { AuthProvider, LoginModalButton } from '@/next_utils/login/LoginModal';
+import { LoginModalButton } from '@/next_utils/login/LoginModal';
+import { AuthProviderParams } from '@/next_utils/login/types';
+import { LogoutButton } from '@/next_utils/components/header/LogoutButton';
+import { UserElement } from '@/next_utils/components/header/UserElement';
+
 
 type CurrentUserData = components['schemas']['CurrentUserData']['user'];
 
@@ -16,13 +20,13 @@ type HeaderLink = {
     needAdmin?: boolean;
 }
 
-
 type NavigationHeaderProps = {
     title: string;
     links: HeaderLink[];
     showDjangoAdmin?: boolean;
     showUser?: boolean;
-    authProviders?: AuthProvider[];
+    showLogout?: boolean;
+    authProviders?: AuthProviderParams[];
     headerColor?: 'primary' | 'secondary';
 }
 
@@ -49,13 +53,12 @@ function LinkElem({ link, currentUser }: { link: HeaderLink, currentUser?: Curre
 
 export async function NavigationHeader({
     title, links, showDjangoAdmin, showUser,
-    authProviders, headerColor = 'secondary'
+    authProviders, headerColor = 'secondary', showLogout
 }: NavigationHeaderProps) {
     const currentUser = await getUserDataFromCookie();
     const t = await getTranslations('NavigationHeader');
 
     const linkElems = links.map((link) => <LinkElem link={link} currentUser={currentUser} key={link.label} />)
-    const authEnabled = authProviders && authProviders.length > 0;
 
     return (
         <AppBar position="static" color={headerColor}>
@@ -73,13 +76,10 @@ export async function NavigationHeader({
                         </UnlocalizedLink>
                     )}
 
-                    { showUser && currentUser && (
-                        <Typography variant="body1">
-                            {currentUser.username}
-                        </Typography>
-                    )}
+                    { showUser && <UserElement /> }
+                    {!currentUser && <LoginModalButton enabledProviders={authProviders} />}
+                    { showLogout && currentUser && <LogoutButton text={t('logout')} /> }
                     <LocaleSelector />
-                    {!currentUser && authEnabled && <LoginModalButton modalTitle={t('login')} enabledProviders={authProviders} />}
                 </Box>
             </Toolbar>
         </AppBar>

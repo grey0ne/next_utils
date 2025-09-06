@@ -7,7 +7,8 @@
     },
     "NavigationHeader": {
         "login": "Войти",
-        "django_admin": "Админ"
+        "django_admin": "Админ",
+        "logout": "Выйти"
     },
     "loader": {
         "loading": "Загрузка..."
@@ -16,5 +17,10 @@
         "cancel": "Отмена",
         "submit": "Отправить",
         "submitting": "Отправка..."
+    },
+    "LoginModal": {
+        "login_modal_header": "Выбери способ входа",
+        "login_modal_button_text": "Войти",
+        "login_yandex_caption": "Войти через Яндекс"
     }
 }

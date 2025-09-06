@@ -5,7 +5,7 @@ import { usePathname } from '@/next_utils/i18n/navigation';
 import { useLocale } from "next-intl";
 import { useState } from "react";
 import { AVAILABLE_LOCALES } from "@/next_utils/constants"; 
-import { ENABLED_LOCALES } from "./../../constants";
+import { ENABLED_LOCALES } from "../../../constants";
 import Image from "next/image"
 
 export function LocaleSelector() {

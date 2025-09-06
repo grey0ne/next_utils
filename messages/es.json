@@ -7,7 +7,8 @@
     },
     "NavigationHeader": {
         "login": "Iniciar sesión",
-        "django_admin": "Djnago Admin"
+        "django_admin": "Djnago Admin",
+        "logout": "Cerrar sesión"
     },
     "loader": {
         "loading": "Cargando..."
@@ -16,5 +17,10 @@
         "cancel": "Cancelar",
         "submit": "Enviar",
         "submitting": "Enviando..."
+    },
+    "LoginModal": {
+        "login_modal_header": "Elige el método de entrada",
+        "login_modal_button_text": "Entrar",
+        "login_yandex_caption": "Entrar con Yandex"
     }
 } 

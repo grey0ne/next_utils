@@ -1,6 +1,5 @@
 import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
 import { Option } from '@/next_utils/fields/SelectFieldHelpers';
-import { SxProps } from "@mui/material";
 
 export enum FormFieldType {
     TEXT_FIELD = 'textField',
