@@ -20,8 +20,8 @@ export function YandexLogin({
         (window as any).YaAuthSuggest.init(
             {
                 client_id: clientId,
-                response_type: 'token',
-                redirect_uri: redirectUri
+                response_type: 'code',
+                redirect_uri: redirectUri,
             },
             domain, 
             {
