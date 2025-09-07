@@ -16,7 +16,8 @@
     "generic_modal_form": {
         "cancel": "Cancel",
         "submit": "Submit",
-        "submitting": "Submitting..."
+        "submitting": "Submitting...",
+        "edit": "Edit"
     },
     "LoginModal": {
         "login_modal_header": "Choose login method",

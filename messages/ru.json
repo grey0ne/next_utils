@@ -16,7 +16,8 @@
     "generic_modal_form": {
         "cancel": "Отмена",
         "submit": "Отправить",
-        "submitting": "Отправка..."
+        "submitting": "Отправка...",
+        "edit": "Редактировать"
     },
     "LoginModal": {
         "login_modal_header": "Выбери способ входа",
