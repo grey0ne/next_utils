@@ -1,11 +1,13 @@
 import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
 import { Option } from '@/next_utils/fields/SelectFieldHelpers';
+import { GenericModalFormButtonProps } from "./GenericModalFormButton";
 
 export enum FormFieldType {
     TEXT_FIELD = 'textField',
     INTEGER_FIELD = 'integerField',
     LOCALIZED_TEXT_FIELD = 'localizedTextField',
     DYNAMIC_SELECT_FIELD = 'dynamicSelectField',
+    SELECT_LIST_FIELD = 'selectListField',
     SELECT_FIELD = 'selectField',
     TEXT_LIST_FIELD = 'textListField',
     BASE64_FILE_FIELD = 'base64ImageUploadField',
@@ -25,11 +27,21 @@ export interface DynamicSelectFieldSchema <P extends ItemsPath> extends BaseFiel
     dataUrlParams: RequestParams<P, 'get'>
     optionLabelField: string;
     multiple?: boolean;
+    createButtonProps?: GenericModalFormButtonProps<any>
+}
+
+export interface SelectListFieldSchema <P extends ItemsPath> extends BaseFieldSchema {
+    fieldType: FormFieldType.SELECT_LIST_FIELD;
+    dataUrl: P,
+    dataUrlParams: RequestParams<P, 'get'>
+    optionLabelField: string;
+    createButtonProps?: GenericModalFormButtonProps<any>
 }
 
 export interface SelectFieldSchema extends BaseFieldSchema {
     fieldType: FormFieldType.SELECT_FIELD;
     options: Option[]
+    createButtonProps?: GenericModalFormButtonProps<any>
 }
 
 export interface TextFieldSchema extends BaseFieldSchema {
@@ -63,7 +75,8 @@ export type FormFieldSchema =
     Base64FileFieldSchema |
     IntegerFieldSchema |
     CheckboxFieldSchema |
-    DynamicSelectFieldSchema<ItemsPath>;    
+    DynamicSelectFieldSchema<ItemsPath> |
+    SelectListFieldSchema<ItemsPath>;    
 
 export type FormSchema = {
     fields: FormFieldSchema[]

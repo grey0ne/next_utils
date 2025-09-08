@@ -2,10 +2,13 @@ import { useMemo } from "react";
 import { Control } from "react-hook-form";
 import { ControlledSelectField } from "@/next_utils/fields/ControlledSelectField";
 import { ControlledMultipleSelectField } from "@/next_utils/fields/ControlledMultipleSelectField";
-import { ItemsPath, RequestParams } from "@/next_utils/apiHelpers";
+import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
 import { useApi } from "@/next_utils/apiClient";
+import { SxProps } from "@mui/material";
+import { GenericModalFormButtonProps } from "../forms/GenericModalFormButton";
 
-type ControlledDynamiSelectFieldProps <P extends ItemsPath> = {
+
+type ControlledDynamiSelectFieldProps <P extends ItemsPath, Q extends PostPath> = {
     control: Control<any>,
     name: string,
     label: string,
@@ -14,13 +17,16 @@ type ControlledDynamiSelectFieldProps <P extends ItemsPath> = {
     optionLabelField: string,
     required?: boolean,
     multiple?: boolean
+    sx?: SxProps
+    createButtonProps?: GenericModalFormButtonProps<Q>
 }
 
-export function ControlledDynamicSelectField <P extends ItemsPath>({
+
+export function ControlledDynamicSelectField <P extends ItemsPath, Q extends PostPath>({
     control, name, label, dataUrl, dataUrlParams,
     optionLabelField,
-    required = false, multiple = false
-}: ControlledDynamiSelectFieldProps<P>) {
+    required = false, multiple = false, sx, createButtonProps
+}: ControlledDynamiSelectFieldProps<P, Q>) {
     const optionsData = useApi(dataUrl, dataUrlParams);
     const options = useMemo(
         () => (optionsData?.data?.items || []) as Array<{ [key: string | number]: any; id: number }>,
@@ -42,6 +48,8 @@ export function ControlledDynamicSelectField <P extends ItemsPath>({
             label={label}
             options={optionElems}
             required={required}
+            sx={sx}
+            createButtonProps={createButtonProps}
         />
     }
     return (
@@ -51,6 +59,8 @@ export function ControlledDynamicSelectField <P extends ItemsPath>({
             label={label}
             options={optionElems}
             required={required}
+            sx={sx}
+            createButtonProps={createButtonProps}
         />
     )
 }

@@ -1,5 +1,5 @@
 'use client';
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Box } from '@mui/material';
 import { useForm, FormProvider } from 'react-hook-form';
 import { GenericFormProps } from './types';
 import { FormFields } from './GenericFormFields';
