@@ -36,7 +36,7 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
             maxWidth={maxWidth}
             onClose={onClose}
         >
-            <DialogTitle>
+            <DialogTitle fontWeight="bold" fontSize="1.5rem">
                 { title }
             </DialogTitle>
             <FormProvider {...formMethods}>

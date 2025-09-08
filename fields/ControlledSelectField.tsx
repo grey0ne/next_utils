@@ -1,6 +1,6 @@
 import { Controller, Control } from "react-hook-form";
-import { TextField, Autocomplete, SxProps } from '@mui/material';
-import { Option, SelectFieldOption } from './SelectFieldHelpers';
+import { SxProps, Stack } from '@mui/material';
+import { Option } from './SelectFieldHelpers';
 import { GenericModalFormButtonProps, GenericModalFormButton } from "../forms/GenericModalFormButton";
 import { PostPath } from "../apiHelpers";
 import { AutocompleteElem } from './AutocompleteElem';
@@ -19,7 +19,7 @@ export function ControlledSelectField<Q extends PostPath>({
     control, name, label, options, required=false, sx, createButtonProps
 }: ControlledSelectFieldProps<Q>) {
     return (
-        <>
+        <Stack spacing={2} direction="row">
             <Controller
                 name={ name }
                 control={ control }
@@ -32,12 +32,12 @@ export function ControlledSelectField<Q extends PostPath>({
                             value={value}
                             options={options}
                             label={label}
-                            sx={sx}
+                            sx={ { width: '400px', ...sx } }
                         />
                     )
                 }}
             />
             { createButtonProps && <GenericModalFormButton {...createButtonProps} /> }
-        </>
+        </Stack>
     )
 }
