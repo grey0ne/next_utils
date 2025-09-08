@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { TelegramLoginProps } from "./types";
-import { apiPost } from "../apiClient";
+import { untypedApiRequest } from "../apiClient";
 
 
 declare global {
@@ -33,7 +33,7 @@ export function TelegramLogin({ botUsername, onSuccess }: TelegramLoginProps) {
                 hash: user.hash,
                 id: user.id
             }
-            apiPost("/api/auth/telegram", telegramData, {}).then((data) => {
+            untypedApiRequest("/api/auth/telegram", "post", telegramData).then((data) => {
                 console.log("Login success:", data);
                 onSuccess?.(data);
             }).catch((err) => console.error("Login failed", err));

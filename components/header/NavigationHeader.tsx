@@ -78,8 +78,8 @@ export async function NavigationHeader({
 
                     { showUser && <UserElement /> }
                     {!currentUser && <LoginModalButton enabledProviders={authProviders} />}
-                    { showLogout && currentUser && <LogoutButton text={t('logout')} /> }
                     <LocaleSelector />
+                    { showLogout && currentUser && <LogoutButton /> }
                 </Box>
             </Toolbar>
         </AppBar>
