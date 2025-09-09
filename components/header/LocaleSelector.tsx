@@ -8,6 +8,27 @@ import { AVAILABLE_LOCALES } from "@/next_utils/constants";
 import { ENABLED_LOCALES } from "../../../constants";
 import Image from "next/image"
 
+function LocaleItem({ locale }: { locale: typeof AVAILABLE_LOCALES[number] }) {
+    const url = usePathname();
+    return (
+        <MenuItem key={locale.code} value={locale.code}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Image
+                    src={locale.flag}
+                    alt={locale.label}
+                    width={20}
+                    height={15}
+                    style={{ objectFit: 'contain' }}
+                />
+                <TextLink href={ url } locale={locale.code }>
+                    {locale.label}
+                </TextLink>
+            </Box>
+        </MenuItem>
+    )
+}
+ 
+
 export function LocaleSelector() {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -49,22 +70,7 @@ export function LocaleSelector() {
                     horizontal: 'left',
                 }}
             >
-                {filteredLocales.map((locale) => (
-                    <MenuItem key={locale.code} value={locale.code}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Image
-                                src={locale.flag}
-                                alt={locale.label}
-                                width={20}
-                                height={15}
-                                style={{ objectFit: 'contain' }}
-                            />
-                            <TextLink href={ url } locale={locale.code }>
-                                {locale.label}
-                            </TextLink>
-                        </Box>
-                    </MenuItem>
-                ))}
+                {filteredLocales.map((locale) => <LocaleItem key={locale.code} locale={locale} />)}
             </Popover>
         </>
     );
