@@ -36,7 +36,7 @@ export function FormFields(props: FieldsProps) {
                     dataUrlParams={field.dataUrlParams}
                     optionLabelField={ field.optionLabelField}
                     multiple={field.multiple}
-                    createButtonProps={field.createButtonProps}
+                    extraButtonProps={field.extraButtonProps}
                 />
             );
         }
@@ -47,7 +47,7 @@ export function FormFields(props: FieldsProps) {
                     dataUrl={field.dataUrl}
                     dataUrlParams={field.dataUrlParams}
                     optionLabelField={field.optionLabelField}
-                    createButtonProps={field.createButtonProps}
+                    extraButtonProps={field.extraButtonProps}
                 />
             );
         }
@@ -56,7 +56,7 @@ export function FormFields(props: FieldsProps) {
                 <ControlledSelectField
                     {...baseFields}
                     options={field.options}
-                    createButtonProps={field.createButtonProps}
+                    extraButtonProps={field.extraButtonProps}
                 />
             )
         }

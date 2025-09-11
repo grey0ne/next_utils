@@ -3,21 +3,22 @@ import { Button, Stack } from '@mui/material';
 import { ControlledDynamicSelectField } from "@/next_utils/fields/ControlledDynamicSelectField";
 import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
 import { GenericModalFormButtonProps, GenericModalFormButton } from "../forms/GenericModalFormButton";
+import { SelectExtraButtons } from "./SelectExtraButtons";
 
-type ControlledSelectListFieldProps<P extends ItemsPath, Q extends PostPath> = {
+type ControlledSelectListFieldProps<P extends ItemsPath> = {
     name: string,
     label: string,
     control: Control<any>,
     dataUrl: P,
     dataUrlParams: RequestParams<P, 'get'>
     optionLabelField: string,
-    createButtonProps?: GenericModalFormButtonProps<Q>
+    extraButtonProps?: GenericModalFormButtonProps<any>[]
 }
 
 
-export function ControlledSelectListField<P extends ItemsPath, Q extends PostPath>({
-    name, control, label, dataUrl, dataUrlParams, optionLabelField, createButtonProps
-}: ControlledSelectListFieldProps<P, Q>) {
+export function ControlledSelectListField<P extends ItemsPath>({
+    name, control, label, dataUrl, dataUrlParams, optionLabelField, extraButtonProps
+}: ControlledSelectListFieldProps<P>) {
     const { fields, append, remove } = useFieldArray({
         control, // control props comes from useForm (optional: if you are using FormProvider)
         name: name, // unique name for your Field Array
@@ -54,7 +55,7 @@ export function ControlledSelectListField<P extends ItemsPath, Q extends PostPat
                     >
                         Add {label}
                     </Button>
-                    { createButtonProps && <GenericModalFormButton {...createButtonProps} /> }
+                    <SelectExtraButtons extraButtonProps={extraButtonProps} />
                 </Stack>
             </Stack>
         </>

@@ -1,26 +1,25 @@
 import { Controller, Control } from "react-hook-form";
-import { TextField, Autocomplete, SxProps } from '@mui/material';
-import { Option, SelectFieldOption } from './SelectFieldHelpers';
+import { SxProps } from '@mui/material';
+import { Option } from './SelectFieldHelpers';
 import { GenericModalFormButtonProps } from "../forms/GenericModalFormButton";
-import { PostPath } from "../apiHelpers";
 import { AutocompleteElem } from './AutocompleteElem';
-import { GenericModalFormButton } from "../forms/GenericModalFormButton";
+import { SelectExtraButtons } from "./SelectExtraButtons";
 
-type ControlledSelectFieldProps <Q extends PostPath> = {
+type ControlledSelectFieldProps = {
     control: Control<any>,
     name: string,
     label: string,
     options: Option[]
     required?: boolean
     sx?: SxProps
-    createButtonProps?: GenericModalFormButtonProps<Q>
+    extraButtonProps?: GenericModalFormButtonProps<any>[]
 }
 
 
 
-export function ControlledMultipleSelectField<Q extends PostPath>({
-    control, name, label, options, required=false, sx, createButtonProps
-}: ControlledSelectFieldProps<Q>) {
+export function ControlledMultipleSelectField({
+    control, name, label, options, required=false, sx, extraButtonProps
+}: ControlledSelectFieldProps) {
     return (
         <Controller
             name={ name }
@@ -39,7 +38,7 @@ export function ControlledMultipleSelectField<Q extends PostPath>({
                             sx={sx}
                             multiple={true}
                         />
-                        { createButtonProps && <GenericModalFormButton {...createButtonProps} /> }
+                        <SelectExtraButtons extraButtonProps={extraButtonProps} />
                     </>
                 )
             }}

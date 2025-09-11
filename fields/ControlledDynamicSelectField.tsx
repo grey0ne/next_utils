@@ -18,14 +18,14 @@ type ControlledDynamiSelectFieldProps <P extends ItemsPath, Q extends PostPath> 
     required?: boolean,
     multiple?: boolean
     sx?: SxProps
-    createButtonProps?: GenericModalFormButtonProps<Q>
+    extraButtonProps?: GenericModalFormButtonProps<any>[]
 }
 
 
 export function ControlledDynamicSelectField <P extends ItemsPath, Q extends PostPath>({
     control, name, label, dataUrl, dataUrlParams,
     optionLabelField,
-    required = false, multiple = false, sx, createButtonProps
+    required = false, multiple = false, sx, extraButtonProps
 }: ControlledDynamiSelectFieldProps<P, Q>) {
     const optionsData = useApi(dataUrl, dataUrlParams);
     const options = useMemo(
@@ -49,7 +49,7 @@ export function ControlledDynamicSelectField <P extends ItemsPath, Q extends Pos
             options={optionElems}
             required={required}
             sx={sx}
-            createButtonProps={createButtonProps}
+            extraButtonProps={extraButtonProps}
         />
     }
     return (
@@ -60,7 +60,7 @@ export function ControlledDynamicSelectField <P extends ItemsPath, Q extends Pos
             options={optionElems}
             required={required}
             sx={sx}
-            createButtonProps={createButtonProps}
+            extraButtonProps={extraButtonProps}
         />
     )
 }
