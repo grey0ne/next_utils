@@ -66,7 +66,7 @@ export type PaginatedResponseType<P extends Path, M extends PathMethod<P>> = pat
     responses: { 200: { content: { 'application/json': {items: Array<any>, last_id: number, last_timestamp: string} } } };
 }
     ? paths[P][M]['responses'][200]['content']['application/json']
-    : { items: Array<any>, last_id: number | null, last_timestamp: string | null };
+    : { items: Array<any>, last_id?: number | null, last_timestamp?: string | null };
 
 export type PaginatedResponseTypeItems<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
     responses: { 200: { content: { 'application/json': { items: Array<any>} } } };

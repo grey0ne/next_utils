@@ -80,10 +80,11 @@ async function performRequest(
     method: string,
     body: any,
 ): Promise<ResponseData> {
+    const headers = getHeaders();
     const response =  await fetch(
         url, {
             method: String(method),
-            headers: getHeaders(),
+            headers: headers,
             body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
         }
     );
@@ -138,6 +139,7 @@ export function useApi <P extends Path>(
 
 export const usePaginatedApi = <P extends Path>(
     url: P,
+    initialData?: PaginatedResponseType<P, 'get'>,
     ...params: RequestParams<P, 'get'> extends undefined ? Array<any> : [RequestParams<P, 'get'>]
 ): {
     items: PaginatedResponseTypeItems<P, 'get'>,
@@ -152,7 +154,7 @@ export const usePaginatedApi = <P extends Path>(
         let to_timestamp = params[0]?.query?.last_timestamp;
         const per_page = params[0]?.query?.per_page || DEFAULT_PER_PAGE;
         const lastItems = previousPageData?.items || [];
-        if (previousPageData && lastItems.length == 0) {
+        if (previousPageData && lastItems.length < per_page) {
             return null
         }
         if (previousPageData) {
@@ -163,7 +165,15 @@ export const usePaginatedApi = <P extends Path>(
         return generateUrl(url.toString(), params[0]?.path, queryParams);
     }
     const { data, error, isLoading, size, setSize, mutate } = useSWRInfinite(
-        getKey, fetcher, {revalidateFirstPage: false}
+        getKey, fetcher, 
+        {
+            initialSize: 1,
+            revalidateOnMount: false,
+            revalidateOnFocus: false,
+            revalidateAll: false,
+            revalidateFirstPage: false,
+            fallbackData: initialData ? [initialData] : undefined
+        }
     )
     const items: PaginatedResponseTypeItems<P, 'get'> = [];
     if (data) {

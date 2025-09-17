@@ -1,6 +1,9 @@
 import { Controller, Control } from "react-hook-form";
-import { TextField, Autocomplete } from '@mui/material';
-import { Option, SelectFieldOption } from './SelectFieldHelpers';
+import { SxProps, Stack } from '@mui/material';
+import { Option } from './SelectFieldHelpers';
+import { GenericModalFormButtonProps } from "../forms/GenericModalFormButton";
+import { AutocompleteElem } from './AutocompleteElem';
+import { SelectExtraButtons } from "./SelectExtraButtons";
 
 type ControlledSelectFieldProps = {
     control: Control<any>,
@@ -8,58 +11,33 @@ type ControlledSelectFieldProps = {
     label: string,
     options: Option[]
     required?: boolean
+    sx?: SxProps
+    extraButtonProps?: GenericModalFormButtonProps<any>[]
 }
 
-function getOption(value: any, options: Option[]) {
-    for (const option of options) {
-        if (option.value === value) {
-            return option
-        }
-    }
-    return null
-}
-
-export function ControlledSelectField({ control, name, label, options, required=false }: ControlledSelectFieldProps) {
+export function ControlledSelectField({
+    control, name, label, options, required=false, sx, extraButtonProps
+}: ControlledSelectFieldProps) {
     return (
-        <Controller
-            name={ name }
-            control={ control }
-            rules={{ required: required }}
-            shouldUnregister={ true }
-            render={({ field: { onChange, value } }) => {
-                return (
-                    <Autocomplete
-                        getOptionLabel={(option) => {
-                            // This helps mitigate issue with the default value not being found in the options
-                            if (option.hasOwnProperty('title')) {
-                                return option.title;
-                            }
-                            return 'No option title';
-                        }}
-                        options={options}
-                        autoHighlight
-                        renderOption={SelectFieldOption}
-                        value={ getOption(value, options) }
-                        onChange={(event: any, newValue: Option | null) => {
-                            onChange(newValue?.value || null);
-                        }}
-                        multiple={false}
-                        isOptionEqualToValue={(option: Option, value: Option) => option.value === value.value }
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label={ label }
-                                slotProps={{
-                                    htmlInput: {
-                                        ...params.inputProps,
-                                        autoComplete: 'new-password', // disable autocomplete and autofill
-                                    }
-                                }}
-                            />
-                        )}
-                    />
-                )
-            }}
-        />
+        <Stack spacing={2} direction="row">
+            <Controller
+                name={ name }
+                control={ control }
+                rules={{ required: required }}
+                shouldUnregister={ true }
+                render={({ field: { onChange, value } }) => {
+                    return (
+                        <AutocompleteElem
+                            onChange={onChange}
+                            value={value}
+                            options={options}
+                            label={label}
+                            sx={ { width: '400px', ...sx } }
+                        />
+                    )
+                }}
+            />
+            <SelectExtraButtons extraButtonProps={extraButtonProps} />
+        </Stack>
     )
 }

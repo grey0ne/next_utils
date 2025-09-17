@@ -7,6 +7,7 @@ import { ControlledSelectField } from '@/next_utils/fields/ControlledSelectField
 import { ControlledStringList } from '../fields/ControlledStringList';
 import { ControlledBase64FileField } from '../fields/ControlledBase64FileField';
 import { ControlledCheckBox } from '@/next_utils/fields/ControlledCheckBox';
+import { ControlledSelectListField } from '@/next_utils/fields/ControlledSelectListField';
 import { FormFieldSchema, FormFieldType } from './types';
 import { useFormContext } from 'react-hook-form';
 
@@ -35,6 +36,18 @@ export function FormFields(props: FieldsProps) {
                     dataUrlParams={field.dataUrlParams}
                     optionLabelField={ field.optionLabelField}
                     multiple={field.multiple}
+                    extraButtonProps={field.extraButtonProps}
+                />
+            );
+        }
+        if (field.fieldType === FormFieldType.SELECT_LIST_FIELD) {
+            resultElem = (
+                <ControlledSelectListField
+                    {...baseFields}
+                    dataUrl={field.dataUrl}
+                    dataUrlParams={field.dataUrlParams}
+                    optionLabelField={field.optionLabelField}
+                    extraButtonProps={field.extraButtonProps}
                 />
             );
         }
@@ -43,6 +56,7 @@ export function FormFields(props: FieldsProps) {
                 <ControlledSelectField
                     {...baseFields}
                     options={field.options}
+                    extraButtonProps={field.extraButtonProps}
                 />
             )
         }

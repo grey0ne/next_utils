@@ -79,3 +79,15 @@ export function generateMetadataAlternates(url: string) {
         languages: languages
     }
 }
+
+export function formatDate(dateString?: string | null, locale?: BackendLocale) {
+    if (!dateString) {
+        return '';
+    }
+    return new Date(dateString).toLocaleDateString(locale || 'en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+};
+

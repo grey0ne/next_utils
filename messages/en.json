@@ -7,7 +7,8 @@
     },
     "NavigationHeader": {
         "login": "Login",
-        "admin": "Admin"
+        "django_admin": "Django Admin",
+        "logout": "Logout"
     },
     "loader": {
         "loading": "Loading..."
@@ -15,6 +16,12 @@
     "generic_modal_form": {
         "cancel": "Cancel",
         "submit": "Submit",
-        "submitting": "Submitting..."
+        "submitting": "Submitting...",
+        "edit": "Edit"
+    },
+    "LoginModal": {
+        "login_modal_header": "Choose login method",
+        "login_modal_button_text": "Login",
+        "login_yandex_caption": "Login with Yandex"
     }
 }

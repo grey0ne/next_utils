@@ -10,7 +10,7 @@ export function SelectFieldOption (props: any, option: Option, state: Autocomple
     return (
         <li {...props} key={option.value}>
             {option.title}
-            {state.selected && <CheckCircleIcon sx={{ ml: 1, fontSize: '1rem' }} />}
+            {state.selected && <CheckCircleIcon sx={{ ml: 1, fontSize: '1rem' }} key={option.value} />}
         </li>
     )
 }
