@@ -153,25 +153,22 @@ export const usePaginatedApi = <P extends Path>(
         let to_id = params[0]?.query?.last_id;
         let to_timestamp = params[0]?.query?.last_timestamp;
         const per_page = params[0]?.query?.per_page || DEFAULT_PER_PAGE;
-        const lastItems = previousPageData?.items || [];
-        if (previousPageData && lastItems.length < per_page) {
-            return null
-        }
         if (previousPageData) {
             to_id = previousPageData.last_id;
             to_timestamp = previousPageData.last_timestamp;
         }
         const queryParams = { to_timestamp, to_id, per_page: per_page }
-        return generateUrl(url.toString(), params[0]?.path, queryParams);
+        const resultUrl = generateUrl(url.toString(), params[0]?.path, queryParams);
+        return resultUrl;
     }
     const { data, error, isLoading, size, setSize, mutate } = useSWRInfinite(
         getKey, fetcher, 
         {
             initialSize: 1,
-            revalidateOnMount: false,
+            //revalidateOnMount: false,
             revalidateOnFocus: false,
-            revalidateAll: false,
-            revalidateFirstPage: false,
+            //revalidateAll: false,
+            //revalidateFirstPage: false,
             fallbackData: initialData ? [initialData] : undefined
         }
     )
