@@ -157,6 +157,10 @@ export const usePaginatedApi = <P extends Path>(
             to_id = previousPageData.last_id;
             to_timestamp = previousPageData.last_timestamp;
         }
+        const lastItems = previousPageData?.items || [];
+        if (previousPageData && lastItems.length < per_page) {
+            return null
+        }
         const queryParams = { to_timestamp, to_id, per_page: per_page }
         const resultUrl = generateUrl(url.toString(), params[0]?.path, queryParams);
         return resultUrl;
