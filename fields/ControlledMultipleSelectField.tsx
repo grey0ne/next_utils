@@ -12,7 +12,7 @@ type ControlledSelectFieldProps = {
     options: Option[]
     required?: boolean
     sx?: SxProps
-    extraButtonProps?: GenericModalFormButtonProps<any>[]
+    extraButtonProps?: GenericModalFormButtonProps<never>[]
 }
 
 

@@ -27,7 +27,7 @@ export interface DynamicSelectFieldSchema <P extends ItemsPath> extends BaseFiel
     dataUrlParams: RequestParams<P, 'get'>
     optionLabelField: string;
     multiple?: boolean;
-    extraButtonProps?: GenericModalFormButtonProps<any>[]
+    extraButtonProps?: GenericModalFormButtonProps<never>[]
 }
 
 export interface SelectListFieldSchema <P extends ItemsPath> extends BaseFieldSchema {
@@ -35,13 +35,13 @@ export interface SelectListFieldSchema <P extends ItemsPath> extends BaseFieldSc
     dataUrl: P,
     dataUrlParams: RequestParams<P, 'get'>
     optionLabelField: string;
-    extraButtonProps?: GenericModalFormButtonProps<any>[]
+    extraButtonProps?: GenericModalFormButtonProps<never>[]
 }
 
 export interface SelectFieldSchema extends BaseFieldSchema {
     fieldType: FormFieldType.SELECT_FIELD;
     options: Option[]
-    extraButtonProps?: GenericModalFormButtonProps<any>[]
+    extraButtonProps?: GenericModalFormButtonProps<never>[]
 }
 
 export interface TextFieldSchema extends BaseFieldSchema {
