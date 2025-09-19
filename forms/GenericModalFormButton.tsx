@@ -10,11 +10,12 @@ export interface GenericModalFormButtonProps<P extends PostPath> extends Generic
     buttonColor?: 'primary' | 'secondary' | 'inherit' | 'success' | 'error' | 'warning' | 'info';
     buttonVariant?: 'contained' | 'outlined' | 'text';
     buttonSx?: SxProps;
+    buttonSize?: 'small' | 'medium' | 'large';
 }
 
 export function GenericModalFormButton<P extends PostPath>(props: GenericModalFormButtonProps<P>) {
     const {
-        buttonTitle, onClose, buttonColor='primary', buttonVariant='contained', buttonSx,
+        buttonTitle, onClose, buttonColor='primary', buttonVariant='contained', buttonSize='medium', buttonSx,
         ...modalFormProps
 
     } = props;
@@ -25,6 +26,7 @@ export function GenericModalFormButton<P extends PostPath>(props: GenericModalFo
              <Button 
                 variant={buttonVariant}
                 color={buttonColor}
+                size={buttonSize}
                 onClick={() => setShowModal(true)}
                 sx={buttonSx}
             >

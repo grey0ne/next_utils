@@ -164,14 +164,15 @@ export const usePaginatedApi = <P extends Path>(
         const queryParams = { to_timestamp, to_id, per_page: per_page }
         return generateUrl(url.toString(), params[0]?.path, queryParams);
     }
+    const revalidate = initialData === undefined;
     const { data, error, isLoading, size, setSize, mutate } = useSWRInfinite(
         getKey, fetcher, 
         {
             initialSize: 1,
-            revalidateOnMount: false,
+            revalidateOnMount: revalidate,
             revalidateOnFocus: false,
             revalidateAll: false,
-            revalidateFirstPage: false,
+            revalidateFirstPage: revalidate,
             fallbackData: initialData ? [initialData] : undefined
         }
     )
