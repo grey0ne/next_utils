@@ -18,7 +18,7 @@ type ControlledDynamiSelectFieldProps <P extends ItemsPath> = {
     required?: boolean,
     multiple?: boolean
     sx?: SxProps
-    extraButtonProps?: GenericModalFormButtonProps<never>[]
+    extraButtonProps?: GenericModalFormButtonProps<any>[]
 }
 
 

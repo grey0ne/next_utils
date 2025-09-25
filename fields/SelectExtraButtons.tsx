@@ -1,7 +1,7 @@
 import { GenericModalFormButtonProps, GenericModalFormButton } from "../forms/GenericModalFormButton";
 
 type SelectExtraButtonsProps = {
-    extraButtonProps?: GenericModalFormButtonProps<never>[];
+    extraButtonProps?: GenericModalFormButtonProps<any>[];
 }
 
 export function SelectExtraButtons({ extraButtonProps }: SelectExtraButtonsProps) {

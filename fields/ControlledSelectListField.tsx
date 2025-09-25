@@ -12,7 +12,7 @@ type ControlledSelectListFieldProps<P extends ItemsPath> = {
     dataUrl: P,
     dataUrlParams: RequestParams<P, 'get'>
     optionLabelField: string,
-    extraButtonProps?: GenericModalFormButtonProps<never>[]
+    extraButtonProps?: GenericModalFormButtonProps<any>[]
 }
 
 
