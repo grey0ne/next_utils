@@ -2,11 +2,11 @@
 import { TextLink } from "@/next_utils/components/Link"
 import { Box, Button, MenuItem, Popover } from "@mui/material"
 import { usePathname } from '@/next_utils/i18n/navigation';
-import { useLocale } from "next-intl";
 import { useState } from "react";
 import { AVAILABLE_LOCALES } from "@/next_utils/constants"; 
 import { ENABLED_LOCALES } from "../../../constants";
 import Image from "next/image"
+import { BackendLocale } from "@/next_utils/types";
 
 function LocaleItem({ locale }: { locale: typeof AVAILABLE_LOCALES[number] }) {
     const url = usePathname();
@@ -29,7 +29,7 @@ function LocaleItem({ locale }: { locale: typeof AVAILABLE_LOCALES[number] }) {
 }
  
 
-export function LocaleSelector() {
+export function LocaleSelector({ locale }: { locale: BackendLocale }) {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -42,8 +42,6 @@ export function LocaleSelector() {
     };
 
     const open = Boolean(anchorEl);
-    const url = usePathname();
-    const locale = useLocale();
 
     const filteredLocales = AVAILABLE_LOCALES.filter(l => ENABLED_LOCALES.includes(l.code));
 

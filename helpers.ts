@@ -87,7 +87,8 @@ export function formatDate(dateString?: string | null, locale?: BackendLocale) {
     return new Date(dateString).toLocaleDateString(locale || 'en-US', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
+        timeZone: 'UTC'
     });
 };
 

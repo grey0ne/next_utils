@@ -8,6 +8,7 @@ import { LoginModalButton } from '@/next_utils/login/LoginModal';
 import { AuthProviderParams } from '@/next_utils/login/types';
 import { LogoutButton } from '@/next_utils/components/header/LogoutButton';
 import { UserElement } from '@/next_utils/components/header/UserElement';
+import { BackendLocale } from '@/next_utils/types';
 
 
 type CurrentUserData = components['schemas']['CurrentUserData']['user'];
@@ -28,6 +29,7 @@ type NavigationHeaderProps = {
     showLogout?: boolean;
     authProviders?: AuthProviderParams[];
     headerColor?: 'primary' | 'secondary';
+    locale: BackendLocale;
 }
 
 const LINK_STYLE = { color: 'inherit', textDecoration: 'none' };
@@ -53,10 +55,11 @@ function LinkElem({ link, currentUser }: { link: HeaderLink, currentUser?: Curre
 
 export async function NavigationHeader({
     title, links, showDjangoAdmin, showUser,
-    authProviders, headerColor = 'secondary', showLogout
+    authProviders, headerColor = 'secondary', showLogout, 
+    locale
 }: NavigationHeaderProps) {
     const currentUser = await getUserDataFromCookie();
-    const t = await getTranslations('NavigationHeader');
+    const t = await getTranslations({'locale': locale, 'namespace': 'NavigationHeader'});
 
     const linkElems = links.map((link) => <LinkElem link={link} currentUser={currentUser} key={link.label} />)
 
@@ -78,7 +81,7 @@ export async function NavigationHeader({
 
                     { showUser && <UserElement /> }
                     {!currentUser && <LoginModalButton enabledProviders={authProviders} />}
-                    <LocaleSelector />
+                    <LocaleSelector locale={locale} />
                     { showLogout && currentUser && <LogoutButton /> }
                 </Box>
             </Toolbar>

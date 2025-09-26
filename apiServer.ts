@@ -46,7 +46,7 @@ export const anonymousApiRequest = async <P extends Path, M extends PathMethod<P
         formattedUrl, {
             method: String(method),
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             cache: 'no-store',
         }
@@ -59,6 +59,13 @@ export const anonymousApiRequest = async <P extends Path, M extends PathMethod<P
     }
 }
 
+const getCookieHeader = async () => {
+    const cookieStore = await cookies();
+    return cookieStore.getAll()
+        .map(cookie => `${cookie.name}=${cookie.value}`)
+        .join('; ');
+}
+
 export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     url: P,
     method: M,
@@ -66,16 +73,12 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
 ): Promise<{ errors: string[], data: ResponseType<P, M> | null}> => {
     const formattedUrl = getFormattedUrl(url, params); 
-    const cookieStore = await cookies();
-    const cookieHeader = cookieStore.getAll()
-        .map(cookie => `${cookie.name}=${cookie.value}`)
-        .join('; ');
     const response =  await fetch(
         formattedUrl, {
             method: String(method),
             headers: {
                 "Content-Type": "application/json",
-                "Cookie": cookieHeader
+                "Cookie": await getCookieHeader()
             },
             cache: 'no-store',
         }
