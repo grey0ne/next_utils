@@ -1,14 +1,15 @@
+'use client'
 import { AppBar, Toolbar, Typography, Box } from '@mui/material';
 import { NoPrefetchLink, UnlocalizedLink } from '@/next_utils/components/Link';
-import { getTranslations } from 'next-intl/server';
 import { LocaleSelector } from '@/next_utils/components/header/LocaleSelector';
-import { getUserDataFromCookie } from '@/next_utils/userDataServer';
+import { useUserDataFromCookie, UserState } from '@/next_utils/userDataClient';
 import { components } from '@/api/apiTypes';
 import { LoginModalButton } from '@/next_utils/login/LoginModal';
 import { AuthProviderParams } from '@/next_utils/login/types';
 import { LogoutButton } from '@/next_utils/components/header/LogoutButton';
 import { UserElement } from '@/next_utils/components/header/UserElement';
 import { BackendLocale } from '@/next_utils/types';
+import { useTranslations } from 'next-intl';
 
 
 type CurrentUserData = components['schemas']['CurrentUserData']['user'];
@@ -53,15 +54,17 @@ function LinkElem({ link, currentUser }: { link: HeaderLink, currentUser?: Curre
     }
 }
 
-export async function NavigationHeader({
+export function NavigationHeader({
     title, links, showDjangoAdmin, showUser,
     authProviders, headerColor = 'secondary', showLogout, 
     locale
 }: NavigationHeaderProps) {
-    const currentUser = await getUserDataFromCookie();
-    const t = await getTranslations({'locale': locale, 'namespace': 'NavigationHeader'});
+    const { userData, userState } = useUserDataFromCookie();
+    const isAuthenticated = userState === UserState.AUTHENTICATED;
+    const isLoading = userState === UserState.LOADING;
+    const t = useTranslations('NavigationHeader');
 
-    const linkElems = links.map((link) => <LinkElem link={link} currentUser={currentUser} key={link.label} />)
+    const linkElems = links.map((link) => <LinkElem link={link} currentUser={userData} key={link.label} />)
 
     return (
         <AppBar position="static" color={headerColor}>
@@ -73,16 +76,16 @@ export async function NavigationHeader({
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                     {linkElems}
-                    { showDjangoAdmin && currentUser && (
+                    { showDjangoAdmin && isAuthenticated && (
                         <UnlocalizedLink href="/admin/" style={LINK_STYLE}>
                             {t('django_admin')}
                         </UnlocalizedLink>
                     )}
 
-                    { showUser && <UserElement /> }
-                    {!currentUser && <LoginModalButton enabledProviders={authProviders} />}
+                    { showUser && isAuthenticated && <UserElement /> }
+                    {!isAuthenticated && !isLoading && <LoginModalButton enabledProviders={authProviders} />}
                     <LocaleSelector locale={locale} />
-                    { showLogout && currentUser && <LogoutButton /> }
+                    { showLogout && isAuthenticated && !isLoading && <LogoutButton /> }
                 </Box>
             </Toolbar>
         </AppBar>

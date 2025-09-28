@@ -1,8 +1,15 @@
 import { getCookie } from "./helpers";
 import { useEffect, useState } from "react";
 
-export function useUserDataFromCookie() {
+export enum UserState {
+    LOADING = 'loading',
+    AUTHENTICATED = 'authenticated',
+    UNAUTHENTICATED = 'unauthenticated',
+}
+
+export function useUserDataFromCookie() : { userData: any, userState: UserState } {
     const [userData, setUserData] = useState<any>(null);
+    const [userState, setUserState] = useState<UserState>(UserState.LOADING);
     useEffect(() => {
         const userData = getCookie('user_data');
         try {
@@ -11,6 +18,11 @@ export function useUserDataFromCookie() {
         } catch (error) {
             setUserData(null);
         }
+        if (userData) {
+            setUserState(UserState.AUTHENTICATED);
+        } else {
+            setUserState(UserState.UNAUTHENTICATED);
+        }
     }, []);
-    return userData;
+    return { userData, userState };
 }
