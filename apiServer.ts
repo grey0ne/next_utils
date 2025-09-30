@@ -51,7 +51,6 @@ export const anonymousApiRequest = async <P extends Path, M extends PathMethod<P
             headers: {
                 "Content-Type": "application/json",
             },
-            cache: 'no-store',
         }
     );
     if (response.ok) {
