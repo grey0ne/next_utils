@@ -24,9 +24,10 @@ export const apiGet = async <P extends Path>(
  */
 export const anonymousApiGet = async <P extends Path>(
     url: P,
+    cacheTag: string,
     ...params: RequestParams<P, 'get'> extends undefined ? [] : [RequestParams<P, 'get'>]
 ): Promise<{ errors: string[], data: ResponseType<P, 'get'> | null}> => {
-    return anonymousApiRequest(url, 'get', {}, ...params); 
+    return anonymousApiRequest(url, 'get', cacheTag, {}, ...params); 
 }
 
 function getFormattedUrl<P extends Path>(url: P, params: RequestParams<P, 'get'> extends undefined ? [] : [RequestParams<P, 'get'>]) {
@@ -38,12 +39,14 @@ function getFormattedUrl<P extends Path>(url: P, params: RequestParams<P, 'get'>
 export const anonymousApiRequest = async <P extends Path, M extends PathMethod<P>>(
     url: P,
     method: M,
+    cacheTag: string,
     body: RequestBody<P, M> extends undefined ? object : RequestBody<P, M>,
     ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
 ): Promise<{ errors: string[], data: ResponseType<P, M> | null}> => {
     const formattedUrl = getFormattedUrl(url, params); 
     const response =  await fetch(
         formattedUrl, {
+            next: { tags: [cacheTag] },
             method: String(method),
             headers: {
                 "Content-Type": "application/json",
