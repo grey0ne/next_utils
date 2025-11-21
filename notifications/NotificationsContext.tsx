@@ -39,7 +39,7 @@ export function ErrorProvider({ children }: { children: React.ReactNode }) {
 export function useNotifications() {
     const context = useContext(NotificationContext);
     if (context === undefined) {
-        throw new Error('useError must be used within an ErrorProvider');
+        throw new Error('useNotifications must be used within an NotificationsProvider');
     }
     return context;
 } 

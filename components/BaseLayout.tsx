@@ -6,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from '@/app/theme';
 import { Counters } from '@/next_utils/counters';
 import { ErrorProvider } from "@/next_utils/notifications/NotificationsContext";
+import { NotificationsContainer } from '@/next_utils/notifications/NotificationsContainer';
 
 
 export async function BaseLayout({
@@ -32,6 +33,7 @@ export async function BaseLayout({
                             <ErrorProvider>
                                 <CssBaseline />
                                 { children }
+                                <NotificationsContainer />
                             </ErrorProvider>
                         </ThemeProvider>
                     </AppRouterCacheProvider>

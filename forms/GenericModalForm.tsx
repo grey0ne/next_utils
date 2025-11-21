@@ -12,19 +12,25 @@ import { PostPath } from "@/next_utils/apiHelpers";
 import { GenericModalFormProps } from './types';
 import { StyledModal } from '../modal/StyledModal';
 import { FormFields } from './GenericFormFields';
+import { useNotifications } from '../notifications/NotificationsContext';
 
 
 export function GenericModalForm<P extends PostPath>(props: GenericModalFormProps<P>) {
     const { formSchema, initialData, submitUrl, title, onClose, onSuccess, fullscreenBreakpoint, fullWidth, maxWidth } = props;
     const t = useTranslations('generic_modal_form');
+    const { showNotification } = useNotifications();
     const formMethods = useForm<any>({
         defaultValues: initialData
     });
 
     const onSubmit = async (data: any) => {
         const responseData = await apiPost(submitUrl, data, props.submitUrlParams);
-        onSuccess?.(data, responseData);
-        onClose?.();
+        if (responseData.status === 200) {
+            onSuccess?.(data, responseData);
+            onClose?.();
+        } else {
+            showNotification(`Status: ${responseData.status}, Error: ${responseData.errors[0]}`);
+        }
     };
 
     const isSubmitting = formMethods.formState.isSubmitting;
