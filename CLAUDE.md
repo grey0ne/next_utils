@@ -13,7 +13,7 @@ Imports use the `@/` alias rooted at the host frontend directory (`nextjs_fronte
 - `nextjs_frontend/constants.ts` — `ENABLED_LOCALES`
 - `nextjs_frontend/messages/<locale>.json` — project translations, merged with `next_utils/messages/<locale>.json` in `i18n/request.ts`
 
-Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployment — django-deploy provides it for every stack). The library is backend-agnostic: it depends only on the backend's HTTP API contract (OpenAPI types, `csrftoken` cookie + `X-CSRFToken` header, `access_token` / `user_data` cookies, auth endpoints such as `/api/auth/telegram`, `/api/auth/csrf` + POST to `/login/<backend>/` for social auth), never on which framework implements it.
+Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployment — deploy (github.com/grey0ne/deploy) provides it for every stack). The library is backend-agnostic: it depends only on the backend's HTTP API contract (OpenAPI types, `csrftoken` cookie + `X-CSRFToken` header, `access_token` / `user_data` cookies, auth endpoints such as `/api/auth/telegram`, `/api/auth/csrf` + POST to `/login/<backend>/` for social auth), never on which framework implements it.
 
 ## Contents
 
@@ -26,7 +26,7 @@ Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployme
 - `components/` — layout, header, `InfiniteList`, modals, buttons
 - `fields/` — react-hook-form `Controlled*` field components (MUI)
 - `forms/` — `GenericForm` / `GenericModalForm` driven by a field schema
-- `login/`, `notifications/`, `modal/` — auth UI, notification context, styled modal
+- `login/`, `notifications/`, `modal/` — auth UI (`socialAuthLogin(backend)` — POST login for social auth), notification context, styled modal
 - `messages/` — library translations (en, es, pt, ru)
 
 ## Notes
