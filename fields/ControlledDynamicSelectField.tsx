@@ -29,7 +29,8 @@ export function ControlledDynamicSelectField <P extends ItemsPath>({
 }: ControlledDynamiSelectFieldProps<P>) {
     const optionsData = useApi(dataUrl, dataUrlParams);
     const options = useMemo(
-        () => (optionsData?.data?.items || []) as Array<{ [key: string | number]: any; id: number | string }>,
+        // ItemsPath is `never` in projects without list endpoints, so narrow the response explicitly.
+        () => ((optionsData?.data as { items?: unknown[] } | undefined)?.items || []) as Array<{ [key: string | number]: any; id: number | string }>,
         [optionsData]
     );
 
