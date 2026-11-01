@@ -56,9 +56,13 @@ async function processResponse(response: any): Promise<ResponseData> {
         const result = await response.json()
         responseData.data = result;
     } else {
-        if ([404, 400, 401, 403].includes(response.status)) {
-            const errorData = await response.json();
-            responseData.errors.push(errorData);
+        if (response.status >= 400 && response.status < 500) {
+            const text = await response.text();
+            try {
+                responseData.errors.push(JSON.parse(text));
+            } catch {
+                responseData.errors.push(text || `Request failed with status ${response.status}`);
+            }
         } else {
             responseData.errors.push('Something went wrong');
         }
@@ -83,7 +87,8 @@ async function performRequest(
     const headers = getHeaders();
     const response =  await fetch(
         url, {
-            method: String(method),
+            // fetch upper-cases only standard methods; a lowercase "patch" is rejected (nginx: 400).
+            method: String(method).toUpperCase(),
             headers: headers,
             body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
         }

@@ -57,7 +57,7 @@ export const anonymousApiRequest = async <P extends Path, M extends PathMethod<P
     const response =  await fetch(
         formattedUrl, {
             next: { tags: [cacheTag] },
-            method: String(method),
+            method: String(method).toUpperCase(),
             headers: {
                 "Content-Type": "application/json",
             },
@@ -88,7 +88,7 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     const formattedUrl = getFormattedUrl(url, params);
     const response =  await fetch(
         formattedUrl, {
-            method: String(method),
+            method: String(method).toUpperCase(),
             headers: {
                 "Content-Type": "application/json",
                 "Cookie": cookieHeader
