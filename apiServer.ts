@@ -4,7 +4,8 @@ import {
 } from '@/next_utils/apiHelpers';
 import { cookies } from 'next/headers'
 
-const BACKEND_URL = `http://${process.env.PROJECT_NAME}-django:8000`;
+// Set by django-deploy for non-Django backends (e.g. FastAPI); defaults to the Django service.
+const BACKEND_URL = process.env.BACKEND_INTERNAL_URL || `http://${process.env.PROJECT_NAME}-django:8000`;
 
 /**
  * Server-side API Get function. 

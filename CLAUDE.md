@@ -13,7 +13,7 @@ Imports use the `@/` alias rooted at the host `spa/` directory. The library expe
 - `spa/constants.ts` — `ENABLED_LOCALES`
 - `spa/messages/<locale>.json` — project translations, merged with `next_utils/messages/<locale>.json` in `i18n/request.ts`
 
-Server-side requests go to `http://${PROJECT_NAME}-django:8000` (the docker-compose service name).
+Server-side requests go to `BACKEND_INTERNAL_URL` if set (django-deploy sets it for the FastAPI stack), otherwise `http://${PROJECT_NAME}-django:8000` (the docker-compose service name).
 
 ## Contents
 
