@@ -9,11 +9,11 @@ Shared Next.js (App Router) components and helpers for personal projects. Used a
 ## Coupling with the host project
 
 Imports use the `@/` alias rooted at the host `spa/` directory. The library expects these host files to exist:
-- `@/api/apiTypes` — OpenAPI types generated from the Django backend (`paths`, `components`)
+- `@/api/apiTypes` — OpenAPI types generated from the backend (`paths`, `components`)
 - `spa/constants.ts` — `ENABLED_LOCALES`
 - `spa/messages/<locale>.json` — project translations, merged with `next_utils/messages/<locale>.json` in `i18n/request.ts`
 
-Server-side requests go to `BACKEND_INTERNAL_URL` if set (django-deploy sets it for the FastAPI stack), otherwise `http://${PROJECT_NAME}-django:8000` (the docker-compose service name).
+Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployment — django-deploy provides it for every stack). The library is backend-agnostic: it depends only on the backend's HTTP API contract (OpenAPI types, `csrftoken` cookie + `X-CSRFToken` header, `access_token` / `user_data` cookies, auth endpoints such as `/api/auth/telegram`), never on which framework implements it.
 
 ## Contents
 

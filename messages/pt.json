@@ -7,7 +7,6 @@
     },
     "NavigationHeader": {
         "login": "Entrar",
-        "django_admin": "Djnago Admin",
         "logout": "Sair"
     },
     "loader": {

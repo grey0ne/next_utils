@@ -7,7 +7,6 @@
     },
     "NavigationHeader": {
         "login": "Iniciar sesión",
-        "django_admin": "Djnago Admin",
         "logout": "Cerrar sesión"
     },
     "loader": {

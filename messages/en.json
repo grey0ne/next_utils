@@ -7,7 +7,6 @@
     },
     "NavigationHeader": {
         "login": "Login",
-        "django_admin": "Django Admin",
         "logout": "Logout"
     },
     "loader": {

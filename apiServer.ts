@@ -4,8 +4,17 @@ import {
 } from '@/next_utils/apiHelpers';
 import { cookies } from 'next/headers'
 
-// Set by django-deploy for non-Django backends (e.g. FastAPI); defaults to the Django service.
-const BACKEND_URL = process.env.BACKEND_INTERNAL_URL || `http://${process.env.PROJECT_NAME}-django:8000`;
+/**
+ * Backend base URL for server-side requests (e.g. http://myproject-backend:8000).
+ * Comes from the deployment environment; the frontend makes no assumptions about the backend.
+ */
+function backendUrl(): string {
+    const url = process.env.BACKEND_INTERNAL_URL;
+    if (!url) {
+        throw new Error('BACKEND_INTERNAL_URL is not set: server-side API requests need the backend URL');
+    }
+    return url.replace(/\/+$/, '');
+}
 
 /**
  * Server-side API Get function. 
@@ -34,7 +43,7 @@ export const anonymousApiGet = async <P extends Path>(
 function getFormattedUrl<P extends Path>(url: P, params: RequestParams<P, 'get'> extends undefined ? [] : [RequestParams<P, 'get'>]) {
     const pathParams = params[0]?.path;
     const queryParams = params[0]?.query;
-    return BACKEND_URL + generateUrl(url, pathParams, queryParams); 
+    return backendUrl() + generateUrl(url, pathParams, queryParams);
 }
 
 export const anonymousApiRequest = async <P extends Path, M extends PathMethod<P>>(
