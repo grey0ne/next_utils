@@ -84,13 +84,14 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
     body: RequestBody<P, M> extends undefined ? object : RequestBody<P, M>,
     ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
 ): Promise<{ errors: string[], data: ResponseType<P, M> | null}> => {
-    const formattedUrl = getFormattedUrl(url, params); 
+    const cookieHeader = await getCookieHeader();
+    const formattedUrl = getFormattedUrl(url, params);
     const response =  await fetch(
         formattedUrl, {
             method: String(method),
             headers: {
                 "Content-Type": "application/json",
-                "Cookie": await getCookieHeader()
+                "Cookie": cookieHeader
             },
             cache: 'no-store',
         }
