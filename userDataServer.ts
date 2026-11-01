@@ -9,7 +9,7 @@ export async function getUserDataFromCookie(): Promise<any | null> {
             return JSON.parse(decodedData.toString('utf-8'));
         }
         return null;
-    } catch (error) {
+    } catch {
         return null;
     }
 }

@@ -38,6 +38,7 @@ export function TelegramLogin({ botUsername, onSuccess }: TelegramLoginProps) {
                 onSuccess?.(data);
             }).catch((err) => console.error("Login failed", err));
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return <div id="telegram-login"></div>;

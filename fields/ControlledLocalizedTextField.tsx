@@ -18,7 +18,9 @@ type ControlledLocalizedTextFieldProps = {
 
 const SOURCE_LOCALE = 'ru';
 
-export function ControlledLocalizedTextField({ name, label, required, width='100%', rows=1, translate=false }: ControlledLocalizedTextFieldProps) {
+export function ControlledLocalizedTextField({
+    name, label, required, width='100%', rows=1, translate=false
+}: ControlledLocalizedTextFieldProps) {
     const locale = useLocale();
     const { control, getValues, setValue } = useFormContext();
     const [selectedLocale, setLocale] = useState<Locale>(locale);
@@ -60,7 +62,10 @@ export function ControlledLocalizedTextField({ name, label, required, width='100
 
     return (
         <>
-            <LocaleTabs title={ label } selectedLocale={ selectedLocale } setLocale={ setLocale } translateHandler={ enableTranslate ? handleTranslate : undefined } />
+            <LocaleTabs
+                title={ label } selectedLocale={ selectedLocale } setLocale={ setLocale }
+                translateHandler={ enableTranslate ? handleTranslate : undefined }
+            />
             <Controller
                 name={ name }
                 control={ control }

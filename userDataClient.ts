@@ -1,5 +1,5 @@
 import { getCookie } from "./helpers";
-import { useEffect, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 
 export enum UserState {
     LOADING = 'loading',
@@ -7,22 +7,23 @@ export enum UserState {
     UNAUTHENTICATED = 'unauthenticated',
 }
 
+function subscribe() {
+    return () => {};
+}
+
 export function useUserDataFromCookie() : { userData: any, userState: UserState } {
-    const [userData, setUserData] = useState<any>(null);
-    const [userState, setUserState] = useState<UserState>(UserState.LOADING);
-    useEffect(() => {
-        const userData = getCookie('user_data');
+    const userDataCookie = useSyncExternalStore(subscribe, () => getCookie('user_data'), () => null);
+    return useMemo(() => {
+        if (userDataCookie === null) {
+            return { userData: null, userState: UserState.LOADING };
+        }
+        if (!userDataCookie) {
+            return { userData: null, userState: UserState.UNAUTHENTICATED };
+        }
         try {
-            const decodedUserData = window.atob(userData);
-            setUserData(userData ? JSON.parse(decodedUserData) : null);
-        } catch (error) {
-            setUserData(null);
+            return { userData: JSON.parse(window.atob(userDataCookie)), userState: UserState.AUTHENTICATED };
+        } catch {
+            return { userData: null, userState: UserState.AUTHENTICATED };
         }
-        if (userData) {
-            setUserState(UserState.AUTHENTICATED);
-        } else {
-            setUserState(UserState.UNAUTHENTICATED);
-        }
-    }, []);
-    return { userData, userState };
+    }, [userDataCookie]);
 }

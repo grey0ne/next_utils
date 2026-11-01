@@ -33,7 +33,7 @@ export function UploadFileButton<P extends PostPath>({
             if (onSuccess) {
                 onSuccess()
             }
-        } catch (err) {
+        } catch {
             if (onError) {
                 onError('Error on image upload');
             }

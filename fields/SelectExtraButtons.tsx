@@ -1,7 +1,8 @@
+import { PostPath } from "../apiHelpers";
 import { GenericModalFormButtonProps, GenericModalFormButton } from "../forms/GenericModalFormButton";
 
 type SelectExtraButtonsProps = {
-    extraButtonProps?: GenericModalFormButtonProps<any>[];
+    extraButtonProps?: GenericModalFormButtonProps<PostPath>[];
 }
 
 export function SelectExtraButtons({ extraButtonProps }: SelectExtraButtonsProps) {

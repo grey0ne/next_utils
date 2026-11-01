@@ -2,7 +2,7 @@ import { Control, useFieldArray } from "react-hook-form";
 import { Button, Stack } from '@mui/material';
 import { ControlledDynamicSelectField } from "@/next_utils/fields/ControlledDynamicSelectField";
 import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
-import { GenericModalFormButtonProps, GenericModalFormButton } from "../forms/GenericModalFormButton";
+import { GenericModalFormButtonProps } from "../forms/GenericModalFormButton";
 import { SelectExtraButtons } from "./SelectExtraButtons";
 
 type ControlledSelectListFieldProps<P extends ItemsPath> = {
@@ -12,7 +12,7 @@ type ControlledSelectListFieldProps<P extends ItemsPath> = {
     dataUrl: P,
     dataUrlParams: RequestParams<P, 'get'>
     optionLabelField: string,
-    extraButtonProps?: GenericModalFormButtonProps<any>[]
+    extraButtonProps?: GenericModalFormButtonProps<PostPath>[]
 }
 
 

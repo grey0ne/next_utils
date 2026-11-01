@@ -55,13 +55,15 @@ export function LoginModalButton({
     modalTitle, buttonComponent: ButtonComponent, enabledProviders = [], buttonText
 }: LoginModalButtonProps) {
     const t = useTranslations('LoginModal');
+    const [showModal, setShowModal] = useState(false)
     const authEnabled = enabledProviders && enabledProviders.length > 0;
     if (!authEnabled) {
         return null;
     }
-    const [showModal, setShowModal] = useState(false)
     const clickHandler = () => { setShowModal(true) }
-    const buttonElement = ButtonComponent ? <ButtonComponent onClick={clickHandler} /> : <DefaultButtonComponent onClick={clickHandler} buttonText={buttonText || t('login_modal_button_text')} />
+    const buttonElement = ButtonComponent
+        ? <ButtonComponent onClick={clickHandler} />
+        : <DefaultButtonComponent onClick={clickHandler} buttonText={buttonText || t('login_modal_button_text')} />
     return (
         <>
             { buttonElement }

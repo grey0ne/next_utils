@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Control } from "react-hook-form";
 import { ControlledSelectField } from "@/next_utils/fields/ControlledSelectField";
 import { ControlledMultipleSelectField } from "@/next_utils/fields/ControlledMultipleSelectField";
-import { ItemsPath, RequestParams } from "@/next_utils/apiHelpers";
+import { ItemsPath, PostPath, RequestParams } from "@/next_utils/apiHelpers";
 import { useApi } from "@/next_utils/apiClient";
 import { SxProps } from "@mui/material";
 import { GenericModalFormButtonProps } from "../forms/GenericModalFormButton";
@@ -18,7 +18,7 @@ type ControlledDynamiSelectFieldProps <P extends ItemsPath> = {
     required?: boolean,
     multiple?: boolean
     sx?: SxProps
-    extraButtonProps?: GenericModalFormButtonProps<any>[]
+    extraButtonProps?: GenericModalFormButtonProps<PostPath>[]
 }
 
 
@@ -30,7 +30,9 @@ export function ControlledDynamicSelectField <P extends ItemsPath>({
     const optionsData = useApi(dataUrl, dataUrlParams);
     const options = useMemo(
         // ItemsPath is `never` in projects without list endpoints, so narrow the response explicitly.
-        () => ((optionsData?.data as { items?: unknown[] } | undefined)?.items || []) as Array<{ [key: string | number]: any; id: number | string }>,
+        () => ((optionsData?.data as { items?: unknown[] } | undefined)?.items || []) as Array<
+            { [key: string | number]: any; id: number | string }
+        >,
         [optionsData]
     );
 

@@ -72,25 +72,25 @@ export function BannerHeader({ bannerImageUrl, title, topTags = [], bottomTags =
     ))
     return (
         <Box sx={{...BANNER_STYLE, backgroundImage: backgroundImage}} >
-               <Box sx={CONTENT_STYLE} >
-                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                       {topTagElems}
-                   </Box>
+            <Box sx={CONTENT_STYLE} >
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    {topTagElems}
+                </Box>
 
-                   <Box>
-                       <Grid container size={{xs: 12}} sx={{ alignItems: "flex-end" }}>
-                           <Typography variant='h3' sx={TITLE_STYLE}>
-                               {title}
-                           </Typography>
-                           { extraButtons }
-                       </Grid>
+                <Box>
+                    <Grid container size={{xs: 12}} sx={{ alignItems: "flex-end" }}>
+                        <Typography variant='h3' sx={TITLE_STYLE}>
+                            {title}
+                        </Typography>
+                        { extraButtons }
+                    </Grid>
                        
-                       {/* Additional meta info */}
-                       <Box sx={{ mt: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                            { bottomTagElems }
-                       </Box>
-                   </Box>
-               </Box>
-           </Box>
+                    {/* Additional meta info */}
+                    <Box sx={{ mt: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                        { bottomTagElems }
+                    </Box>
+                </Box>
+            </Box>
+        </Box>
     )
 }

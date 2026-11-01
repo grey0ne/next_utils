@@ -1,6 +1,7 @@
 import { Controller, Control } from "react-hook-form";
 import { SxProps } from '@mui/material';
 import { Option } from './SelectFieldHelpers';
+import { PostPath } from "../apiHelpers";
 import { GenericModalFormButtonProps } from "../forms/GenericModalFormButton";
 import { AutocompleteElem } from './AutocompleteElem';
 import { SelectExtraButtons } from "./SelectExtraButtons";
@@ -12,7 +13,7 @@ type ControlledSelectFieldProps = {
     options: Option[]
     required?: boolean
     sx?: SxProps
-    extraButtonProps?: GenericModalFormButtonProps<any>[]
+    extraButtonProps?: GenericModalFormButtonProps<PostPath>[]
 }
 
 

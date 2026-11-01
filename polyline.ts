@@ -40,7 +40,7 @@ export function decodePolyline(str: string, precision: number = DEFAULT_PRECISIO
             shift *= 32;
         } while (byte >= 0x20);
 
-        let latitude_change = (result & 1) ? ((-result - 1) / 2) : (result / 2);
+        const latitude_change = (result & 1) ? ((-result - 1) / 2) : (result / 2);
 
         shift = 1;
         result = 0;
@@ -51,7 +51,7 @@ export function decodePolyline(str: string, precision: number = DEFAULT_PRECISIO
             shift *= 32;
         } while (byte >= 0x20);
 
-        let longitude_change = (result & 1) ? ((-result - 1) / 2) : (result / 2);
+        const longitude_change = (result & 1) ? ((-result - 1) / 2) : (result / 2);
 
         lat += latitude_change;
         lng += longitude_change;

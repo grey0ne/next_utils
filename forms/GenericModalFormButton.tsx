@@ -23,7 +23,7 @@ export function GenericModalFormButton<P extends PostPath>(props: GenericModalFo
 
     return (
         <>
-             <Button 
+            <Button 
                 variant={buttonVariant}
                 color={buttonColor}
                 size={buttonSize}

@@ -17,7 +17,8 @@ export function StyledModal({
     FullscreenBreakpoint is set to md
     */
     const theme = useTheme();
-    const fullScreen = fullscreenBreakpoint && useMediaQuery(theme.breakpoints.down(fullscreenBreakpoint));
+    const isBelowBreakpoint = useMediaQuery(theme.breakpoints.down(fullscreenBreakpoint || 'xs'));
+    const fullScreen = fullscreenBreakpoint !== false && isBelowBreakpoint;
 
     return (
         <Dialog

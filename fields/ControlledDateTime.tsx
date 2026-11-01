@@ -9,7 +9,9 @@ type ControlledDateTimeProps<T extends FieldValues> = {
     disableFuture?: boolean
 }
 
-export default function ControlledDateTime<T extends FieldValues>({ name, control, label, required=false, disableFuture=false }: ControlledDateTimeProps<T>) {
+export default function ControlledDateTime<T extends FieldValues>({
+    name, control, label, required=false, disableFuture=false
+}: ControlledDateTimeProps<T>) {
     return (
         <Controller
             name={ name }

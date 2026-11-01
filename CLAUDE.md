@@ -31,5 +31,5 @@ Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployme
 
 ## Notes
 
-- Built against MUI 7 (`Grid` with `size` prop). MUI 9 removed system props (`p`, `alignItems`, `textAlign`, … directly on components) — many components here still use them and will need moving into `sx` before upgrading.
+- Built against MUI 9 (`Grid` with `size` prop). MUI 9 removed system props (`p`, `alignItems`, `textAlign`, … directly on components) and `Grid` `direction='column'` — put them into `sx`.
 - Type-check and build through a host project (inside its nextjs container), not standalone.

@@ -33,7 +33,7 @@ export function YandexLogin({
                 buttonBorderRadius: 4
             }
         ).then((result: any) => result.handler())
-        .then(onSuccess)
+            .then(onSuccess)
     }
 
     useEffect(() => {
@@ -42,6 +42,7 @@ export function YandexLogin({
         if (element && element.childNodes.length === 0) {
             initButton()
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

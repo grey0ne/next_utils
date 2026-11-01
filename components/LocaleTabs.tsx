@@ -1,4 +1,4 @@
-import { Button, Tab, Tabs, Stack, Box, Typography, IconButton } from '@mui/material';
+import { Tab, Tabs, Stack, Box, Typography, IconButton } from '@mui/material';
 import { Language } from '@mui/icons-material';
 import { Locale } from "next-intl";
 import { AVAILABLE_LOCALES } from '@/next_utils/constants';

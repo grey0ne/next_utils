@@ -50,7 +50,7 @@ export function ControlledInfiniteList<ItemType>(props: {
 
 export function InfiniteList<P extends Path>(props: {
     url: P,
-    pathParams: RequestPathParams<P, 'get'> extends undefined ? {} : RequestPathParams<P, 'get'>
+    pathParams: RequestPathParams<P, 'get'> extends undefined ? Record<string, never> : RequestPathParams<P, 'get'>
     renderItems: (items: PaginatedResponseTypeItems<P, 'get'>) => React.ReactNode,
     perPage?: number,
     initialData?: PaginatedResponseType<P, 'get'>
