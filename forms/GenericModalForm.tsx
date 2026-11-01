@@ -42,7 +42,7 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
             maxWidth={maxWidth}
             onClose={onClose}
         >
-            <DialogTitle fontWeight="bold" fontSize="1.5rem">
+            <DialogTitle sx={{ fontWeight: "bold", fontSize: "1.5rem" }}>
                 { title }
             </DialogTitle>
             <FormProvider {...formMethods}>

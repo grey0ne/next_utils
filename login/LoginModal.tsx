@@ -2,11 +2,29 @@
 import { useState } from 'react'
 import { StyledModal } from '../modal/StyledModal'
 import { Typography, Stack, Button } from '@mui/material'
-import { UnlocalizedLink } from '../components/Link'
 import { TelegramLogin } from './TelegramLogin'
 import { YandexLogin } from './YandexLogin'
 import { AuthProviderParams, AuthProviderType } from './types'
 import { useTranslations } from 'next-intl';
+
+/**
+ * Social auth login views accept only POST with a CSRF token.
+ * Gets the token (it also sets the csrftoken cookie) and submits a form to /login/<backend>/
+ */
+async function socialAuthLogin(backend: string) {
+    const response = await fetch('/api/auth/csrf', { credentials: 'same-origin' });
+    const { csrf_token } = await response.json();
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/login/${backend}/`;
+    const tokenInput = document.createElement('input');
+    tokenInput.type = 'hidden';
+    tokenInput.name = 'csrfmiddlewaretoken';
+    tokenInput.value = csrf_token;
+    form.appendChild(tokenInput);
+    document.body.appendChild(form);
+    form.submit();
+}
 
 type LoginModalProps = {
     onClose?: () => void;
@@ -26,17 +44,15 @@ export function LoginModal({ onClose, modalTitle, enabledProviders = [] }: Login
         }
         if (provider.providerType === AuthProviderType.YANDEX_REDIRECT) {
             buttonElems.push(
-                <a href='/login/yandex-oauth2/' key={provider.providerType}>
-                    <Button variant="contained" color="primary">
-                        { t('login_yandex_caption')}
-                    </Button>
-                </a>
+                <Button variant="contained" color="primary" key={provider.providerType} onClick={() => socialAuthLogin('yandex-oauth2')}>
+                    { t('login_yandex_caption')}
+                </Button>
             )
         }
     }
     return (
         <StyledModal onClose={onClose} maxWidth="sm" fullscreenBreakpoint={false}>
-            <Stack p={2} spacing={2} alignItems="center">
+            <Stack spacing={2} sx={{ p: 2, alignItems: "center" }}>
                 <Typography variant="h6">{ modalTitle || t('login_modal_header') }</Typography>
                 { buttonElems }
             </Stack>

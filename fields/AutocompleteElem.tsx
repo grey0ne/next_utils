@@ -70,8 +70,9 @@ export function AutocompleteElem({ onChange, value, options, label, sx, multiple
                     label={ label }
                     sx={sx}
                     slotProps={{
+                        ...params.slotProps,
                         htmlInput: {
-                            ...params.inputProps,
+                            ...params.slotProps.htmlInput,
                             autoComplete: 'new-password', // disable autocomplete and autofill
                         }
                     }}

@@ -13,7 +13,7 @@ Imports use the `@/` alias rooted at the host frontend directory (`nextjs_fronte
 - `nextjs_frontend/constants.ts` — `ENABLED_LOCALES`
 - `nextjs_frontend/messages/<locale>.json` — project translations, merged with `next_utils/messages/<locale>.json` in `i18n/request.ts`
 
-Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployment — django-deploy provides it for every stack). The library is backend-agnostic: it depends only on the backend's HTTP API contract (OpenAPI types, `csrftoken` cookie + `X-CSRFToken` header, `access_token` / `user_data` cookies, auth endpoints such as `/api/auth/telegram`), never on which framework implements it.
+Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployment — django-deploy provides it for every stack). The library is backend-agnostic: it depends only on the backend's HTTP API contract (OpenAPI types, `csrftoken` cookie + `X-CSRFToken` header, `access_token` / `user_data` cookies, auth endpoints such as `/api/auth/telegram`, `/api/auth/csrf` + POST to `/login/<backend>/` for social auth), never on which framework implements it.
 
 ## Contents
 

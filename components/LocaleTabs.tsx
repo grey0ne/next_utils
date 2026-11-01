@@ -29,7 +29,7 @@ export function LocaleTabs({ selectedLocale, setLocale, title, translateHandler 
         
     return (
         <Stack direction="row" spacing={2} sx={{ mb: 2, alignItems: 'end', justifyContent: 'space-between' }}>
-            { title && <Box p={1}><Typography variant='h6'>{ title }</Typography></Box> }
+            { title && <Box sx={{ p: 1 }}><Typography variant='h6'>{ title }</Typography></Box> }
             <Stack direction="row" spacing={2} sx={{ alignItems: 'end' }}>
                 { translateHandler && (
                     <IconButton 

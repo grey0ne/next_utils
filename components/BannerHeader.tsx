@@ -78,7 +78,7 @@ export function BannerHeader({ bannerImageUrl, title, topTags = [], bottomTags =
                    </Box>
 
                    <Box>
-                       <Grid container size={{xs: 12}} alignItems="flex-end">
+                       <Grid container size={{xs: 12}} sx={{ alignItems: "flex-end" }}>
                            <Typography variant='h3' sx={TITLE_STYLE}>
                                {title}
                            </Typography>

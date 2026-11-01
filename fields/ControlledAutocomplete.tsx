@@ -53,9 +53,12 @@ export default function ControlledAutocomplete({ name, label, options, required,
                             {...params}
                             label={ label }
                             required={required}
-                            inputProps={{
-                                ...params.inputProps,
-                                autoComplete: 'new-password', // disable autocomplete and autofill
+                            slotProps={{
+                                ...params.slotProps,
+                                htmlInput: {
+                                    ...params.slotProps.htmlInput,
+                                    autoComplete: 'new-password', // disable autocomplete and autofill
+                                }
                             }}
                         />
                     )}
