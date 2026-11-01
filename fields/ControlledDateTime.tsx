@@ -1,15 +1,15 @@
-import { Controller, Control } from "react-hook-form";
+import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
-type ControlledDateTimeProps = {
-    name: string,
+type ControlledDateTimeProps<T extends FieldValues> = {
+    name: Path<T>,
     label: string,
-    control: Control<any>,
+    control: Control<T>,
     required?: boolean,
     disableFuture?: boolean
 }
 
-export default function ControlledDateTime({ name, control, label, required=false, disableFuture=false }: ControlledDateTimeProps) {
+export default function ControlledDateTime<T extends FieldValues>({ name, control, label, required=false, disableFuture=false }: ControlledDateTimeProps<T>) {
     return (
         <Controller
             name={ name }
