@@ -52,7 +52,7 @@ export function AutocompleteElem({ onChange, value, options, label, sx, multiple
         <Autocomplete
             getOptionLabel={(option) => {
                 // This helps mitigate issue with the default value not being found in the options
-                if (option.hasOwnProperty('title')) {
+                if (Object.hasOwn(option, 'title')) {
                     return option.title;
                 }
                 return 'No option title';
