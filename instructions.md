@@ -7,17 +7,17 @@
 
 ## API and Data Fetching
 - Use existing API endpoints
-- API type definitions are in `spa/api/apiTypes.ts`
-- For client Next.js components: use methods from `spa/next_utils/apiClient.ts`
-- For server Next.js components: use methods from `spa/next_utils/apiServer.ts`
-- Use `useApi` method from `spa/next_utils/apiClient.ts` for data fetching in client components
+- API type definitions are in `nextjs_frontend/api/apiTypes.ts`
+- For client Next.js components: use methods from `nextjs_frontend/next_utils/apiClient.ts`
+- For server Next.js components: use methods from `nextjs_frontend/next_utils/apiServer.ts`
+- Use `useApi` method from `nextjs_frontend/next_utils/apiClient.ts` for data fetching in client components
 
 ## Forms and Fields
 - Use React Hook Form for form handling
 - If possible, use Generic Modal Form to simplify form creation. Generic Modal Form requires only Field Schema to be defined
 - Use fields from `next_utils/fields`
-- For related object selection, use `ControlledSelectField` from `spa/next_utils/fields`
-- For localized fields use `ControlledLocalizedTextField` from `spa/next_utils/fields`
+- For related object selection, use `ControlledSelectField` from `nextjs_frontend/next_utils/fields`
+- For localized fields use `ControlledLocalizedTextField` from `nextjs_frontend/next_utils/fields`
 
 ## Backend Development
 - Use decorators from dataorm module for backend endpoints
@@ -31,7 +31,7 @@
 - Maintain consistent code formatting
 
 ## Project Structure
-- Keep frontend code in the `spa` directory
+- Keep frontend code in the `nextjs_frontend` directory
 - Keep backend code in the `backend` directory
 - Follow the established module organization
 

@@ -1,6 +1,6 @@
 # next_utils
 
-Shared Next.js (App Router) components and helpers for personal projects. Used as a git submodule at `<project>/spa/next_utils` in several projects — keep it project-agnostic.
+Shared Next.js (App Router) components and helpers for personal projects. Used as a git submodule at `<project>/nextjs_frontend/next_utils` in several projects — keep it project-agnostic.
 
 @instructions.md
 
@@ -8,10 +8,10 @@ Shared Next.js (App Router) components and helpers for personal projects. Used a
 
 ## Coupling with the host project
 
-Imports use the `@/` alias rooted at the host `spa/` directory. The library expects these host files to exist:
+Imports use the `@/` alias rooted at the host frontend directory (`nextjs_frontend/`). The library expects these host files to exist:
 - `@/api/apiTypes` — OpenAPI types generated from the backend (`paths`, `components`)
-- `spa/constants.ts` — `ENABLED_LOCALES`
-- `spa/messages/<locale>.json` — project translations, merged with `next_utils/messages/<locale>.json` in `i18n/request.ts`
+- `nextjs_frontend/constants.ts` — `ENABLED_LOCALES`
+- `nextjs_frontend/messages/<locale>.json` — project translations, merged with `next_utils/messages/<locale>.json` in `i18n/request.ts`
 
 Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployment — django-deploy provides it for every stack). The library is backend-agnostic: it depends only on the backend's HTTP API contract (OpenAPI types, `csrftoken` cookie + `X-CSRFToken` header, `access_token` / `user_data` cookies, auth endpoints such as `/api/auth/telegram`), never on which framework implements it.
 
