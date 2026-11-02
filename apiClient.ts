@@ -1,4 +1,5 @@
 'use client'
+import { useCallback } from 'react';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite'
 import {
@@ -182,6 +183,9 @@ export const usePaginatedApi = <P extends Path>(
             fallbackData: initialData ? [initialData] : undefined
         }
     )
+    // Revalidation only: callers often pass it as a callback (e.g. onSuccess(formData)),
+    // and SWR mutate called with an argument would replace the cached pages with it
+    const revalidateList = useCallback(() => { mutate(); }, [mutate]);
     const items: PaginatedResponseTypeItems<P, 'get'> = [];
     if (data) {
         for (const page_data of data) {
@@ -194,6 +198,6 @@ export const usePaginatedApi = <P extends Path>(
         isLoading,
         size,
         setSize,
-        mutate
+        mutate: revalidateList
     }
 }
