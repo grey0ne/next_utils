@@ -46,6 +46,12 @@ function getFormattedUrl<P extends Path>(url: P, params: RequestParams<P, 'get'>
     return backendUrl() + generateUrl(url, pathParams, queryParams);
 }
 
+/** A JSON request needs a JSON body: an empty one fails endpoints with an all-optional body schema */
+const requestBody = (method: string, body: object | undefined): string | undefined => {
+    const httpMethod = method.toUpperCase();
+    return httpMethod === 'GET' || httpMethod === 'HEAD' ? undefined : JSON.stringify(body ?? {});
+}
+
 export const anonymousApiRequest = async <P extends Path, M extends PathMethod<P>>(
     url: P,
     method: M,
@@ -61,6 +67,7 @@ export const anonymousApiRequest = async <P extends Path, M extends PathMethod<P
             headers: {
                 "Content-Type": "application/json",
             },
+            body: requestBody(String(method), body),
         }
     );
     if (response.ok) {
@@ -93,6 +100,7 @@ export const apiRequest = async <P extends Path, M extends PathMethod<P>>(
                 "Content-Type": "application/json",
                 "Cookie": cookieHeader
             },
+            body: requestBody(String(method), body),
             cache: 'no-store',
         }
     );

@@ -6,7 +6,7 @@ import {
     DialogContent,
 } from '@mui/material';
 import { useForm, FormProvider } from 'react-hook-form';
-import { apiPost } from '@/next_utils/apiClient';
+import { apiPost, formatApiError } from '@/next_utils/apiClient';
 import { useTranslations } from 'next-intl';
 import { PostPath } from "@/next_utils/apiHelpers";
 import { GenericModalFormProps } from './types';
@@ -29,7 +29,7 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
             onSuccess?.(data, responseData);
             onClose?.();
         } else {
-            showNotification(`Status: ${responseData.status}, Error: ${responseData.errors[0]}`);
+            showNotification(formatApiError(responseData.errors[0], responseData.status));
         }
     };
 

@@ -36,6 +36,35 @@ export const fetcher = async (url: string) => {
     return response.json();
 };
 
+/**
+ * Readable message for an error from processResponse: a string, {detail: string}
+ * or a validation error {detail: [{msg, loc}, ...]}
+ */
+export function formatApiError(error: any, status?: number): string {
+    const fallback = status ? `Request failed with status ${status}` : 'Request failed';
+    if (!error) {
+        return fallback;
+    }
+    if (typeof error === 'string') {
+        return error;
+    }
+    const detail = error.detail ?? error;
+    if (typeof detail === 'string') {
+        return detail;
+    }
+    if (Array.isArray(detail)) {
+        const messages = detail.map((item) => {
+            if (typeof item === 'string') {
+                return item;
+            }
+            const field = Array.isArray(item?.loc) ? item.loc[item.loc.length - 1] : undefined;
+            return item?.msg ? (field ? `${field}: ${item.msg}` : item.msg) : JSON.stringify(item);
+        });
+        return messages.join('; ') || fallback;
+    }
+    return fallback;
+}
+
 type ResponseData = {
     status: number,
     errors: any[],
@@ -86,12 +115,14 @@ async function performRequest(
     body: any,
 ): Promise<ResponseData> {
     const headers = getHeaders();
+    // fetch upper-cases only standard methods; a lowercase "patch" is rejected (nginx: 400).
+    const httpMethod = String(method).toUpperCase();
     const response =  await fetch(
         url, {
-            // fetch upper-cases only standard methods; a lowercase "patch" is rejected (nginx: 400).
-            method: String(method).toUpperCase(),
+            method: httpMethod,
             headers: headers,
-            body: body && Object.keys(body).length > 0 ? JSON.stringify(body) : undefined
+            // A JSON request needs a JSON body: an empty one fails endpoints with an all-optional body schema
+            body: httpMethod === 'GET' || httpMethod === 'HEAD' ? undefined : JSON.stringify(body ?? {})
         }
     );
     return await processResponse(response);
