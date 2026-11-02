@@ -22,5 +22,10 @@
         "login_modal_header": "Выбери способ входа",
         "login_modal_button_text": "Войти",
         "login_yandex_caption": "Войти через Яндекс"
+    },
+    "confirm_dialog": {
+        "title": "Вы уверены?",
+        "confirm": "Подтвердить",
+        "cancel": "Отмена"
     }
 }

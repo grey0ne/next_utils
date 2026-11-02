@@ -22,5 +22,10 @@
         "login_modal_header": "Elige el método de entrada",
         "login_modal_button_text": "Entrar",
         "login_yandex_caption": "Entrar con Yandex"
+    },
+    "confirm_dialog": {
+        "title": "¿Está seguro?",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar"
     }
-} 
+}

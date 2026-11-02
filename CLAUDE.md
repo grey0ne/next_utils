@@ -24,6 +24,7 @@ Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployme
 - `userDataClient.ts` / `userDataServer.ts` — current-user data from cookie
 - `i18n/` — next-intl routing (`localePrefix: 'as-needed'`, default `en`), request config, navigation
 - `components/` — layout, header, `InfiniteList`, modals, buttons
+- `modal/ConfirmDialog.tsx` — confirmation dialog, use instead of `window.confirm`; `components/ConfirmButton.tsx` — button that confirms before an arbitrary action; `ServerActionButton` takes `confirmText` / `confirmTitle` to confirm before the request
 - `fields/` — react-hook-form `Controlled*` field components (MUI)
 - `forms/` — `GenericForm` / `GenericModalForm` driven by a field schema
 - `login/`, `notifications/`, `modal/` — auth UI (`socialAuthLogin(backend)` — POST login for social auth), notification context, styled modal

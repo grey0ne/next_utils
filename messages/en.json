@@ -22,5 +22,10 @@
         "login_modal_header": "Choose login method",
         "login_modal_button_text": "Login",
         "login_yandex_caption": "Login with Yandex"
+    },
+    "confirm_dialog": {
+        "title": "Are you sure?",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
     }
 }
