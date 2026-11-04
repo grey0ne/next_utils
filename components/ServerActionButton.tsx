@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react';
 import { Button } from "@mui/material";
-import { apiRequest, formatApiError } from '../apiClient';
+import { apiRequest } from '../apiClient';
+import { useFormatApiError } from '../apiErrors';
 import { PostPath, RequestParams } from '../apiHelpers';
 import { useNotifications } from '@/next_utils/notifications/NotificationsContext';
 import { ConfirmDialog } from '../modal/ConfirmDialog';
@@ -35,6 +36,7 @@ export function ServerActionButton<P extends PostPath>({
     const [loading, setLoading] = useState<boolean>(false);
     const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
     const { showNotification } = useNotifications();
+    const formatApiError = useFormatApiError();
 
     const handleAction = async () => {
         setLoading(true);

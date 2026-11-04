@@ -27,5 +27,15 @@
         "title": "Are you sure?",
         "confirm": "Confirm",
         "cancel": "Cancel"
+    },
+    "ApiErrorsCommon": {
+        "unauthorized": "Log in to continue",
+        "forbidden": "Not enough permissions",
+        "not_found": "Not found",
+        "too_large": "The file is too large",
+        "validation": "Check the form fields",
+        "too_many_requests": "Too many requests, try again later",
+        "server_error": "Server error, try again later",
+        "request_failed": "The request failed"
     }
 }

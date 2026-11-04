@@ -27,5 +27,15 @@
         "title": "¿Está seguro?",
         "confirm": "Confirmar",
         "cancel": "Cancelar"
+    },
+    "ApiErrorsCommon": {
+        "unauthorized": "Inicia sesión para continuar",
+        "forbidden": "Permisos insuficientes",
+        "not_found": "No encontrado",
+        "too_large": "El archivo es demasiado grande",
+        "validation": "Revisa los campos del formulario",
+        "too_many_requests": "Demasiadas solicitudes, inténtalo más tarde",
+        "server_error": "Error del servidor, inténtalo más tarde",
+        "request_failed": "No se pudo completar la solicitud"
     }
 }

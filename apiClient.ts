@@ -37,6 +37,7 @@ export const fetcher = async (url: string) => {
 };
 
 /**
+ * Untranslated message for an error, for code outside React components; components use useFormatApiError (apiErrors.ts).
  * Readable message for an error from processResponse: a string, {detail: string}
  * or a validation error {detail: [{msg, loc}, ...]}
  */

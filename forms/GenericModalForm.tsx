@@ -6,7 +6,8 @@ import {
     DialogContent,
 } from '@mui/material';
 import { useForm, FormProvider } from 'react-hook-form';
-import { apiPost, formatApiError } from '@/next_utils/apiClient';
+import { apiPost } from '@/next_utils/apiClient';
+import { useFormatApiError } from '@/next_utils/apiErrors';
 import { useTranslations } from 'next-intl';
 import { PostPath } from "@/next_utils/apiHelpers";
 import { GenericModalFormProps } from './types';
@@ -19,6 +20,7 @@ export function GenericModalForm<P extends PostPath>(props: GenericModalFormProp
     const { formSchema, initialData, submitUrl, title, onClose, onSuccess, fullscreenBreakpoint, fullWidth, maxWidth } = props;
     const t = useTranslations('generic_modal_form');
     const { showNotification } = useNotifications();
+    const formatApiError = useFormatApiError();
     const formMethods = useForm<any>({
         defaultValues: initialData
     });

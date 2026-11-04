@@ -27,5 +27,15 @@
         "title": "Tem certeza?",
         "confirm": "Confirmar",
         "cancel": "Cancelar"
+    },
+    "ApiErrorsCommon": {
+        "unauthorized": "Entre para continuar",
+        "forbidden": "Permissões insuficientes",
+        "not_found": "Não encontrado",
+        "too_large": "O arquivo é grande demais",
+        "validation": "Verifique os campos do formulário",
+        "too_many_requests": "Muitas solicitações, tente mais tarde",
+        "server_error": "Erro do servidor, tente mais tarde",
+        "request_failed": "Não foi possível concluir a solicitação"
     }
 }

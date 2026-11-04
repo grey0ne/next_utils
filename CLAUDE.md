@@ -19,6 +19,7 @@ Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployme
 
 - `apiHelpers.ts` — type machinery over `paths` (`Path`, `RequestParams`, `ResponseType`, `generateUrl`)
 - `apiClient.ts` — client-side typed API (`useApi` via SWR, infinite lists, requests with CSRF cookie)
+- `apiErrors.ts` — `useFormatApiError()`: translated message for an API error. Errors with a `code` (django_utils `ApiError`, body `{code, detail, params}`) are translated from the project's `ApiErrors.<code>` messages with `params`; otherwise a common message by status from `ApiErrorsCommon` (library messages), otherwise the backend `detail`. `formatApiError` in `apiClient.ts` is the untranslated variant for code outside components
 - `apiServer.ts` — server-side typed API (`apiGet`, `apiRequest`; forwards cookies)
   - `anonymousApiGet` / `anonymousApiRequest` — no cookies, with a cache tag; use for statically generated / cached pages
 - `userDataClient.ts` / `userDataServer.ts` — current-user data from cookie
@@ -28,7 +29,7 @@ Server-side requests go to `BACKEND_INTERNAL_URL` (required; set by the deployme
 - `fields/` — react-hook-form `Controlled*` field components (MUI)
 - `forms/` — `GenericForm` / `GenericModalForm` driven by a field schema
 - `login/`, `notifications/`, `modal/` — auth UI (`socialAuthLogin(backend)` — POST login for social auth), notification context, styled modal
-- `messages/` — library translations (en, es, pt, ru)
+- `messages/` — library translations (en, es, kk, pt, ru). The project's own messages must not reuse a library namespace: the files are merged at the top level, so the library namespace would replace the project one
 
 ## Notes
 
