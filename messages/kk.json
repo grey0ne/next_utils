@@ -1,0 +1,31 @@
+{
+    "AnimatedMaskedMap": {
+        "distance_total": "Барлығы: {distance} км",
+        "area_total": "Ауданы: {area} км²",
+        "km": "км",
+        "reset": "Тазалау"
+    },
+    "NavigationHeader": {
+        "login": "Кіру",
+        "logout": "Шығу"
+    },
+    "loader": {
+        "loading": "Жүктелуде..."
+    },
+    "generic_modal_form": {
+        "cancel": "Болдырмау",
+        "submit": "Жіберу",
+        "submitting": "Жіберілуде...",
+        "edit": "Өңдеу"
+    },
+    "LoginModal": {
+        "login_modal_header": "Кіру тәсілін таңдаңыз",
+        "login_modal_button_text": "Кіру",
+        "login_yandex_caption": "Яндекс арқылы кіру"
+    },
+    "confirm_dialog": {
+        "title": "Сенімдісіз бе?",
+        "confirm": "Растау",
+        "cancel": "Болдырмау"
+    }
+}
