@@ -36,6 +36,7 @@
         "validation": "Revisa los campos del formulario",
         "too_many_requests": "Demasiadas solicitudes, inténtalo más tarde",
         "server_error": "Error del servidor, inténtalo más tarde",
-        "request_failed": "No se pudo completar la solicitud"
+        "request_failed": "No se pudo completar la solicitud",
+        "network": "Sin conexión con el servidor. Revisa internet e inténtalo de nuevo"
     }
 }

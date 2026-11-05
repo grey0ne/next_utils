@@ -36,6 +36,7 @@
         "validation": "Check the form fields",
         "too_many_requests": "Too many requests, try again later",
         "server_error": "Server error, try again later",
-        "request_failed": "The request failed"
+        "request_failed": "The request failed",
+        "network": "No connection to the server. Check the internet and try again"
     }
 }

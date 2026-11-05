@@ -39,6 +39,9 @@ export function useFormatApiError(): (error: unknown, status?: number) => string
         if (body.code && t.has(codeKey)) {
             return t(codeKey, body.params);
         }
+        if (status === 0) {
+            return t('ApiErrorsCommon.network');
+        }
         if (status !== undefined && status >= 500) {
             return t('ApiErrorsCommon.server_error');
         }

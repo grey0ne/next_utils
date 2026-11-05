@@ -118,14 +118,20 @@ async function performRequest(
     const headers = getHeaders();
     // fetch upper-cases only standard methods; a lowercase "patch" is rejected (nginx: 400).
     const httpMethod = String(method).toUpperCase();
-    const response =  await fetch(
-        url, {
-            method: httpMethod,
-            headers: headers,
-            // A JSON request needs a JSON body: an empty one fails endpoints with an all-optional body schema
-            body: httpMethod === 'GET' || httpMethod === 'HEAD' ? undefined : JSON.stringify(body ?? {})
-        }
-    );
+    let response: Response;
+    try {
+        response = await fetch(
+            url, {
+                method: httpMethod,
+                headers: headers,
+                // A JSON request needs a JSON body: an empty one fails endpoints with an all-optional body schema
+                body: httpMethod === 'GET' || httpMethod === 'HEAD' ? undefined : JSON.stringify(body ?? {})
+            }
+        );
+    } catch {
+        // No response at all (offline, the connection broke): status 0, useFormatApiError shows a network message
+        return { status: 0, errors: [{}], data: null };
+    }
     return await processResponse(response);
 }
 
